@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Free Fire LEVEL UP PASS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
 
+  <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <img src="https://i.postimg.cc/J0wgDFkj/download-4.jpg" alt="Free Fire" class="w-full h-48 object-cover rounded mb-4">
+
+    <h2 class="text-2xl font-bold mb-4 text-center">Free Fire Level Up Pass</h2>
+
+    <!-- UID input -->
+    <label class="block mb-2 font-semibold">Enter UID:</label>
+    <input type="text" id="uid" placeholder="Enter your Free Fire UID" class="w-full px-4 py-2 border rounded mb-4"/>
+
+    <!-- Package select -->
+    <label class="block mb-2 font-semibold">Select Package:</label>
+    <select id="package" class="w-full px-4 py-2 border rounded mb-4">
+      <option value="100 Diamonds - 100৳">100 Diamonds - 100৳</option>
+      <option value="210 Diamonds - 200৳">210 Diamonds - 200৳</option>
+      <option value="530 Diamonds - 450৳">530 Diamonds - 450৳</option>
+      <option value="1080 Diamonds - 850৳">1080 Diamonds - 850৳</option>
+      <option value="Weekly Membership - 250৳">Weekly Membership - 250৳</option>
+      <option value="Monthly Membership - 750৳">Monthly Membership - 750৳</option>
+    </select>
+
+    <!-- Payment select -->
+    <label class="block mb-2 font-semibold">Select Payment Method:</label>
+    <select id="payment" class="w-full px-4 py-2 border rounded mb-4">
+      <option value="Nagad">Nagad</option>
+      <option value="Bkash">Bkash</option>
+      <option value="Rocket">Rocket</option>
+      <option value="Upay">Upay</option>
+    </select>
+
+    <!-- Buy Button -->
+    <button onclick="sendToWhatsApp()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now on WhatsApp</button>
+  </div>
+
+  <script>
+    function sendToWhatsApp() {
+      const uid = document.getElementById('uid').value.trim();
+      const package = document.getElementById('package').value;
+      const payment = document.getElementById('payment').value;
+      const phoneNumber = "8801XXXXXXXXX"; // 🟢 Replace with your WhatsApp number
+
+      if (!uid) {
+        alert("Please enter your UID.");
+        return;
+      }
+
+      const message = `Hello, I want to order:\nGame: Free Fire\nUID: ${uid}\nPackage: ${package}\nPayment: ${payment}`;
+      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+
+</body>
+        </html>
