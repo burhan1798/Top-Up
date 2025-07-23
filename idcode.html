@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <title>Free Fire ID CODE</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
 
@@ -43,7 +50,7 @@
       const pkg = document.getElementById("package");
       const selected = pkg.options[pkg.selectedIndex];
 
-      const phone = "88017XXXXXXXX"; // 🔁 এখানে তোর WhatsApp নাম্বার বসা
+      const phone = "8801704481919"; // ✅ এখানে তোর WhatsApp নাম্বার দে (88 ছাড়া দিলে কাজ করবেনা)
 
       if (!uid || pkg.selectedIndex === 0) {
         alert("Please enter UID and select a package.");
@@ -51,7 +58,9 @@
       }
 
       const message = `🔥 Free Fire Top-Up Order\n\n📱 UID: ${uid}\n💎 Package: ${selected.text}\n\nPlease process my top-up.`;
-      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+
+      // ✅ Fixed WhatsApp Link (works everywhere)
+      window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, "_blank");
     }
   </script>
 
