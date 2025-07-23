@@ -1,80 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Free Fire ID CODE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ID CODE TOP UP</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
 </head>
-<body class="bg-gray-100 min-h-screen py-10 px-4">
+<body class="bg-gray-100 font-sans">
 
-  <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-3xl font-bold text-center mb-6">🔥 Free Fire Top-Up</h1>
+  <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
+    <img src="https://i.ibb.co/MkjNhfRK/images-4.jpg" alt="Free Fire" class="w-full h-48 object-cover rounded mb-4">
 
-    <!-- UID Input -->
-    <label class="block mb-2 text-sm font-medium">Enter Free Fire UID</label>
-    <input type="text" id="uid" placeholder="e.g. 1234567890"
-           class="w-full p-2 border rounded mb-6 focus:outline-none focus:ring focus:border-blue-300">
+    <h2 class="text-2xl font-bold mb-4 text-center">Indonesian Server</h2>
 
-    <!-- Package Cards -->
-    <div class="grid grid-cols-2 gap-4">
-      <!-- Each card calls orderNow('৳20', '20 Diamonds') -->
-      <button onclick="orderNow('৳20', '20 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 20 Diamonds<br><span class="text-sm">৳20</span>
-      </button>
-      <button onclick="orderNow('৳40', '44 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 44 Diamonds<br><span class="text-sm">৳40</span>
-      </button>
-      <button onclick="orderNow('৳85', '90 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 90 Diamonds<br><span class="text-sm">৳85</span>
-      </button>
-      <button onclick="orderNow('৳170', '180 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 180 Diamonds<br><span class="text-sm">৳170</span>
-      </button>
-      <button onclick="orderNow('৳250', '265 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 265 Diamonds<br><span class="text-sm">৳250</span>
-      </button>
-      <button onclick="orderNow('৳330', '355 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 355 Diamonds<br><span class="text-sm">৳330</span>
-      </button>
-      <button onclick="orderNow('৳430', '425 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 425 Diamonds<br><span class="text-sm">৳430</span>
-      </button>
-      <button onclick="orderNow('৳510', '530 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 530 Diamonds<br><span class="text-sm">৳510</span>
-      </button>
-      <button onclick="orderNow('৳850', '870 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 870 Diamonds<br><span class="text-sm">৳850</span>
-      </button>
-      <button onclick="orderNow('৳1700', '1780 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 1780 Diamonds<br><span class="text-sm">৳1700</span>
-      </button>
-      <button onclick="orderNow('৳4300', '4450 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
-        💎 4450 Diamonds<br><span class="text-sm">৳4300</span>
-      </button>
-    </div>
+    <!-- UID input -->
+    <label class="block mb-2 font-semibold">Enter UID:</label>
+    <input type="text" id="uid" placeholder="Enter your Free Fire UID" class="w-full px-4 py-2 border rounded mb-4"/>
+
+    <!-- Package select -->
+    <label class="block mb-2 font-semibold">Select Package:</label>
+    <select id="package" class="w-full px-4 py-2 border rounded mb-4">
+      <option value="100 Diamonds - 100৳">100 Diamonds - 100৳</option>
+      <option value="210 Diamonds - 200৳">210 Diamonds - 200৳</option>
+      <option value="530 Diamonds - 450৳">530 Diamonds - 450৳</option>
+      <option value="1080 Diamonds - 850৳">1080 Diamonds - 850৳</option>
+      <option value="Weekly Membership - 250৳">Weekly Membership - 250৳</option>
+      <option value="Monthly Membership - 750৳">Monthly Membership - 750৳</option>
+    </select>
+
+    <!-- Payment select -->
+    <label class="block mb-2 font-semibold">Select Payment Method:</label>
+    <select id="payment" class="w-full px-4 py-2 border rounded mb-4">
+      <option value="Nagad">Nagad</option>
+      <option value="Bkash">Bkash</option>
+      <option value="Rocket">Rocket</option>
+      <option value="Upay">Upay</option>
+    </select>
+
+    <!-- Buy Button -->
+    <button onclick="sendToWhatsApp()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now on WhatsApp</button>
   </div>
 
   <script>
-    function orderNow(price, packageName) {
-      const uid = document.getElementById("uid").value.trim();
-      const phone = "8801704481919"; // 🔁 এখানে তোর WhatsApp নম্বর বসা
+    function sendToWhatsApp() {
+      const uid = document.getElementById('uid').value.trim();
+      const package = document.getElementById('package').value;
+      const payment = document.getElementById('payment').value;
+      const phoneNumber = "8801704481919"; // 🟢 Replace with your WhatsApp number
 
       if (!uid) {
-        alert("Please enter your UID before selecting a package.");
+        alert("Please enter your UID.");
         return;
       }
 
-      const message = `🔥 Free Fire Top-Up Order\n\n📱 UID: ${uid}\n💎 Package: ${packageName} - ${price}\n\nPlease process my top-up.`;
-
-      // ✅ Use working WhatsApp link format
-      window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, "_blank");
+      const message = `Hello, I want to order:\nGame: Free Fire\nUID: ${uid}\nPackage: ${package}\nPayment: ${payment}`;
+      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
     }
   </script>
 
