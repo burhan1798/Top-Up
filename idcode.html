@@ -12,54 +12,68 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+<body class="bg-gray-100 min-h-screen py-10 px-4">
 
-  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-4">🔥 Free Fire Top-Up</h1>
+  <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-center mb-6">🔥 Free Fire Top-Up</h1>
 
     <!-- UID Input -->
     <label class="block mb-2 text-sm font-medium">Enter Free Fire UID</label>
-    <input type="text" id="uid" placeholder="e.g. 1234567890" class="w-full p-2 border rounded mb-4 focus:outline-none focus:ring focus:border-blue-300">
+    <input type="text" id="uid" placeholder="e.g. 1234567890"
+           class="w-full p-2 border rounded mb-6 focus:outline-none focus:ring focus:border-blue-300">
 
-    <!-- Package Select -->
-    <label class="block mb-2 text-sm font-medium">Select Package</label>
-    <select id="package" class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
-      <option disabled selected>Select a package</option>
-      <option value="৳20">💎 20 Diamonds - ৳20</option>
-      <option value="৳40">💎 44 Diamonds - ৳40</option>
-      <option value="৳85">💎 90 Diamonds - ৳85</option>
-      <option value="৳170">💎 180 Diamonds - ৳170</option>
-      <option value="৳250">💎 265 Diamonds - ৳250</option>
-      <option value="৳330">💎 355 Diamonds - ৳330</option>
-      <option value="৳430">💎 425 Diamonds - ৳430</option>
-      <option value="৳510">💎 530 Diamonds - ৳510</option>
-      <option value="৳850">💎 870 Diamonds - ৳850</option>
-      <option value="৳1700">💎 1780 Diamonds - ৳1700</option>
-      <option value="৳4300">💎 4450 Diamonds - ৳4300</option>
-    </select>
-
-    <!-- Order Button -->
-    <button onclick="sendOrder()" class="w-full bg-green-500 hover:bg-green-600 text-white mt-6 py-2 rounded shadow">
-      Buy Now via WhatsApp
-    </button>
+    <!-- Package Cards -->
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Each card calls orderNow('৳20', '20 Diamonds') -->
+      <button onclick="orderNow('৳20', '20 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 20 Diamonds<br><span class="text-sm">৳20</span>
+      </button>
+      <button onclick="orderNow('৳40', '44 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 44 Diamonds<br><span class="text-sm">৳40</span>
+      </button>
+      <button onclick="orderNow('৳85', '90 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 90 Diamonds<br><span class="text-sm">৳85</span>
+      </button>
+      <button onclick="orderNow('৳170', '180 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 180 Diamonds<br><span class="text-sm">৳170</span>
+      </button>
+      <button onclick="orderNow('৳250', '265 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 265 Diamonds<br><span class="text-sm">৳250</span>
+      </button>
+      <button onclick="orderNow('৳330', '355 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 355 Diamonds<br><span class="text-sm">৳330</span>
+      </button>
+      <button onclick="orderNow('৳430', '425 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 425 Diamonds<br><span class="text-sm">৳430</span>
+      </button>
+      <button onclick="orderNow('৳510', '530 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 530 Diamonds<br><span class="text-sm">৳510</span>
+      </button>
+      <button onclick="orderNow('৳850', '870 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 870 Diamonds<br><span class="text-sm">৳850</span>
+      </button>
+      <button onclick="orderNow('৳1700', '1780 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 1780 Diamonds<br><span class="text-sm">৳1700</span>
+      </button>
+      <button onclick="orderNow('৳4300', '4450 Diamonds')" class="bg-blue-100 hover:bg-blue-200 p-4 rounded text-center shadow">
+        💎 4450 Diamonds<br><span class="text-sm">৳4300</span>
+      </button>
+    </div>
   </div>
 
   <script>
-    function sendOrder() {
+    function orderNow(price, packageName) {
       const uid = document.getElementById("uid").value.trim();
-      const pkg = document.getElementById("package");
-      const selected = pkg.options[pkg.selectedIndex];
+      const phone = "8801704481919"; // 🔁 এখানে তোর WhatsApp নম্বর বসা
 
-      const phone = "8801704481919"; // ✅ এখানে তোর WhatsApp নাম্বার দে (88 ছাড়া দিলে কাজ করবেনা)
-
-      if (!uid || pkg.selectedIndex === 0) {
-        alert("Please enter UID and select a package.");
+      if (!uid) {
+        alert("Please enter your UID before selecting a package.");
         return;
       }
 
-      const message = `🔥 Free Fire Top-Up Order\n\n📱 UID: ${uid}\n💎 Package: ${selected.text}\n\nPlease process my top-up.`;
+      const message = `🔥 Free Fire Top-Up Order\n\n📱 UID: ${uid}\n💎 Package: ${packageName} - ${price}\n\nPlease process my top-up.`;
 
-      // ✅ Fixed WhatsApp Link (works everywhere)
+      // ✅ Use working WhatsApp link format
       window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`, "_blank");
     }
   </script>
