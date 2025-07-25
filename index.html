@@ -7,17 +7,17 @@
   </title>
   <script src="https://cdn.tailwindcss.com">
   <script>
-  const menuButton = document.getElementById("menuButton");
-  const menuDropdown = document.getElementById("menuDropdown");
+  const menuButton = document.getElementById('menuButton');
+  const menuDropdown = document.getElementById('menuDropdown');
 
-  menuButton.addEventListener("click", () => {
-    menuDropdown.classList.toggle("hidden");
+  menuButton.addEventListener('click', () => {
+    menuDropdown.classList.toggle('hidden');
   });
 
-  // Optional: Hide dropdown when clicking outside
-  window.addEventListener("click", function (e) {
+  // Optional: মেনুর বাহিরে ক্লিক করলে মেনু বন্ধ হবে
+  window.addEventListener('click', (e) => {
     if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
-      menuDropdown.classList.add("hidden");
+      menuDropdown.classList.add('hidden');
     }
   });
 </script>
