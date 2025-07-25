@@ -6,7 +6,21 @@
    Bulla Top Up
   </title>
   <script src="https://cdn.tailwindcss.com">
-  </script>
+  <script>
+  const menuButton = document.getElementById("menuButton");
+  const menuDropdown = document.getElementById("menuDropdown");
+
+  menuButton.addEventListener("click", () => {
+    menuDropdown.classList.toggle("hidden");
+  });
+
+  // Optional: Hide dropdown when clicking outside
+  window.addEventListener("click", function (e) {
+    if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
+      menuDropdown.classList.add("hidden");
+    }
+  });
+</script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <style>
    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
