@@ -6,21 +6,7 @@
    Bulla Top Up
   </title>
   <script src="https://cdn.tailwindcss.com">
-  <script>
-  const menuButton = document.getElementById('menuButton');
-  const menuDropdown = document.getElementById('menuDropdown');
-
-  menuButton.addEventListener('click', () => {
-    menuDropdown.classList.toggle('hidden');
-  });
-
-  // Optional: মেনুর বাহিরে ক্লিক করলে মেনু বন্ধ হবে
-  window.addEventListener('click', (e) => {
-    if (!menuButton.contains(e.target) && !menuDropdown.contains(e.target)) {
-      menuDropdown.classList.add('hidden');
-    }
-  });
-</script>
+  <script>  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <style>
    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
@@ -42,31 +28,7 @@
     />
     <span class="text-2xl font-extrabold">Bulla Top Up</span>
   </div>
-
-  <!-- Dropdown Menu -->
-  <div class="relative">
-    <button id="menuButton" class="text-3xl px-2 py-1">&#x22EE;</button>
-    <div
-      id="menuDropdown"
-      class="hidden absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10"
-    >
-      <a
-        href="#order-history"
-        class="block px-4 py-2 hover:bg-gray-100 text-black"
-        >🧾 Order History</a
-      >
-      <a
-        href="#about"
-        class="block px-4 py-2 hover:bg-gray-100 text-black"
-        >ℹ️ About</a
-      >
-      <a
-        href="#help"
-        class="block px-4 py-2 hover:bg-gray-100 text-black"
-        >❓ Help</a
-      >
-    </div>
-  </div>
+       <a href="menu.html" class="text-3xl px-2 py-1">&#x22EE;</a>
 </header>
   <!-- Title -->
   <section class="text-center mt-6 mb-8 px-4">
@@ -76,21 +38,7 @@
      Top-Up
     </span>
    </h2>
-  </section>
-  <section id="order-history" class="p-6">
-  <h2 class="text-xl font-bold mb-2">🧾 Order History</h2>
-  <p>আপনার পূর্বের অর্ডারগুলো এখানে দেখা যাবে।</p>
-</section>
-
-<section id="about" class="p-6 bg-gray-50">
-  <h2 class="text-xl font-bold mb-2">ℹ️ About</h2>
-  <p>BULLA Top Up একটি নির্ভরযোগ্য গেম টপআপ প্ল্যাটফর্ম।</p>
-</section>
-
-<section id="help" class="p-6">
-  <h2 class="text-xl font-bold mb-2">❓ Help</h2>
-  <p>UID দিন, প্যাকেজ সিলেক্ট করুন, পেমেন্ট করে WhatsApp-এ মেসেজ দিন।</p>
-</section>
+  </section>  
   <!-- Game Cards Grid -->
   <section class="grid grid-cols-2 gap-6 px-4 max-w-4xl mx-auto mb-12">
    <!-- Card 1 (Clickable Full Box) -->
