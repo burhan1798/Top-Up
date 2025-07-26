@@ -1,61 +1,52 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Profile Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-  />
 </head>
-<body class="bg-white min-h-screen flex flex-col items-center p-6">
-  <div class="w-full max-w-md">
-    <div class="flex items-center space-x-4 mb-8">
-      <div
-        class="flex items-center justify-center w-14 h-14 rounded-full bg-gray-200 text-black text-2xl font-semibold"
-        aria-label="Profile initial B"
-      >
-        B
-      </div>
-      <div>
-        <p class="text-lg font-normal text-gray-900 leading-tight">MENU</p>
-        <p class="text-sm text-gray-500 leading-tight">bulla top up center</p>
-      </div>
-    </div>
+<body class="bg-white text-black p-4">
 
-    <nav class="space-y-6">
-      <a
-        href="#"
-        class="flex items-center space-x-3 text-gray-600 text-base font-normal"
-      >
-        <i class="fas fa-shopping-cart text-lg"></i>
-        <span>My Orders</span>
-      </a>
-      <a
-        href="#"
-        class="flex items-center space-x-3 text-gray-600 text-base font-normal"
-      >
-        <i class="far fa-wallet text-lg"></i>
-        <span>About</span>
-      </a>
-      <a
-        href="#"
-        class="flex items-center space-x-3 text-gray-600 text-base font-normal"
-      >
-        <i class="fas fa-exchange-alt text-lg"></i>
-        <span>Help</span>
-      </a>
-    </nav>
-
-    <button
-      type="button"
-      class="mt-12 w-full py-3 rounded-full text-white text-base font-normal flex items-center justify-center space-x-2"
-      style="background: linear-gradient(to right, #e72e55, #f07a9a)"
-    >
-      <i class="fas fa-headset"></i>
-      <span>Support</span>
-    </button>
+  <!-- Menu Links -->
+  <div class="space-y-2">
+    <button onclick="showSection('orders')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded">🧾 Orders History</button>
+    <button onclick="showSection('about')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded">ℹ️ About</button>
+    <button onclick="showSection('help')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded">❓ Help</button>
   </div>
+
+  <!-- Sections -->
+  <div id="my orders" class="mt-6 hidden">
+    <h2 class="text-xl font-bold mb-2">🧾 My Orders</h2>
+    <p>You have no orders yet.</p>
+  </div>
+
+  <div id="about" class="mt-6 hidden">
+    <h2 class="text-xl font-bold mb-2">ℹ️ About</h2>
+    <p>This is a top-up service website powered by BULLA.</p>
+  </div>
+
+  <div id="help" class="mt-6 hidden">
+    <h2 class="text-xl font-bold mb-2">❓ Help</h2>
+    <p>If you need help, please contact support below.</p>
+  </div>
+
+  <!-- Support -->
+  <div class="mt-10 border-t pt-4">
+    <h3 class="text-lg font-semibold mb-1">🛟 Support</h3>
+    <p>WhatsApp: 01704481919</p>
+    <p>Email: bullatopup@bulla.com</p>
+  </div>
+
+  <!-- JavaScript to toggle sections -->
+  <script>
+    function showSection(id) {
+      const sections = ['orders', 'about', 'help'];
+      sections.forEach(sec => {
+        document.getElementById(sec).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+  </script>
 </body>
-  </html>
+</html>
