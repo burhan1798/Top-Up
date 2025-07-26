@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Menu</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white text-black p-4">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-  <!-- Menu Links -->
-  <div class="space-y-2">
-    <button onclick="showSection('orders')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded">🧾 Orders History</button>
-    <button onclick="showSection('about')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded">ℹ️ About</button>
-    <button onclick="showSection('help')" class="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded">❓ Help</button>
-  </div>
+  <header class="p-4 bg-white shadow flex justify-center">
+    <h1 class="text-lg font-semibold">Menu</h1>
+  </header>
 
-  <!-- Sections -->
-  <div id="my orders" class="mt-6 hidden">
-    <h2 class="text-xl font-bold mb-2">🧾 My Orders</h2>
-    <p>You have no orders yet.</p>
-  </div>
+  <nav class="mt-6 px-4 space-y-3">
+    <button onclick="showSection('orders')" class="w-full text-left px-4 py-3 bg-white rounded-lg shadow hover:bg-gray-100">🧾 Orders History</button>
+    <button onclick="showSection('about')" class="w-full text-left px-4 py-3 bg-white rounded-lg shadow hover:bg-gray-100">ℹ️ About</button>
+    <button onclick="showSection('help')" class="w-full text-left px-4 py-3 bg-white rounded-lg shadow hover:bg-gray-100">❓ Help</button>
+  </nav>
 
-  <div id="about" class="mt-6 hidden">
-    <h2 class="text-xl font-bold mb-2">ℹ️ About</h2>
-    <p>This is a top-up service website powered by BULLA.</p>
-  </div>
+  <main class="flex-1 px-4 mt-6">
+    <section id="orders" class="hidden p-4 bg-white rounded-lg shadow mb-4">
+      <h2 class="text-xl font-bold mb-2">🧾 My Orders</h2>
+      <p>You have no orders yet.</p>
+    </section>
 
-  <div id="help" class="mt-6 hidden">
-    <h2 class="text-xl font-bold mb-2">❓ Help</h2>
-    <p>If you need help, please contact support below.</p>
-  </div>
+    <section id="about" class="hidden p-4 bg-white rounded-lg shadow mb-4">
+      <h2 class="text-xl font-bold mb-2">ℹ️ About</h2>
+      <p>This is a top-up service website powered by BULLA.</p>
+    </section>
 
-  <!-- Support -->
-  <div class="mt-10 border-t pt-4">
-    <h3 class="text-lg font-semibold mb-1">🛟 Support</h3>
-    <p>WhatsApp: 01704481919</p>
-    <p>Email: bullatopup@bulla.com</p>
-  </div>
+    <section id="help" class="hidden p-4 bg-white rounded-lg shadow mb-4">
+      <h2 class="text-xl font-bold mb-2">❓ Help</h2>
+      <p>If you need help, contact support below.</p>
+    </section>
 
-  <!-- JavaScript to toggle sections -->
+    <footer class="mt-auto border-t pt-4 pb-6 text-center">
+      <h3 class="text-lg font-semibold mb-2">🛟 Support</h3>
+      <p>WhatsApp: 01704481919</p>
+      <p>Email: support@bulla.com</p>
+    </footer>
+  </main>
+
   <script>
     function showSection(id) {
-      const sections = ['orders', 'about', 'help'];
-      sections.forEach(sec => {
-        document.getElementById(sec).classList.add('hidden');
+      ['orders','about','help'].forEach(s => {
+        document.getElementById(s).classList.add('hidden');
       });
       document.getElementById(id).classList.remove('hidden');
     }
   </script>
+
 </body>
-</html>
+        </html>
