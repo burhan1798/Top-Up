@@ -112,27 +112,22 @@
   </div>
 </a>
   </section>
-  <!-- Footer -->
-  <footer class="bg-white text-center p-4 mt-10 shadow-inner">
-  <p class="text-gray-600">Need help?</p>
-  <a href="https://t.me/your_telegram_username" target="_blank" title="Get Support on Telegram">
-    <img 
-      src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" 
-      alt="Telegram Support Logo" 
-      class="mx-auto w-12 h-12 hover:scale-110 transition-transform"
-    />
-  </a>
-</footer>
-  <footer class="bg-white text-center p-4 mt-10 shadow-inner">
-  <p class="text-gray-600">Need help?</p>
-  <a href="t.me/burhan2244" target="_blank" title="Get Support on Telegram">
-    <img 
-      src="https://i.ibb.co/v6N4LC1j/download.png" 
-      alt="Telegram Support Logo" 
-      class="mx-auto w-12 h-12 hover:scale-110 transition-transform"
-    />
-  </a>
-  </footer>
+  <!-- Floating Chat Button -->
+<div id="chatBtn"
+     class="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg cursor-pointer z-50">
+  💬 Live Support
+</div>
+
+<!-- Chat Window -->
+<div id="chatBox"
+     class="hidden fixed bottom-20 right-4 bg-white shadow-xl rounded-lg w-80 max-h-[70vh] p-2 z-50 overflow-y-auto">
+  <div class="text-center font-bold text-lg border-b pb-2">🤖 Bulla Support</div>
+  <div id="chat" class="h-60 overflow-y-auto mt-2 space-y-2 text-sm"></div>
+  <div class="flex mt-2">
+    <input id="input" type="text" placeholder="Type here..." class="flex-1 border p-1 rounded-l text-sm" />
+    <button onclick="sendMessage()" class="bg-blue-500 text-white px-3 rounded-r text-sm">Send</button>
+  </div>
+     </div>  
    <!-- About -->
    <div class="max-w-xs mx-auto mb-10">
     <h3 class="tracking-widest text-sm mb-6">
@@ -209,7 +204,7 @@
     <br/>
     Developed by
     <span class="font-semibold">
-     Made by Burhan
+      Burhan
     </span>
    </p>
   </footer>
