@@ -3,27 +3,37 @@
 <head>
   <title>Login</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; }
-    input, button { padding: 10px; margin: 10px; width: 80%; max-width: 300px; }
+    body { background: #222; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
+    .form-box {
+      background: #333; padding: 30px; border-radius: 10px; display: inline-block;
+    }
+    input, button {
+      display: block; margin: 15px auto; padding: 10px; width: 90%; max-width: 250px;
+      border: none; border-radius: 5px;
+    }
+    button { background: #00ff99; color: black; cursor: pointer; }
+    a { color: #0cf; text-decoration: none; }
   </style>
 </head>
 <body>
-  <h2>Login</h2>
-  <input type="text" id="username" placeholder="Username"><br>
-  <input type="password" id="password" placeholder="Password"><br>
-  <button onclick="login()">Login</button>
+  <div class="form-box">
+    <h2>🔐 Login to Continue</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p>Don't have an account? <a href="signup.html">Create one</a></p>
+  </div>
 
   <script>
     function login() {
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const saved = JSON.parse(localStorage.getItem("user"));
 
-      if (storedUser && username === storedUser.username && password === storedUser.password) {
-        // After successful login
-window.location.href = "index.html"; // index.html e niye jabe
+      if (saved && username === saved.username && password === saved.password) {
+        window.location.href = "index.html";
       } else {
-        alert("Invalid username or password!");
+        alert("❌ Invalid credentials");
       }
     }
   </script>
