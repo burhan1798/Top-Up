@@ -3,109 +3,108 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  background-color: #f0f0f0;
-}
-
-.sidebar {
-  width: 320px;
-  background-color: #fff;
-  border-right: 1px solid #ddd;
-  height: 100vh;
-  padding: 20px;
-  position: fixed;
-  overflow-y: auto;
-}
-
-.user-info {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.user-info h2 {
-  margin: 10px 0 5px;
-  font-size: 22px;
-}
-
-.user-info p {
-  font-size: 16px;
-  color: #555;
-}
-
-.logout-btn {
-  background-color: #f44336;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.menu a {
-  display: block;
-  padding: 15px 20px;
-  margin: 10px 0;
-  font-size: 18px;
-  color: #333;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.3s;
 <style>
   body {
     margin: 0;
-    font-family: sans-serif;
-    background: #f2f2f2;
-  }
-
-  .container {
+    font-family: 'Segoe UI', sans-serif;
     display: flex;
     height: 100vh;
+    background: #f4f4f4;
   }
 
   .sidebar {
     width: 250px;
-    background: #fff;
-    padding-top: 20px;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    background: #1e1e2f;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.6s ease-in-out;
+    box-shadow: 3px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  #user-section {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  #user-section img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    animation: glitch 2s infinite;
+  }
+
+  #user-section h2 {
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: 600;
   }
 
   .menu a {
     display: block;
-    padding: 15px 20px;
-    color: #333;
+    padding: 12px 20px;
+    color: #ccc;
     text-decoration: none;
-    font-size: 18px;
+    border-radius: 6px;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
 
   .menu a:hover,
   .menu a.active {
-    background: #e0e0e0;
-    font-weight: bold;
+    background: #27293d;
+    color: #00ffcc;
+    font-weight: 500;
+    transform: translateX(5px);
   }
 
   .main {
-    flex: 1;
+    flex-grow: 1;
     padding: 30px;
     overflow-y: auto;
+    background: #fff;
+    animation: fadeIn 0.4s ease-in-out;
   }
 
-  #user-section img {
-    display: block;
-    margin: 0 auto;
+  @keyframes slideIn {
+    0% { transform: translateX(-100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
   }
 
-  #user-section h2 {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 18px;
-    font-weight: 600;
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(1px, -1px); }
+    60% { transform: translate(-1px, 1px); }
+    80% { transform: translate(1px, 1px); }
+    100% { transform: translate(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+    }
+
+    .menu a {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .main {
+      padding: 15px;
+    }
   }
 </style>
 <body>
@@ -113,8 +112,8 @@
     <div class="sidebar">
       <!-- Sidebar content: Logo & Menu -->
       <div id="user-section" onclick="goBack()" style="cursor: pointer; text-align: center; padding: 20px;">
-        <img src="https://i.ibb.co/8nN2q3Q/avatar.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%;">
-        <h2 style="margin: 10px 0 0; font-size: 20px;">Bulla Top Up</h2>
+        <img src="https://i.ibb.co/8nN2q3QJ/a-logo-design-featuring-the-text-bulla-t-p-P1-TYKPSFu-YQL11cjcsf-Q-5-TQg-LQiu-Tg6q-TJl9y-Vs6qg-remov.png"" alt="Logo" style="width: 80px; height: 60px; border-square: 50%;">
+        <h2 style="margin: 10px 0 0; font-size: 20px;">💀Option💀</h2>
       </div>
 
       <div class="menu">
