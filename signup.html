@@ -1,27 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up</title>
+  <meta charset="UTF-8">
+  <title>Sign Up | Bulla Top Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { background: #111; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
-    .form-box {
-      background: #222; padding: 30px; border-radius: 10px; display: inline-block;
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
     }
-    input, button {
-      display: block; margin: 15px auto; padding: 10px; width: 90%; max-width: 250px;
-      border: none; border-radius: 5px;
+
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
-    button { background: #00aaff; color: white; cursor: pointer; }
-    a { color: #0cf; text-decoration: none; }
+
+    .signup-box {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      width: 90%;
+      max-width: 400px;
+      animation: fadeInSlide 1.3s ease forwards;
+      opacity: 0;
+      transform: translateY(50px);
+    }
+
+    @keyframes fadeInSlide {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background: #00ffd5;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00bfa6;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 15px;
+      color: #ccc;
+    }
+
+    a {
+      color: #00ffd5;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
 <body>
-  <div class="form-box">
-    <h2>📝 Create Account</h2>
+  <div class="signup-box">
+    <h2>📝 Create Your Account</h2>
     <input type="text" id="newUsername" placeholder="Choose Username">
     <input type="password" id="newPassword" placeholder="Choose Password">
     <button onclick="signup()">Sign Up</button>
-    <p>Already have an account? <a href="login.html">Login here</a></p>
+    <p>Already have an account? <a href="login.html">Login</a></p>
   </div>
 
   <script>
