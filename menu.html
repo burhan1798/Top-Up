@@ -108,16 +108,10 @@
 </head>
 <body>
   <div class="sidebar">
-    <div class="user-info">
-  <h2 id="user-name">Guest</h2>
-<p id="user-email">Not logged in</p>
-  <button onclick="logout()">Logout</button>
-<script>
-  function logout() {
-    localStorage.removeItem("currentUser");
-    window.location.href = "login.html";
-  }
-</script>
+    <!-- Sidebar top section -->
+<div id="user-section" onclick="goBack()" style="cursor: pointer; text-align: center; padding: 20px;">
+  <img src="https://i.ibb.co/8nN2q3QJ/a-logo-design-featuring-the-text-bulla-t-p-P1-TYKPSFu-YQL11cjcsf-Q-5-TQg-LQiu-Tg6q-TJl9y-Vs6qg-remov.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+  </div>
     </div>
     <div class="menu">
       <a href="profile.html" onclick="loadSection('profile', this)" class="active">My Profile</a>
