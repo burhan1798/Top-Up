@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #c3e0f7, #f2f6ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      animation: slideIn 0.7s ease forwards;
+      opacity: 0;
+    }
+
+    h2 {
+      color: #6b46c1;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    p {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      transition: 0.3s;
+      font-size: 16px;
+    }
+
+    input:focus {
+      border-color: #a78bfa;
+      outline: none;
+      box-shadow: 0 0 8px rgba(167, 139, 250, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #a78bfa, #7c3aed);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+    }
+
+    .text-link {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .text-link a {
+      color: #7c3aed;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+    }
+
+    .fade-in {
+      opacity: 0;
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    .delay-1 { animation-delay: 0.2s; }
+    .delay-2 { animation-delay: 0.4s; }
+    .delay-3 { animation-delay: 0.6s; }
+    .delay-4 { animation-delay: 0.8s; }
+    .delay-5 { animation-delay: 1s; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2 class="fade-in">Create Your Account</h2>
+    <p class="fade-in delay-1">Please fill in the form to continue</p>
+    
+    <input type="text" placeholder="Username" class="fade-in delay-2" required />
+    <input type="tel" placeholder="Phone" class="fade-in delay-3" required />
+    <input type="password" placeholder="Password" class="fade-in delay-3" required />
+    
+    <button class="fade-in delay-4" onclick="redirectPage()">Create Account</button>
+    
+    <div class="text-link fade-in delay-5">
+      <p>Already have an account? <a href="index.html">Login</a></p>
+    </div>
+  </div>
+
+  <script>
+    function redirectPage() {
+      // একাউন্ট সফলভাবে তৈরি হলে যেখানে পাঠাতে চাও সেই পেজ
+      window.location.href = "main.html";
+    }
+  </script>
+</body>
+</html>
