@@ -151,12 +151,11 @@ function loginUser() {
 
   if (matchedUser) {
     localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-    window.location.href = "main.html"; // your dashboard page
+    window.location.href = "main.html"; // ✅ your dashboard
   } else {
     alert("Username or Password incorrect!");
   }
-}
-</script>
+    }
 </script>
   </div>
   </html>
