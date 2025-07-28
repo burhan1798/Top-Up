@@ -130,29 +130,32 @@
     <h2 class="fade-in">Welcome Back</h2>
 <p class="fade-in delay-1">Sign in to access your dashboard</p>
 <!-- login.html -->
-<input id="username" type="text" placeholder="Username" />
-<input id="password" type="password" placeholder="Password" />
+<input id="username" type="text" placeholder="Enter username">
+<input id="password" type="password" placeholder="Enter password">
 <button onclick="loginUser()">Login</button>
     <div class="text-link fade-in delay-5">
-      <p>Forgotten Password<a href="create.html">Creat a new account</a></p>
+      <p>Forgotten Password <a href="create.html">Creat a new account</a></p>
     </div>
   </div>
 
-<script>
-  function loginUser() {
-    const inputUsername = document.getElementById("username").value.trim();
-    const inputPassword = document.getElementById("password").value.trim();
+  <script>
+function loginUser() {
+  const inputUsername = document.getElementById("username").value.trim();
+  const inputPassword = document.getElementById("password").value.trim();
 
-    const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
+  const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
 
-    const matchedUser = allUsers.find(user =>
-      user.username === inputUsername && user.password === inputPassword
-    );
+  const matchedUser = allUsers.find(user =>
+    user.username === inputUsername && user.password === inputPassword
+  );
 
-    if (matchedUser) {
-      localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-      window.location.href = "main.html"; // or your dashboard file
-    } 
+  if (matchedUser) {
+    localStorage.setItem("currentUser", JSON.stringify(matchedUser));
+    window.location.href = "main.html"; // your dashboard page
+  } else {
+    alert("Username or Password incorrect!");
+  }
+}
 </script>
 </script>
   </div>
