@@ -1,25 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sidebar Demo</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  background-color: #f0f0f0;
+}
+
+.sidebar {
+  width: 320px;
+  background-color: #fff;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+  overflow-y: auto;
+}
+
+.user-info {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.user-info h2 {
+  margin: 10px 0 5px;
+  font-size: 22px;
+}
+
+.user-info p {
+  font-size: 16px;
+  color: #555;
+}
+
+.logout-btn {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.menu a {
+  display: block;
+  padding: 15px 20px;
+  margin: 10px 0;
+  font-size: 18px;
+  color: #333;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.menu a:hover, .menu a.active {
+  background-color: #f0f0f0;
+}
+
+.main {
+  margin-left: 320px;
+  padding: 40px;
+  flex-grow: 1;
+  transition: all 0.3s ease-in-out;
+}
+
+.main h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.order-card {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.order-card span {
+  display: inline-block;
+  background: #d4edda;
+  color: #155724;
+  padding: 3px 10px;
+  border-radius: 15px;
+  font-size: 14px;
+  float: right;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .main {
+    margin-left: 0;
+  }
+}
+
+  </style>
 </head>
 <body>
   <div class="sidebar">
-    <h2>👉 OPTION MENU 👈</h2>
-    <div class="nav-links">
-      <a href="#" onclick="showContent('profile')">👤 My Profile</a>
-      <a href="#" onclick="showContent('order')">📦 Order History</a>
-      <a href="#" onclick="showContent('about')">ℹ️ About</a>
-      <a href="#" onclick="showContent('help')">❓ Help</a>
+    <div class="user-info">
+  <h2 id="user-name">Loading...</h2>
+  <p id="user-email">Loading...</p>
+  <button class="logout-btn">Logout</button>
     </div>
-  </div>
+    <div class="menu">
+      <a href="#" onclick="loadSection('profile', this)" class="active">My Profile</a>
+      <a href="#" onclick="loadSection('orders', this)">My Orders</a>
+      <a href="#" onclick="loadSection('about', this)">About</a>
+      <a href="#" onclick="loadSection('help', this)">Help</a>
+    </div>
+  </div>  <div class="main" id="main">
+    <!-- Dynamic content will load here -->
+  </div>  <script>
+    function loadSection(section, el) {
+      document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+      const main = document.getElementById('main');
+      if (section === 'profile') {
+        main.innerHTML = `
+          <h1>My Profile</h1>
+          <p><strong>User ID:</strong> 60147</p>
+          <p><strong>Email:</strong> mdb556122@gmail.com</p>
+          <p><strong>Phone:</strong> 01704481919</p>
+        `;
+      } else if (section === 'orders') {
+        main.innerHTML = `
+          <h1>My Orders</h1>
+          <div class="order-card">
+            <strong>Order ID:</strong> 592235<br>
+            Date: 2025-07-09 09:33 PM<br>
+            Total Price: 234<br>
+            Package: 355 Diamond<br>
+            Player ID: 7732079909 <span>Completed</span>
+          </div>
+          <div class="order-card">
+            <strong>Order ID:</strong> 568493<br>
+            Date: 2025-06-24 06:33 PM<br>
+            Total Price: 78<br>
+            Package: 115 Diamond<br>
+            Player ID: 7732079909 <span>Completed</span>
+          </div>
+        `;
+      } else if (section === 'about') {
+        main.innerHTML = `
+          <h1>About</h1>
+          <p>This is a custom dashboard layout inspired by Rangvo.com. It is made using pure HTML, CSS, and JavaScript.</p>
+        `;
+      } else if (section === 'help') {
+        main.innerHTML = `
+          <h1>Help</h1>
+          <p>If you need any help, contact us at: support@example.com</p>
+        `;
+      }
+    }
 
-  <div class="main-content" id="main-content">
-    <!-- Content will load here -->
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+    // Load default section
+    loadSection('profile', document.querySelector('.menu a'));
+    <script>
+  // Load user info from localStorage
+  document.getElementById("user-name").innerText = localStorage.getItem("username") || "Guest";
+  document.getElementById("user-email").innerText = localStorage.getItem("email") || "Not logged in";
+</script>  
+  </script></body>
+  </html>
