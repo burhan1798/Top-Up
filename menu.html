@@ -57,71 +57,84 @@
   text-decoration: none;
   border-radius: 8px;
   transition: background 0.3s;
-}
+<style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #f2f2f2;
+  }
 
-.menu a:hover, .menu a.active {
-  background-color: #f0f0f0;
-}
+  .container {
+    display: flex;
+    height: 100vh;
+  }
 
-.main {
-  margin-left: 320px;
-  padding: 40px;
-  flex-grow: 1;
-  transition: all 0.3s ease-in-out;
-}
-
-.main h1 {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-.order-card {
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-}
-
-.order-card span {
-  display: inline-block;
-  background: #d4edda;
-  color: #155724;
-  padding: 3px 10px;
-  border-radius: 15px;
-  font-size: 14px;
-  float: right;
-}
-
-@media (max-width: 768px) {
   .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
+    width: 250px;
+    background: #fff;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   }
-  .main {
-    margin-left: 0;
-  }
-}
 
-  </style>
-</head>
+  .menu a {
+    display: block;
+    padding: 15px 20px;
+    color: #333;
+    text-decoration: none;
+    font-size: 18px;
+  }
+
+  .menu a:hover,
+  .menu a.active {
+    background: #e0e0e0;
+    font-weight: bold;
+  }
+
+  .main {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  #user-section img {
+    display: block;
+    margin: 0 auto;
+  }
+
+  #user-section h2 {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+</style>
 <body>
-  <div class="sidebar">
-    <!-- Sidebar top section -->
-<div id="user-section" onclick="goBack()" style="cursor: pointer; text-align: center; padding: 20px;">
-  <img src="https://i.ibb.co/8nN2q3QJ/a-logo-design-featuring-the-text-bulla-t-p-P1-TYKPSFu-YQL11cjcsf-Q-5-TQg-LQiu-Tg6q-TJl9y-Vs6qg-remov.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+  <div class="container">
+    <div class="sidebar">
+      <!-- Sidebar content: Logo & Menu -->
+      <div id="user-section" onclick="goBack()" style="cursor: pointer; text-align: center; padding: 20px;">
+        <img src="https://i.ibb.co/8nN2q3Q/avatar.png" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%;">
+        <h2 style="margin: 10px 0 0; font-size: 20px;">Bulla Top Up</h2>
+      </div>
+
+      <div class="menu">
+        <a href="profile.html" onclick="loadSection('profile', this)">My Profile</a>
+        <a href="#" onclick="loadSection('orders', this)">My Orders</a>
+        <a href="#" onclick="loadSection('about', this)">About</a>
+        <a href="#" onclick="loadSection('help', this)">Help</a>
+      </div>
+    </div>
+
+    <div class="main" id="main">
+      <!-- Dynamic content loads here -->
+    </div>
   </div>
-    </div>
-    <div class="menu">
-      <a href="profile.html" onclick="loadSection('profile', this)" class="active">My Profile</a>
-      <a href="#" onclick="loadSection('orders', this)">My Orders</a>
-      <a href="#" onclick="loadSection('about', this)">About</a>
-      <a href="#" onclick="loadSection('help', this)">Help</a>
-    </div>
-  </div>  <div class="main" id="main">
-    <!-- Dynamic content will load here -->
-  </div>  
+</body> 
+  <script>
+  function goBack() {
+    window.history.back();
+  }
+  </script>
   <script>
   function loadSection(section, el) {
     document.querySelectorAll('.menu a').forEach(el => el.classList.remove('active'));
