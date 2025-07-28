@@ -132,7 +132,7 @@
     <input id="username" type="text" placeholder="Username">
 <input id="phone" type="tel" placeholder="Phone">
 <input id="email" type="text" placeholder="Email">
-<input type="password" placeholder="Password">
+<input id="password" type="password" placeholder="Password">
     <button onclick="saveAndRedirect()">Create Account</button>    
     
     <div class="text-link fade-in delay-5">
@@ -142,16 +142,42 @@
 
   <script>
   function saveAndRedirect() {
-  const username = document.querySelector('#username').value;
-  const email = document.querySelector('#email').value;
-  const phone = document.querySelector('#phone').value;
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const password = document.getElementById("password").value;
 
-  localStorage.setItem("username", username);
-  localStorage.setItem("email", email);
-  localStorage.setItem("phone", phone);
-
-  window.location.href = "main.html"; // or menu.html
+    if (!username || !email || !phone || !password) {
+      alert("Please fill out all fields!");
+      return;
     }
+
+    // Generate a unique user ID
+    let userId = localStorage.getItem("lastUserId");
+    userId = userId ? parseInt(userId) + 1 : 60000;
+    localStorage.setItem("lastUserId", userId);
+
+    const userData = {
+      id: userId,
+      username,
+      email,
+      phone,
+      password,
+      profileImage: ""
+    };
+
+    // Save current user
+    localStorage.setItem("currentUser", JSON.stringify(userData));
+
+    // Save to user list
+    const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
+    allUsers.push(userData);
+    localStorage.setItem("allUsers", JSON.stringify(allUsers));
+
+    // Redirect to profile page
+    window.location.href = "main.html";
+  }
+  </script>
   </script>
 </body>
 </html>
