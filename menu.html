@@ -156,9 +156,12 @@ main.innerHTML = `
     }
   }
   </script>
-  // Load user info from localStorage
-  document.getElementById("user-name").innerText = localStorage.getItem("username") || "Guest";
-  document.getElementById("user-email").innerText = localStorage.getItem("email") || "Not logged in";
+  <script>
+  window.onload = () => {
+    document.getElementById("user-name").innerText = localStorage.getItem("username") || "Guest";
+    document.getElementById("user-email").innerText = localStorage.getItem("email") || "Not logged in";
+  };
+  </script>
 </script>  
   </script></body>
   </html>
