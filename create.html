@@ -142,14 +142,16 @@
 
   <script>
   function saveAndRedirect() {
-    const username = document.querySelector('input[placeholder="Username"]').value;
-    const email = document.querySelector('input[placeholder="Phone"]').value;
+  const username = document.querySelector('input[type="text"]').value;
+  const email = document.querySelector('input[type="email"]').value;
+  const phone = document.querySelector('input[type="tel"]').value;
 
-    localStorage.setItem("username", username);
-    localStorage.setItem("email", email);
+  localStorage.setItem("username", username);
+  localStorage.setItem("email", email);
+  localStorage.setItem("phone", phone);
 
-    window.location.href = "index.html"; // main.html er poriborte jodi menu.html hoy
-  }
+  window.location.href = "index.html";
+    }
   </script>
 </body>
 </html>
