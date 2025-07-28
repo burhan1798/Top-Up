@@ -118,92 +118,35 @@
   </div>
 </a>
   </section>
-  <!-- 💬 Live Support Button -->
-<div id="chatBtn"
-     style="position: fixed; bottom: 20px; right: 20px; background-color: #2563eb; color: white; padding: 10px 16px; border-radius: 9999px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 9999;">
-  💬 Live Support
+<!-- Add this to bottom of your index.html before </body> -->
+<div id="bulla-chatbox" style="position:fixed;bottom:20px;right:20px;width:320px;max-width:90%;background:#fff;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,0.2);padding:15px;z-index:9999;">
+  <h4 style="margin:0 0 10px;font-weight:bold;">🤖 Bulla Support</h4>
+  <div id="chat-response" style="min-height:60px;padding:8px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;background:#f9f9f9;"></div>
+  <input id="chat-input" type="text" placeholder="Type your message..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
+  <button onclick="sendToBackend()" style="margin-top:10px;width:100%;padding:10px;background:#2e7dff;color:white;border:none;border-radius:8px;font-weight:bold;">Send</button>
 </div>
 
-<!-- 🤖 Chat Window -->
-<div id="chatBox"
-     style="display: none; position: fixed; bottom: 80px; right: 20px; width: 320px; max-height: 70vh; background: white; box-shadow: 0 8px 24px rgba(0,0,0,0.2); border-radius: 8px; display: flex; flex-direction: column; z-index: 9999;">
-  <div style="font-weight: bold; padding: 10px; border-bottom: 1px solid #ddd; text-align: center;">🤖 Bulla Support</div>
-  <div id="chatMessages" style="flex-grow: 1; overflow-y: auto; padding: 10px; font-size: 14px;"></div>
-  <div style="display: flex; border-top: 1px solid #ddd; padding: 10px;">
-    <input id="chatInput" type="text" placeholder="Type your message..." style="flex-grow: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; outline: none;" />
-    <button id="sendBtn" style="margin-left: 8px; padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold;">Send</button>
-  </div>
- </div>
-  <script>
-  const chatBtn = document.getElementById('chatBtn');
-  const chatBox = document.getElementById('chatBox');
-  const chatMessages = document.getElementById('chatMessages');
-  const chatInput = document.getElementById('chatInput');
-  const sendBtn = document.getElementById('sendBtn');
-
-  const backendURL = "https://bulla-support-backend.onrender.com/chat"; // 🔁 এখানে তোমার Backend API URL বসাও
-
-  chatBtn.addEventListener('click', () => {
-    chatBox.style.display = chatBox.style.display === 'none' ? 'flex' : 'none';
-    chatInput.focus();
-  });
-
-  sendBtn.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keypress', e => {
-    if (e.key === 'Enter') sendMessage();
-  });
-
-  function appendMessage(text, sender, isTyping = false) {
-    const div = document.createElement('div');
-    div.className = 'message ' + sender;
-    div.style.marginBottom = '10px';
-    div.style.padding = '8px 12px';
-    div.style.borderRadius = '16px';
-    div.style.maxWidth = '80%';
-    div.style.wordWrap = 'break-word';
-    div.style.alignSelf = sender === 'user' ? 'flex-end' : 'flex-start';
-    div.style.backgroundColor = sender === 'user' ? '#2563eb' : '#f3f4f6';
-    div.style.color = sender === 'user' ? '#fff' : '#111';
-    if (isTyping) div.id = 'typingMessage';
-    div.textContent = text;
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function removeTypingMessage() {
-    const typingMessage = document.getElementById('typingMessage');
-    if (typingMessage) typingMessage.remove();
-  }
-
-  async function sendMessage() {
-    const userMessage = chatInput.value.trim();
-    if (!userMessage) return;
-
-    appendMessage(userMessage, 'user');
-    chatInput.value = '';
-    appendMessage('⏳ Thinking...', 'bot', true);
+<script>
+  async function sendToBackend() {
+    const msg = document.getElementById("chat-input").value;
+    const resBox = document.getElementById("chat-response");
+    resBox.textContent = "⏳ Thinking...";
 
     try {
-      const response = await fetch(backendURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage }),
+      const res = await fetch("https://bulla-support-backend-1.onrender.com/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: msg })
       });
-
-      const data = await response.json();
-      removeTypingMessage();
-
-      if (response.ok && data.reply) {
-        appendMessage(data.reply, 'bot');
-      } else {
-        appendMessage('❌ Sorry, something went wrong.', 'bot');
-      }
-    } catch (error) {
-      removeTypingMessage();
-      appendMessage('❌ Network error or server down.', 'bot');
+      const data = await res.json();
+      resBox.textContent = "🤖 " + data.reply;
+    } catch (err) {
+      resBox.textContent = "❌ Network error or server down.";
     }
   }
-  </script>
+</script>
    <!-- About -->
    <div class="max-w-xs mx-auto mb-10">
     <h3 class="tracking-widest text-sm mb-6">
