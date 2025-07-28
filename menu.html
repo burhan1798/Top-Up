@@ -111,7 +111,14 @@
     <div class="user-info">
   <h2 id="user-name">Loading...</h2>
   <p id="user-email">Loading...</p>
-  <button class="logout-btn">Logout</button>
+  <button onclick="logout()">Logout</button>
+
+<script>
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+</script>
     </div>
     <div class="menu">
       <a href="#" onclick="loadSection('profile', this)" class="active">My Profile</a>
