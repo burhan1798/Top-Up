@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f3fc;
+      padding: 20px;
+    }
+    .profile-card {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .avatar {
+      width: 100px;
+      height: 100px;
+      background: #f44366;
+      color: white;
+      font-size: 48px;
+      line-height: 100px;
+      border-radius: 50%;
+      margin: auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-label {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: white;
+      border-radius: 50%;
+      padding: 5px;
+      cursor: pointer;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"] {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #f44366;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      width: 100%;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .small {
+      font-size: 0.9em;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-card">
+    <div class="avatar" id="profileImageContainer">
+      <span id="avatarInitial">U</span>
+      <img id="profileImage" src="" alt="" style="display:none;">
+      <label class="upload-label">
+        <input type="file" accept="image/*" onchange="uploadImage(event)" style="display:none;">
+        📷
+      </label>
+    </div>
+    <h2 id="displayName">Username</h2>
+
+    <p><strong>User Id:</strong> <span id="userId">#0000</span></p>
+
+    <label>Email:</label>
+    <input type="email" id="email" />
+
+    <label>Phone:</label>
+    <input type="tel" id="phone" />
+
+    <h3>Change Password</h3>
+    <input type="password" id="oldPass" placeholder="Old password">
+    <input type="password" id="newPass" placeholder="New password">
+    <input type="password" id="confirmPass" placeholder="Confirm password">
+
+    <button onclick="updateProfile()">Save Changes</button>
+    <p class="small" id="msg"></p>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("currentUser")) || {};
+    const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
+
+    document.getElementById("displayName").innerText = user.username || "Guest";
+    document.getElementById("userId").innerText = user.id || "0000";
+    document.getElementById("email").value = user.email || "";
+    document.getElementById("phone").value = user.phone || "";
+
+    // Avatar letter or image
+    if (user.profileImage) {
+      document.getElementById("profileImage").src = user.profileImage;
+      document.getElementById("profileImage").style.display = "block";
+      document.getElementById("avatarInitial").style.display = "none";
+    } else {
+      document.getElementById("avatarInitial").innerText = (user.username || "U")[0].toUpperCase();
+    }
+
+    function uploadImage(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          document.getElementById("profileImage").src = evt.target.result;
+          document.getElementById("profileImage").style.display = "block";
+          document.getElementById("avatarInitial").style.display = "none";
+          user.profileImage = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function updateProfile() {
+      const oldP = document.getElementById("oldPass").value;
+      const newP = document.getElementById("newPass").value;
+      const confirmP = document.getElementById("confirmPass").value;
+      const msg = document.getElementById("msg");
+
+      if (oldP && oldP !== user.password) {
+        msg.innerText = "Old password doesn't match.";
+        return;
+      }
+
+      if (newP && newP !== confirmP) {
+        msg.innerText = "New passwords do not match.";
+        return;
+      }
+
+      user.email = document.getElementById("email").value;
+      user.phone = document.getElementById("phone").value;
+      if (newP) user.password = newP;
+
+      // Update user in allUsers list
+      const index = allUsers.findIndex(u => u.id === user.id);
+      if (index !== -1) allUsers[index] = user;
+
+      // Save updated
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      localStorage.setItem("allUsers", JSON.stringify(allUsers));
+
+      msg.innerText = "Profile updated successfully!";
+    }
+  </script>
+</body>
+</html>
