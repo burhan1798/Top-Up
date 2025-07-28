@@ -106,6 +106,7 @@
     </div>
 
     <div class="nav-links">
+      <a href="#" onclick="loadContent('profile')">👤 My Profile</a>
       <a href="#" onclick="loadContent('home')">🏠 Home</a>
       <a href="#" onclick="loadContent('about')">👤 About</a>
       <a href="#" onclick="loadContent('services')">🛠️ Services</a>
@@ -121,51 +122,86 @@
 
   <script>
     function login() {
-      const user = document.getElementById("username").value;
-      const phone = document.getElementById("phone").value;
-      const pass = document.getElementById("password").value;
+  const user = document.getElementById("username").value;
+  const phone = document.getElementById("phone").value;
+  const pass = document.getElementById("password").value;
 
-      if(user && phone && pass) {
-        localStorage.setItem("username", user);
-        localStorage.setItem("phone", phone);
-        localStorage.setItem("password", pass);
-        document.getElementById("mainContent").innerHTML = `
-          <h1>Hello, ${user}!</h1>
-          <p>You're now logged in.</p>
-        `;
-      } else {
-        alert("Fill all fields!");
-      }
-    }
+  if(user && phone && pass) {
+    localStorage.setItem("username", user);
+    localStorage.setItem("phone", phone);
+    localStorage.setItem("password", pass);
+    document.getElementById("mainContent").innerHTML = `
+      <h1>Hello, ${user}!</h1>
+      <p>You're now logged in. Click 'My Profile' to view your details.</p>
+    `;
+  } else {
+    alert("Fill all fields!");
+  }
+}
 
-    function loadContent(section) {
-      const user = localStorage.getItem("username");
-      if (!user) {
-        alert("Please log in first!");
-        return;
-      }
+function loadContent(section) {
+  const user = localStorage.getItem("username");
+  const phone = localStorage.getItem("phone");
+  const pass = localStorage.getItem("password");
 
-      let content = "";
-      switch(section) {
-        case "home":
-          content = `<h1>🏠 Home</h1><p>This is the home section.</p>`;
-          break;
-        case "about":
-          content = `<h1>👤 About</h1><p>This is the about section.</p>`;
-          break;
-        case "services":
-          content = `<h1>🛠️ Services</h1><p>This is the services section.</p>`;
-          break;
-        case "contact":
-          content = `<h1>📞 Contact</h1><p>This is the contact section.</p>`;
-          break;
-        case "logout":
-          localStorage.clear();
-          content = `<h1>Logged out</h1><p>You've been logged out.</p>`;
-          break;
-      }
+  if (!user && section !== 'home') {
+    alert("Please log in first!");
+    return;
+  }
 
-      document.getElementById("mainContent").innerHTML = content;
+  let content = "";
+  switch(section) {
+    case "home":
+      content = `<h1>🏠 Home</h1><p>Welcome to the home section.</p>`;
+      break;
+    case "about":
+      content = `<h1>👤 About</h1><p>This is the about section.</p>`;
+      break;
+    case "services":
+      content = `<h1>🛠️ Services</h1><p>Here are our services.</p>`;
+      break;
+    case "contact":
+      content = `<h1>📞 Contact</h1><p>Contact us at 017XXXXXXXX</p>`;
+      break;
+    case "profile":
+      content = `
+        <h1>👤 My Profile</h1>
+        <form onsubmit="updateProfile(event)">
+          <label>Username:</label><br>
+          <input type="text" id="editUser" value="${user}"><br><br>
+
+          <label>Phone:</label><br>
+          <input type="text" id="editPhone" value="${phone}"><br><br>
+
+          <label>Password:</label><br>
+          <input type="password" id="editPass" value="${pass}"><br><br>
+
+          <button type="submit">💾 Save Changes</button>
+        </form>
+      `;
+      break;
+    case "logout":
+      localStorage.clear();
+      content = `<h1>Logged out</h1><p>You are now logged out.</p>`;
+      break;
+  }
+
+  document.getElementById("mainContent").innerHTML = content;
+}
+
+function updateProfile(event) {
+  event.preventDefault();
+  const newUser = document.getElementById("editUser").value;
+  const newPhone = document.getElementById("editPhone").value;
+  const newPass = document.getElementById("editPass").value;
+
+  localStorage.setItem("username", newUser);
+  localStorage.setItem("phone", newPhone);
+  localStorage.setItem("password", newPass);
+
+  alert("Profile updated successfully!");
+
+  loadContent("profile");
     }
   </script>
 
