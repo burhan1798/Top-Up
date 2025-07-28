@@ -170,9 +170,9 @@
     localStorage.setItem("currentUser", JSON.stringify(userData));
 
     // Save to user list
-    const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-    allUsers.push(userData);
-    localStorage.setItem("allUsers", JSON.stringify(allUsers));
+const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
+allUsers.push(userData);
+localStorage.setItem("allUsers", JSON.stringify(allUsers));
 
     // Redirect to profile page
     window.location.href = "main.html";
