@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    input, button { padding: 10px; margin: 10px; width: 80%; max-width: 300px; }
+  </style>
+</head>
+<body>
+  <h2>Create a New Account</h2>
+  <input type="text" id="username" placeholder="Username" required><br>
+  <input type="password" id="password" placeholder="Password" required><br>
+  <button onclick="signup()">Create Account</button>
+
+  <script>
+    function signup() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username && password) {
+        localStorage.setItem("user", JSON.stringify({ username, password }));
+
+        // After account creation
+window.location.href = "index.html"; // index.html e niye jabe
+      } else {
+        alert("Please fill out all fields!");
+      }
+    }
+  </script>
+</body>
+</html>
