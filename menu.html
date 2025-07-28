@@ -109,14 +109,13 @@
 <body>
   <div class="sidebar">
     <div class="user-info">
-  <h2 id="user-name">Loading...</h2>
-  <p id="user-email">Loading...</p>
+  <h2 id="user-name">Guest</h2>
+<p id="user-email">Not logged in</p>
   <button onclick="logout()">Logout</button>
-
 <script>
   function logout() {
-    localStorage.clear();
-    window.location.href = "index.html";
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
   }
 </script>
     </div>
@@ -165,9 +164,19 @@ main.innerHTML = `
   </script>
   <script>
   window.onload = () => {
-    document.getElementById("user-name").innerText = localStorage.getItem("username") || "Guest";
-    document.getElementById("user-email").innerText = localStorage.getItem("email") || "Not logged in";
-  };
+    const currentUser = localStorage.getItem("currentUser");
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const user = users.find(u => u.username === currentUser);
+
+    if (user) {
+      document.getElementById("user-name").innerText = user.username;
+      document.getElementById("user-email").innerText = user.email;
+    } else {
+      document.getElementById("user-name").innerText = "Guest";
+      document.getElementById("user-email").innerText = "Not logged in";
+    }
+  }
   </script>
 </script>  
   </script></body>
