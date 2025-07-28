@@ -3,28 +3,38 @@
 <head>
   <title>Sign Up</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; }
-    input, button { padding: 10px; margin: 10px; width: 80%; max-width: 300px; }
+    body { background: #111; color: #fff; font-family: sans-serif; text-align: center; padding: 40px; }
+    .form-box {
+      background: #222; padding: 30px; border-radius: 10px; display: inline-block;
+    }
+    input, button {
+      display: block; margin: 15px auto; padding: 10px; width: 90%; max-width: 250px;
+      border: none; border-radius: 5px;
+    }
+    button { background: #00aaff; color: white; cursor: pointer; }
+    a { color: #0cf; text-decoration: none; }
   </style>
 </head>
 <body>
-  <h2>Create a New Account</h2>
-  <input type="text" id="username" placeholder="Username" required><br>
-  <input type="password" id="password" placeholder="Password" required><br>
-  <button onclick="signup()">Create Account</button>
+  <div class="form-box">
+    <h2>📝 Create Account</h2>
+    <input type="text" id="newUsername" placeholder="Choose Username">
+    <input type="password" id="newPassword" placeholder="Choose Password">
+    <button onclick="signup()">Sign Up</button>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+  </div>
 
   <script>
     function signup() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+      const username = document.getElementById("newUsername").value;
+      const password = document.getElementById("newPassword").value;
 
       if (username && password) {
         localStorage.setItem("user", JSON.stringify({ username, password }));
-
-        // After account creation
-window.location.href = "index.html"; // index.html e niye jabe
+        alert("✅ Account Created");
+        window.location.href = "index.html";
       } else {
-        alert("Please fill out all fields!");
+        alert("⚠️ Fill in all fields");
       }
     }
   </script>
