@@ -6,38 +6,53 @@ body {
 }
 
 .sidebar {
-  width: 260px;
+  width: 320px;
   background-color: #111;
   color: white;
   height: 100vh;
-  padding: 20px;
+  padding: 30px 25px;
   position: fixed;
+  box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar h2 {
-  font-size: 22px;
+  font-size: 28px;
   color: #00ffd5;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   text-align: center;
 }
 
 .nav-links a {
   display: block;
-  padding: 15px 20px;
+  padding: 20px 30px;
   color: white;
   text-decoration: none;
-  font-size: 18px;
-  transition: 0.3s;
+  font-size: 22px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease-in-out;
 }
 
 .nav-links a:hover {
   background-color: #333;
+  padding-left: 40px;
 }
 
 .main-content {
-  margin-left: 260px;
-  padding: 40px;
+  margin-left: 320px;
+  padding: 60px 50px;
   flex-grow: 1;
-  min-height: 100vh;
-  transition: 0.3s;
+  transition: all 0.3s ease-in-out;
+}
+
+.main-content h1 {
+  font-size: 42px;
+  margin-bottom: 30px;
+  color: #111;
+}
+
+.main-content p, .main-content li {
+  font-size: 22px;
+  line-height: 1.6;
+  color: #333;
 }
