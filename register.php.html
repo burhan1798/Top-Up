@@ -466,8 +466,10 @@
                 container.appendChild(element);
             }
         }
-        
-        window.location.href = 'verify_otp.php';
-    </script>
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            createFloatingElements();
+        });
+         </script>
 </body>
 </html>
