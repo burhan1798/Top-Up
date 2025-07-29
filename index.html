@@ -137,25 +137,28 @@
       <p>Forgotten Password <a href="create.html">Creat a new account</a></p>
     </div>
   </div>
+<script>
+  function login() {
+    const loginId = document.getElementById("loginId").value.trim(); // can be email or phone
+    const password = document.getElementById("loginPassword").value;
 
-  <script>
-function loginUser() {
-  const inputUsername = document.getElementById("username").value.trim();
-  const inputPassword = document.getElementById("password").value.trim();
+    let users = JSON.parse(localStorage.getItem("users")) || [];
 
-  const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
+    const validUser = users.find(
+      user =>
+        (user.email === loginId || user.phone === loginId) &&
+        user.password === password
+    );
 
-  const matchedUser = allUsers.find(user =>
-    user.username === inputUsername && user.password === inputPassword
-  );
-
-  if (matchedUser) {
-    localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-    window.location.href = "main.html"; // ✅ your dashboard
-  } else {
-    alert("Username or Password incorrect!");
-  }
+    if (validUser) {
+      localStorage.setItem("loggedInUser", JSON.stringify(validUser));
+      alert("লগইন সফল হয়েছে!");
+      window.location.href = "main.html";
+    } else {
+      alert("ইমেইল/ফোন অথবা পাসওয়ার্ড ভুল!");
     }
+  }
+</script>  
 </script>
   </div>
   </html>
