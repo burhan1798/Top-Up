@@ -304,56 +304,101 @@
     </div>
 
     <script>
-        document.getElementById('otpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Show loading state
-            document.getElementById('otpContainer').classList.add('animate__animated', 'animate__pulse');
-            document.getElementById('loadingOverlay').classList.add('active');
-            document.getElementById('verifyBtn').classList.add('loading');
-            document.getElementById('btnText').textContent = 'Verifying...';
-            
-            // Submit the form after a short delay
-            setTimeout(() => {
-                this.submit();
-            }, 1000);
+    const verifySid = "VA5464759562f1158ab0a47b7e702dcd48";
+    const phoneNumber = localStorage.getItem("phone");
+    const resendBtn = document.createElement("button");
+    resendBtn.textContent = "Resend OTP";
+    resendBtn.className = "btn";
+    resendBtn.style.marginTop = "15px";
+    let countdown = 300;
+
+    // Show phone number
+    document.querySelector(".phone-number").textContent = phoneNumber || "No Number";
+
+    function sendOTP() {
+        fetch("https://verify.twilio.com/v2/Services/" + verifySid + "/Verifications", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Basic " + btoa("ffb4a65cb94c83623615467422dac8c9-c638b6cb-496b-44d4-867c-6cbde0bb5955:")
+            },
+            body: new URLSearchParams({
+                To: phoneNumber,
+                Channel: "sms"
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("OTP Sent:", data);
+            startCountdown();
+        })
+        .catch(err => {
+            console.error("OTP Send Error:", err);
+            alert("Failed to send OTP.");
         });
-        
-        // Auto-focus OTP input
-        document.getElementById('otp').focus();
-        
-        // Add floating elements dynamically
-        function createFloatingElements() {
-            const container = document.querySelector('.floating-elements');
-            const colors = ['rgba(108, 92, 231, 0.1)', 'rgba(162, 155, 254, 0.1)', 'rgba(255, 255, 255, 0.2)'];
-            
-            for (let i = 0; i < 5; i++) {
-                const element = document.createElement('div');
-                element.className = 'floating-element';
-                
-                const size = Math.random() * 100 + 50;
-                const posX = Math.random() * 100;
-                const posY = Math.random() * 100;
-                const delay = Math.random() * 5;
-                const duration = Math.random() * 10 + 10;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                
-                element.style.width = `${size}px`;
-                element.style.height = `${size}px`;
-                element.style.top = `${posY}%`;
-                element.style.left = `${posX}%`;
-                element.style.animationDelay = `${delay}s`;
-                element.style.animationDuration = `${duration}s`;
-                element.style.background = color;
-                
-                container.appendChild(element);
+    }
+
+    function verifyOTP(code) {
+        fetch("https://verify.twilio.com/v2/Services/" + verifySid + "/VerificationCheck", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Basic " + btoa("ffb4a65cb94c83623615467422dac8c9-c638b6cb-496b-44d4-867c-6cbde0bb5955:")
+            },
+            body: new URLSearchParams({
+                To: phoneNumber,
+                Code: code
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "approved") {
+                window.location.href = "main.html";
+            } else {
+                alert("Invalid OTP. Please try again.");
             }
+        })
+        .catch(err => {
+            console.error("OTP Verify Error:", err);
+            alert("Verification failed.");
+        });
+    }
+
+    document.getElementById("otpForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const code = document.getElementById("otp").value.trim();
+        if (code.length === 6) {
+            document.getElementById("btnText").textContent = "Verifying...";
+            verifyOTP(code);
+        } else {
+            alert("Please enter a valid 6-digit code.");
         }
-      // Initialize on page load
-        window.addEventListener('load', () => {
-            createFloatingElements();
-        });  
-        
+    });
+
+    resendBtn.onclick = function () {
+        countdown = 300;
+        resendBtn.remove();
+        sendOTP();
+    };
+
+    function startCountdown() {
+        const timer = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                clearInterval(timer);
+                document.querySelector(".otp-container").appendChild(resendBtn);
+            }
+        }, 1000);
+    }
+
+    window.addEventListener("load", () => {
+        if (!phoneNumber) {
+            alert("Phone number not found.");
+        } else {
+            sendOTP();
+        }
+    });
+    </script>
     </script>
 </body>
 </html>
