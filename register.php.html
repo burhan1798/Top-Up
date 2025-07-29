@@ -416,35 +416,38 @@
         <i class="fab fa-telegram"></i>
     </a>
 <script>
-function sendOtpAndGoVerify() {
-  const phone = document.getElementById("phone").value;
+async function sendOtpAndGoVerify() {
+  const phone = document.getElementById("phone").value.trim();
 
   if (!phone.startsWith("+880") || phone.length < 13) {
-    alert("ফোন নাম্বার +880 দিয়ে শুরু করতে হবে");
+    alert("⚠️ ফোন নাম্বার +880 দিয়ে শুরু করতে হবে");
     return;
   }
 
   localStorage.setItem("phone", phone);
 
-  fetch("https://bulla-support-backend-production.up.railway.app/send-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phone })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
+  try {
+    const response = await fetch("https://bulla-support-backend-production.up.railway.app/send-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ phone })
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
       alert("✅ OTP পাঠানো হয়েছে!");
       window.location.href = "verify_otp.html";
     } else {
-      alert("❌ OTP পাঠানো যায়নি");
+      alert("❌ OTP পাঠানো যায়নি: " + (data.error || "Unknown error"));
     }
-  })
-  .catch(err => {
-    alert("⚠️ সমস্যা হয়েছে: " + err.message);
-  });
-}
-</script>
+
+  } catch (error) {
+    alert("⚠️ সমস্যা হয়েছে: " + error.message);
+  }
+    }
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
