@@ -396,7 +396,7 @@
                 <div class="g-recaptcha"6Lf9O5MrAAAAAL70RgxDASHjGk-K8gdK43wxrYYR"></div>
             </div>
             
-            <button type="submit" class="btn" id="registerBtn">
+            <button type="button" onclick="sendOtpAndGoVerify()">Register</button>
                 <span class="btn-text" id="btnText">Register</span>
             </button>
         </form>
@@ -415,7 +415,36 @@
     <a href="https://t.me/burhan2233" class="telegram-fab" target="_blank">
         <i class="fab fa-telegram"></i>
     </a>
+<script>
+function sendOtpAndGoVerify() {
+  const phone = document.getElementById("phone").value;
 
+  if (!phone.startsWith("+880") || phone.length < 13) {
+    alert("ফোন নাম্বার +880 দিয়ে শুরু করতে হবে");
+    return;
+  }
+
+  localStorage.setItem("phone", phone);
+
+  fetch("http://localhost:3000/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phone })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("✅ OTP পাঠানো হয়েছে!");
+      window.location.href = "verify_otp.html";
+    } else {
+      alert("❌ OTP পাঠানো যায়নি");
+    }
+  })
+  .catch(err => {
+    alert("⚠️ সমস্যা হয়েছে: " + err.message);
+  });
+}
+</script>
     <script>
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
