@@ -130,59 +130,18 @@
   </div>
 </body> 
   <script>
-  function goBack() {
-    window.history.back();
-  }
-  </script>
-  <script>
-  function loadSection(section, el) {
-    document.querySelectorAll('.menu a').forEach(el => el.classList.remove('active'));
-    el.classList.add('active');
-    const main = document.getElementById('main');
-const name = localStorage.getItem("username") || "Unknown User";
-const email = localStorage.getItem("email") || "Unknown Email";
-const phone = localStorage.getItem("phone") || "Unknown Phone";
-
-main.innerHTML = `
-  <h1>My Profile</h1>
-  <p><strong>User ID:</strong> ${name}</p>
-  <p><strong>Email:</strong> ${email}</p>
-  <p><strong>Phone:</strong> ${phone}</p>
-`;
+  window.onload = function () {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!user) {
+      alert("অনুগ্রহ করে প্রথমে লগইন করুন।");
+      window.location.href = "index.html";
+      return;
     }
 
-    // baki section gula same vabe
-    else if (section === 'orders') {
-      main.innerHTML = `
-        <h1>Order History</h1>
-        <p>You have 2 past orders:</p>
-        <ul>
-          <li>Order #1234 - Delivered</li>
-          <li>Order #5678 - Pending</li>
-        </ul>
-      `;
-    } else if (section === 'about') {
-      main.innerHTML = `<h1>About</h1><p>This is a custom dashboard built for you.</p>`;
-    } else if (section === 'help') {
-      main.innerHTML = `<h1>Help</h1><p>If you need assistance, contact support@example.com.</p>`;
-    }
-  }
-  </script>
-  <script>
-  window.onload = () => {
-    const currentUser = localStorage.getItem("currentUser");
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const user = users.find(u => u.username === currentUser);
-
-    if (user) {
-      document.getElementById("user-name").innerText = user.username;
-      document.getElementById("user-email").innerText = user.email;
-    } else {
-      document.getElementById("user-name").innerText = "Guest";
-      document.getElementById("user-email").innerText = "Not logged in";
-    }
-  }
+    document.getElementById("profileUsername").textContent = user.username;
+    document.getElementById("profileEmail").textContent = user.email;
+    document.getElementById("profilePhone").textContent = user.phone;
+  };
   </script>
 </script>  
   </script></body>
