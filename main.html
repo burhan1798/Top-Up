@@ -247,47 +247,33 @@
   });
 
   async function sendMessage() {
-    const message = chatText.value.trim();
-    if (!message) return;
+  const userMessage = chatInput.value.trim();
+  if (!userMessage) return;
 
-    // Add user message
-    const userMsg = document.createElement('div');
-    userMsg.className = 'user';
-    userMsg.innerText = message;
-    chatMessages.appendChild(userMsg);
-    saveMessage('user', message);
-    chatText.value = '';
+  appendMessage(userMessage, 'user');
+  chatInput.value = '';
+  appendMessage('⏳ Thinking...', 'bot', true);
 
-    try {
-      const res = await fetch('https://bulla-support-backend.onrender.com/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: "HI THERE" })
-      });
+  try {
+    const response = await fetch("https://bulla-support-backend.onrender.com/chat", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userMessage }),
+    });
 
-      const data = await res.json();
-      const botReply = data.reply || 'No response';
+    const data = await response.json();
+    removeTypingMessage();
 
-      const botMsg = document.createElement('div');
-      botMsg.className = 'bot';
-      botMsg.innerText = botReply;
-      chatMessages.appendChild(botMsg);
-      saveMessage('bot', botReply);
-    } catch (err) {
-      const errorMsg = '❌ Something went wrong!';
-      const botMsg = document.createElement('div');
-      botMsg.className = 'bot';
-      botMsg.innerText = errorMsg;
-      chatMessages.appendChild(botMsg);
-      saveMessage('bot', errorMsg);
+    if (response.ok && data.reply) {
+      appendMessage(data.reply, 'bot');
+    } else {
+      appendMessage('❌ Sorry, something went wrong.', 'bot');
     }
-
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+  } catch (error) {
+    removeTypingMessage();
+    appendMessage('❌ Network error or server down.', 'bot');
   }
-
-  // Load chat on first open (optional auto-load)
-  window.addEventListener('DOMContentLoaded', loadChatHistory);
-                                         </script>
+ }
    <!-- About -->
    <div class="max-w-xs mx-auto mb-10">
     <h3 class="tracking-widest text-sm mb-6">
