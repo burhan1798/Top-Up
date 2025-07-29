@@ -11,7 +11,7 @@
     function verify() {
       const phone = localStorage.getItem("phone");
       const code = document.getElementById("otp").value;
-      fetch("http://localhost:3000/verify-otp", {
+      fetch("https://bulla-support-backend-production.up.railway.app/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, code })
