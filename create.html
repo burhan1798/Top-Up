@@ -141,40 +141,41 @@
   </div>
 
   <script>
-  function saveAndRedirect() {
-    const username = document.getElementById("username").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
+  function signup() {
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
     const password = document.getElementById("password").value;
 
-    if (!username || !email || !phone || !password) {
-      alert("Please fill out all fields!");
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Check if email or phone already exists
+    const existingUser = users.find(
+      user => user.email === email || user.phone === phone
+    );
+
+    if (existingUser) {
+      alert("এই ইমেইল বা ফোন নম্বর দিয়ে ইতোমধ্যে একটি অ্যাকাউন্ট আছে। দয়া করে লগইন করুন।");
       return;
     }
 
-    // Generate a unique user ID
-    let userId = localStorage.getItem("lastUserId");
-    userId = userId ? parseInt(userId) + 1 : 60000;
-    localStorage.setItem("lastUserId", userId);
+    const userId = users.length + 1;
 
-    const userData = {
-  id: userId,
-  username,
-  email,
-  phone,
-  password,
-  profileImage: ""
-};
+    const newUser = {
+      id: userId,
+      username,
+      email,
+      phone,
+      password
+    };
 
-localStorage.setItem("currentUser", JSON.stringify(userData));
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
 
-const allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
-allUsers.push(userData);
-localStorage.setItem("allUsers", JSON.stringify(allUsers));
-    // Redirect to profile page
+    alert("সাইনআপ সফল হয়েছে! এখন আপনি লগইন করতে পারেন।");
     window.location.href = "main.html";
   }
-  </script>
+    </script>
   </script>
 </body>
 </html>
