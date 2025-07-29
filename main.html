@@ -131,46 +131,6 @@
   })();
 </script>
 
-<!-- Toggle Button -->
-<style>
-  #chatToggleBtn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 18px;
-    font-size: 16px;
-    cursor: pointer;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  #chatToggleBtn img {
-    width: 20px;
-    height: 20px;
-  }
-</style>
-
-<button id="chatToggleBtn">
-  <img src="https://img.icons8.com/ios-filled/50/ffffff/chat--v1.png" alt="Chat" />
-  Bulla Support
-</button>
-
-<script>
-  let isChatVisible = true;
-
-  document.getElementById('chatToggleBtn').addEventListener('click', function () {
-    if (Tawk_API && typeof Tawk_API.toggle === 'function') {
-      Tawk_API.toggle();
-      isChatVisible = !isChatVisible;
-    }
-  });
-   </script>
    <!-- About -->
    <div class="max-w-xs mx-auto mb-10">
     <h3 class="tracking-widest text-sm mb-6">
