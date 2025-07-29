@@ -349,8 +349,11 @@
                 container.appendChild(element);
             }
         }
+      // Initialize on page load
+        window.addEventListener('load', () => {
+            createFloatingElements();
+        });  
         
-        window.location.href = 'main.html';
     </script>
 </body>
 </html>
