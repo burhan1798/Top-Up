@@ -118,35 +118,176 @@
   </div>
 </a>
   </section>
-<!-- Add this to bottom of your index.html before </body> -->
-<div id="bulla-chatbox" style="position:fixed;bottom:20px;right:20px;width:320px;max-width:90%;background:#fff;border-radius:12px;box-shadow:0 0 15px rgba(0,0,0,0.2);padding:15px;z-index:9999;">
-  <h4 style="margin:0 0 10px;font-weight:bold;">🤖 Bulla Support</h4>
-  <div id="chat-response" style="min-height:60px;padding:8px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;background:#f9f9f9;"></div>
-  <input id="chat-input" type="text" placeholder="Type your message..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
-  <button onclick="sendToBackend()" style="margin-top:10px;width:100%;padding:10px;background:#2e7dff;color:white;border:none;border-radius:8px;font-weight:bold;">Send</button>
+<!-- Chat Support Widget -->
+<style>
+  #support-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
+  }
+
+  #chat-toggle {
+    background: #fff;
+    border: 2px solid #007bff;
+    border-radius: 30px;
+    padding: 10px 15px;
+    color: #007bff;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  #chat-box {
+    display: none;
+    flex-direction: column;
+    background: white;
+    width: 300px;
+    max-height: 400px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+
+  #chat-box h4 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  #chat-box .messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    max-height: 200px;
+    font-size: 14px;
+  }
+
+  .bot, .user {
+    margin-bottom: 8px;
+  }
+
+  .bot {
+    color: #555;
+  }
+
+  .user {
+    text-align: right;
+    color: #007bff;
+  }
+
+  #chat-input {
+    display: flex;
+    gap: 5px;
+  }
+
+  #chat-input input {
+    flex: 1;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+
+  #chat-input button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
+
+<div id="support-widget">
+  <div id="chat-toggle">🤖 Bulla Support</div>
+  <div id="chat-box">
+    <h4>🤖 Bulla Support</h4>
+    <div class="messages" id="chat-messages"></div>
+    <div id="chat-input">
+      <input type="text" id="chat-text" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  async function sendToBackend() {
-    const msg = document.getElementById("chat-input").value;
-    const resBox = document.getElementById("chat-response");
-    resBox.textContent = "⏳ Thinking...";
+  const toggle = document.getElementById('chat-toggle');
+  const chatBox = document.getElementById('chat-box');
+  const chatText = document.getElementById('chat-text');
+  const chatMessages = document.getElementById('chat-messages');
+
+  // Load chat history from localStorage
+  function loadChatHistory() {
+    const history = JSON.parse(localStorage.getItem('bulla_chat_history')) || [];
+    chatMessages.innerHTML = '';
+    history.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = msg.type;
+      div.innerText = msg.text;
+      chatMessages.appendChild(div);
+    });
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Save chat history to localStorage
+  function saveMessage(type, text) {
+    const history = JSON.parse(localStorage.getItem('bulla_chat_history')) || [];
+    history.push({ type, text });
+    localStorage.setItem('bulla_chat_history', JSON.stringify(history));
+  }
+
+  toggle.addEventListener('click', () => {
+    const visible = chatBox.style.display === 'flex';
+    chatBox.style.display = visible ? 'none' : 'flex';
+    if (!visible) loadChatHistory(); // Load history only when opened
+  });
+
+  async function sendMessage() {
+    const message = chatText.value.trim();
+    if (!message) return;
+
+    // Add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'user';
+    userMsg.innerText = message;
+    chatMessages.appendChild(userMsg);
+    saveMessage('user', message);
+    chatText.value = '';
 
     try {
-      const res = await fetch("https://bulla-support-backend-1.onrender.com/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: msg })
+      const res = await fetch('https://bulla-support-backend-1.onrender.com/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: "HI THERE" })
       });
+
       const data = await res.json();
-      resBox.textContent = "🤖 " + data.reply;
+      const botReply = data.reply || 'No response';
+
+      const botMsg = document.createElement('div');
+      botMsg.className = 'bot';
+      botMsg.innerText = botReply;
+      chatMessages.appendChild(botMsg);
+      saveMessage('bot', botReply);
     } catch (err) {
-      resBox.textContent = "❌ Network error or server down.";
+      const errorMsg = '❌ Something went wrong!';
+      const botMsg = document.createElement('div');
+      botMsg.className = 'bot';
+      botMsg.innerText = errorMsg;
+      chatMessages.appendChild(botMsg);
+      saveMessage('bot', errorMsg);
     }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-</script>
+
+  // Load chat on first open (optional auto-load)
+  window.addEventListener('DOMContentLoaded', loadChatHistory);
+                                         </script>
    <!-- About -->
    <div class="max-w-xs mx-auto mb-10">
     <h3 class="tracking-widest text-sm mb-6">
