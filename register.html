@@ -111,7 +111,7 @@
         const res = await fetch("https://bulla-support-backend-production.up.railway.app/send-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, username, phone, password })
+          body: JSON.stringify({ phone })
         });
 
         const data = await res.json();
