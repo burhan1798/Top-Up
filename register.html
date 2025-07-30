@@ -115,6 +115,7 @@
         });
 
         const data = await res.json();
+        console.log("Response from backend:", data);
 
         if (data.exists) {
           msg.textContent = "Already this number registered, please login";
