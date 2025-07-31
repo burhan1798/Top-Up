@@ -98,34 +98,46 @@
   </div>
 
 <script>
-  // Load user info from localStorage
-  document.getElementById('username').innerText = localStorage.getItem('username') || 'Guest User';
-  document.getElementById('email').innerText = localStorage.getItem('email') || 'guest@example.com';
-  document.getElementById('profilePic').src = localStorage.getItem('profilePic') || 'https://via.placeholder.com/70';
+  // Current user
+  const currentMobile = localStorage.getItem("currentUser");
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const currentUser = users[currentMobile];
 
-  // Dynamic content loader
   function loadContent(page) {
     const content = document.getElementById('content');
     let html = '';
 
     if(page === 'profile'){
-      html = `<div class="card"><h2>My Profile</h2>
-        <p><b>Name:</b> ${localStorage.getItem('username') || 'Guest User'}</p>
-        <p><b>Email:</b> ${localStorage.getItem('email') || 'guest@example.com'}</p>
-        <p><b>Phone:</b> ${localStorage.getItem('phone') || '01XXXXXXX'}</p>
-      </div>`;
+      if(currentUser){
+        html = `<div class="card"><h2>My Profile</h2>
+          <p><b>Name:</b> ${currentUser.name}</p>
+          <p><b>Username:</b> ${currentUser.username}</p>
+          <p><b>Email:</b> ${currentUser.email}</p>
+          <p><b>Mobile:</b> ${currentUser.mobile}</p>
+          <p><b>User ID:</b> ${currentUser.id}</p>
+        </div>`;
+      } else {
+        html = `<div class="card"><p>No user logged in.</p></div>`;
+      }
     }
     else if(page === 'orders'){
-      html = `<div class="card"><h2>My Orders</h2><p>You have no orders yet.</p></div>`;
+      html = `<div class="card"><h2>My Orders</h2><p>Orders will show here...</p></div>`;
     }
     else if(page === 'about'){
-      html = `<div class="card"><h2>About</h2><p>This is a Premium SaaS-style animated dashboard layout.</p></div>`;
+      html = `<div class="card"><h2>About</h2><p>This is a Premium SaaS-style animated dashboard.</p></div>`;
     }
     else if(page === 'help'){
       html = `<div class="card"><h2>Help</h2><p>Contact support at support@example.com</p></div>`;
     }
 
     content.innerHTML = html;
+  }
+
+  // Set sidebar info dynamically
+  if(currentUser){
+    document.getElementById('username').innerText = currentUser.username || currentUser.name;
+    document.getElementById('email').innerText = currentUser.email;
+    document.getElementById('profilePic').src = currentUser.profilePic || 'https://via.placeholder.com/70';
   }
 </script>
 
