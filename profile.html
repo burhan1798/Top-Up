@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin:0; padding:0;
+      font-family:'Poppins', sans-serif;
+      min-height:100vh;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      display:flex; justify-content:center; align-items:center;
+    }
+    .profile-card {
+      background:rgba(255,255,255,0.08);
+      border-radius:20px;
+      backdrop-filter: blur(15px);
+      box-shadow:0 8px 25px rgba(0,0,0,0.4);
+      width:350px; padding:30px;
+      text-align:center; color:white;
+      animation:fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+
+    .profile-card img {
+      width:120px; height:120px; border-radius:50%; object-fit:cover;
+      border:4px solid rgba(255,255,255,0.5);
+      margin-bottom:15px; transition:0.3s;
+    }
+    .profile-card img:hover { transform:scale(1.05); }
+
+    h2 { font-size:22px; margin-bottom:5px; }
+    p { font-size:14px; margin-bottom:15px; opacity:0.8; }
+
+    input[type="file"] { display:none; }
+    label.upload-btn {
+      display:inline-block; margin-bottom:20px;
+      background:linear-gradient(135deg,#6e45e2,#88d3ce);
+      color:white; padding:8px 20px;
+      border-radius:30px; cursor:pointer; font-size:14px;
+      transition:0.3s;
+    }
+    label.upload-btn:hover { opacity:0.8; }
+
+    .profile-card input {
+      width:100%; padding:10px; margin:8px 0;
+      border:none; border-radius:8px;
+      outline:none;
+      background:rgba(255,255,255,0.1);
+      color:white; font-size:14px;
+      transition:0.3s;
+    }
+    .profile-card input:focus {
+      background:rgba(255,255,255,0.2);
+    }
+
+    .save-btn {
+      margin-top:12px; width:100%; padding:12px;
+      background:linear-gradient(135deg,#6e45e2,#88d3ce);
+      color:white; border:none; border-radius:30px;
+      cursor:pointer; font-weight:600; font-size:15px;
+      transition:0.3s;
+    }
+    .save-btn:hover { transform:translateY(-2px); opacity:0.9; }
+
+    .section-title {
+      text-align:left; font-weight:600; margin-top:15px; font-size:14px;
+      opacity:0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-card">
+    <img id="profilePic" src="https://via.placeholder.com/120" alt="Profile Picture">
+    <label for="profileImage" class="upload-btn">Change Photo</label>
+    <input type="file" id="profileImage" accept="image/*">
+
+    <h2 id="usernameDisplay">Guest User</h2>
+    <p id="userIdDisplay">User ID: #0000</p>
+
+    <div class="section-title">Edit Profile</div>
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="phone" placeholder="Phone">
+
+    <div class="section-title">Change Password</div>
+    <input type="password" id="oldPass" placeholder="Old Password">
+    <input type="password" id="newPass" placeholder="New Password">
+
+    <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+  </div>
+
+<script>
+  const currentMobile = localStorage.getItem("currentUser");
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const currentUser = users[currentMobile];
+
+  if(!currentUser){
+    alert("No user logged in!");
+    window.location.href="login.html";
+  }
+
+  // Load profile data
+  document.getElementById('usernameDisplay').innerText = currentUser.username || currentUser.name;
+  document.getElementById('userIdDisplay').innerText = "User ID: #" + currentUser.id;
+  document.getElementById('email').value = currentUser.email || "";
+  document.getElementById('phone').value = currentUser.mobile || "";
+  document.getElementById('profilePic').src = currentUser.profilePic || "https://via.placeholder.com/120";
+
+  // Change photo
+  document.getElementById('profileImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if(file){
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        document.getElementById('profilePic').src = evt.target.result;
+        currentUser.profilePic = evt.target.result;
+        users[currentMobile] = currentUser;
+        localStorage.setItem('users', JSON.stringify(users));
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function saveProfile(){
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const oldPass = document.getElementById('oldPass').value;
+    const newPass = document.getElementById('newPass').value;
+
+    if(oldPass && oldPass !== currentUser.password){
+      alert("❌ Old password incorrect!");
+      return;
+    }
+    if(newPass){
+      currentUser.password = newPass;
+      alert("✅ Password updated!");
+    }
+
+    currentUser.email = email;
+    currentUser.mobile = phone;
+
+    users[currentMobile] = currentUser;
+    localStorage.setItem('users', JSON.stringify(users));
+
+    alert("✅ Profile saved successfully!");
+    document.getElementById('oldPass').value = "";
+    document.getElementById('newPass').value = "";
+  }
+</script>
+</body>
+      </html>
