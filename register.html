@@ -97,7 +97,7 @@
     </div>
    <div class="form-group">
       <label>Confirm Password</label>
-      <input type="confirm password" id="confirm password" class="form-control" required>
+      <input type="password" id="confirmPassword" class="form-control" required>
    </div>
     <button type="submit" class="btn">Register</button>
   </form>
@@ -116,31 +116,40 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
   const email = document.getElementById("email").value.trim();
   const mobile = document.getElementById("number").value.trim();
   const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
 
+  if(password !== confirmPassword){
+    alert("Passwords do not match!");
+    return;
+  }
   if (!/^01[0-9]{9}$/.test(mobile)) {
     alert("Invalid mobile number format (must start with 01)");
     return;
   }
 
   let users = JSON.parse(localStorage.getItem("users")) || {};
-
   if(users[mobile]){
     alert("This number is already registered! Please login.");
     return;
   }
 
   // Generate unique user ID
-  let userId = localStorage.getItem("lastUserId") || 1000;
-  userId = parseInt(userId) + 1;
+  let userId = parseInt(localStorage.getItem("lastUserId") || 1000) + 1;
   localStorage.setItem("lastUserId", userId);
 
   // Save full user info
   users[mobile] = {
-  id, name, username, email, mobile, password,
-  profilePic, orders:[]
-}
-localStorage.setItem("users", JSON.stringify(users));
-localStorage.setItem("currentUser", mobile); // auto login
+    id: userId,
+    name: name,
+    username: username,
+    email: email,
+    mobile: mobile,
+    password: password,
+    profilePic: "https://via.placeholder.com/120",
+    orders: []
+  };
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("currentUser", mobile); // auto login
   
   window.location.href = "main.html";
 });
