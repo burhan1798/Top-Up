@@ -102,25 +102,25 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
   const mobile = document.getElementById("number").value.trim();
   const password = document.getElementById("password").value;
 
-  let users = JSON.parse(localStorage.getItem("users")) || {};
+  const users = JSON.parse(localStorage.getItem("users")) || {};
 
   if(!users[mobile]){
-    alert("No account found for this number. Please register first.");
+    alert("❌ User not found. Please register first!");
     return;
   }
 
-  if(users[mobile].password !== password){
-    alert("Incorrect password!");
+  const currentUser = users[mobile];
+  if(currentUser.password !== password){
+    alert("❌ Wrong password!");
     return;
   }
 
-  // Save logged in user
-  localStorage.setItem("loggedInUser", JSON.stringify(users[mobile]));
+  // ✅ এই লাইনটা খুব গুরুত্বপূর্ণ
+  localStorage.setItem("currentUser", mobile);
 
-  alert("✅ Login Successful!");
-  window.location.href = "main.html"; // redirect to dashboard
+  alert("✅ Login successful!");
+  window.location.href = "main.html";
 });
 </script>
-
 </body>
  </html>
