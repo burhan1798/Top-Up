@@ -136,21 +136,15 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
 
   // Save full user info
   users[mobile] = {
-    id: userId,
-    name: name,
-    username: username,
-    email: email,
-    mobile: mobile,
-    password: password,
-    profilePic: "https://via.placeholder.com/120"
-  };
-
-  localStorage.setItem("users", JSON.stringify(users));
+  id, name, username, email, mobile, password,
+  profilePic, orders:[]
+}
+localStorage.setItem("users", JSON.stringify(users));
+localStorage.setItem("currentUser", mobile); // auto login
 
   alert("✅ Registration Successful! Please login.");
-  window.location.href = "login.html";
+  window.location.href = "main.html";
 });
 </script>
-
 </body>
 </html>
