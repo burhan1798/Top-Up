@@ -1,1 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium SaaS Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
 
+    body {
+      display:flex; min-height:100vh;
+      background: linear-gradient(135deg, #6e45e2, #88d3ce);
+      overflow:hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width:260px; background:rgba(30,30,50,0.95);
+      backdrop-filter: blur(12px);
+      color:white; display:flex; flex-direction:column;
+      transition:0.3s;
+      box-shadow:0 0 20px rgba(0,0,0,0.3);
+      animation: slideIn 0.7s ease;
+    }
+    @keyframes slideIn { from{transform:translateX(-100%);} to{transform:translateX(0);} }
+
+    .sidebar .top {
+      text-align:center; padding:30px 20px; border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar .top img {
+      width:70px; height:70px; border-radius:50%; border:3px solid white; margin-bottom:10px;
+    }
+    .sidebar .top h2 {font-size:18px; margin-bottom:5px;}
+    .sidebar .top p {font-size:13px; color:#bbb;}
+
+    .sidebar .menu {flex:1; display:flex; flex-direction:column; padding-top:20px;}
+    .sidebar .menu button {
+      background:none; border:none; color:white;
+      padding:15px 25px; text-align:left; font-size:15px;
+      cursor:pointer; transition:0.3s; position:relative;
+    }
+    .sidebar .menu button:hover {
+      background:rgba(255,255,255,0.1); padding-left:35px;
+    }
+
+    .logout {
+      border-top:1px solid rgba(255,255,255,0.1);
+      padding:15px; text-align:center;
+      background:#e74c3c; color:white; text-decoration:none;
+      transition:0.3s;
+    }
+    .logout:hover {background:#c0392b;}
+
+    /* Main Content */
+    .main {
+      flex:1; padding:30px; overflow-y:auto; color:#333;
+      animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+    .card {
+      background:white; padding:25px; border-radius:15px;
+      margin-bottom:25px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.1);
+      transition:0.3s; animation: fadeIn 0.5s ease-in;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow:0 10px 25px rgba(0,0,0,0.15); }
+
+    @media(max-width:768px){
+      .sidebar{width:200px;}
+      .sidebar .menu button {font-size:13px;}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="top">
+      <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
+      <h2 id="username">Guest User</h2>
+      <p id="email">guest@example.com</p>
+    </div>
+    <div class="menu">
+      <button onclick="loadContent('profile')">My Profile</button>
+      <button onclick="loadContent('orders')">My Orders</button>
+      <button onclick="loadContent('about')">About</button>
+      <button onclick="loadContent('help')">Help</button>
+    </div>
+    <a class="logout" href="login.html">Logout</a>
+  </div>
+
+  <div class="main" id="content">
+    <div class="card">
+      <h2>Welcome to Your Premium Dashboard</h2>
+      <p>Click the sidebar menu to explore your SaaS dashboard.</p>
+    </div>
+  </div>
+
+<script>
+  // Load user info from localStorage
+  document.getElementById('username').innerText = localStorage.getItem('username') || 'Guest User';
+  document.getElementById('email').innerText = localStorage.getItem('email') || 'guest@example.com';
+  document.getElementById('profilePic').src = localStorage.getItem('profilePic') || 'https://via.placeholder.com/70';
+
+  // Dynamic content loader
+  function loadContent(page) {
+    const content = document.getElementById('content');
+    let html = '';
+
+    if(page === 'profile'){
+      html = `<div class="card"><h2>My Profile</h2>
+        <p><b>Name:</b> ${localStorage.getItem('username') || 'Guest User'}</p>
+        <p><b>Email:</b> ${localStorage.getItem('email') || 'guest@example.com'}</p>
+        <p><b>Phone:</b> ${localStorage.getItem('phone') || '01XXXXXXX'}</p>
+      </div>`;
+    }
+    else if(page === 'orders'){
+      html = `<div class="card"><h2>My Orders</h2><p>You have no orders yet.</p></div>`;
+    }
+    else if(page === 'about'){
+      html = `<div class="card"><h2>About</h2><p>This is a Premium SaaS-style animated dashboard layout.</p></div>`;
+    }
+    else if(page === 'help'){
+      html = `<div class="card"><h2>Help</h2><p>Contact support at support@example.com</p></div>`;
+    }
+
+    content.innerHTML = html;
+  }
+</script>
+
+</body>
+      </html>
