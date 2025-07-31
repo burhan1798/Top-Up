@@ -1,22 +1,91 @@
 <html lang="en">
- <head>
+<head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
-   Bulla Top Up
-  </title>
- <script src="https://cdn.tailwindcss.com">
- </script>  
+  <title>Bulla Top Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <style>
-   @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
-    body {
-      font-family: "Montserrat", sans-serif;
+    @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+    body {font-family: "Montserrat", sans-serif;}
+    
+    /* Sidebar Drawer */
+    .sidebar {
+      position: fixed; top: 0; left: -260px;
+      width: 260px; height: 100%;
+      background: rgba(30,30,50,0.95);
+      backdrop-filter: blur(12px);
+      color: white; display: flex; flex-direction: column; 
+      justify-content: space-between;
+      transition: 0.3s; z-index: 1000;
+      box-shadow: 2px 0 15px rgba(0,0,0,0.3);
     }
+    .sidebar.active {left: 0;}
+    .sidebar .user-info {text-align:center; padding:30px 20px; border-bottom:1px solid rgba(255,255,255,0.1);}
+    .sidebar .user-info img {width:70px; height:70px; border-radius:50%; border:3px solid white; margin-bottom:10px;}
+    .sidebar .user-info h2 {font-size:18px; margin-bottom:5px;}
+    .sidebar .user-info p {font-size:13px; color:#bbb;}
+
+    .menu {flex:1; display:flex; flex-direction:column; padding:20px 0;}
+    .menu a {padding:15px 25px; color:white; text-decoration:none; font-size:15px; transition:0.3s;}
+    .menu a:hover {background:rgba(255,255,255,0.1); padding-left:35px;}
+    
+    .logout {border-top:1px solid rgba(255,255,255,0.1); padding:15px; text-align:center; background:#e74c3c; color:white; text-decoration:none; transition:0.3s; display:block;}
+    .logout:hover {background:#c0392b;}
+
+    /* Overlay */
+    .overlay {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.3);
+      opacity:0; visibility:hidden;
+      transition:0.3s; z-index:999;
+    }
+    .overlay.active {opacity:1; visibility:visible;}
+
+    /* Three-dot Menu Button */
+    .menu-btn {
+      position: fixed; top: 15px; right: 20px;
+      width: 35px; height: 35px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      cursor: pointer; z-index: 1001;
+    }
+    .menu-btn span {
+      display: block; width: 5px; height: 5px; margin: 3px;
+      background: #333; border-radius: 50%; transition:0.3s;
+    }
+    .menu-btn:hover span {background:#6e45e2;}
   </style>
- </head>
- <body class="bg-white text-black">
-  <!-- Header -->
+</head>
+<body class="bg-white text-black">
+
+<!-- Sidebar Drawer -->
+<div class="sidebar" id="sidebar">
+  <div class="user-info">
+    <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
+    <h2 id="username">Guest User</h2>
+    <p id="email">guest@example.com</p>
+    <p id="userId">User ID: #0000</p>
+  </div>
+  <div class="menu">
+    <a href="profile.html" target="_blank">My Profile</a>
+    <a href="orders.html" target="_blank">Order History</a>
+    <a href="about.html" target="_blank">About</a>
+    <a href="help.html" target="_blank">Help</a>
+  </div>
+  <a class="logout" href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Three-dot Menu Button -->
+<div class="menu-btn" id="menuBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<!-- Header -->
 <header class="flex justify-between items-center p-4 bg-white shadow">
   <div class="flex items-center space-x-2">
     <img
@@ -26,29 +95,22 @@
       width="64"
       height="64"
     />
-    <span class="text-2xl font-extrabold">
-       Bulla Top Up
-        </span>
-        </div>
+    <span class="text-2xl font-extrabold">Bulla Top Up</span>
+  </div>
 </header>
-  <script>
-  function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
-  }
-  </script>
-  <!-- Title -->
-  <section class="text-center mt-6 mb-8 px-4">
-   <h2 class="text-2xl font-semibold text-[#0f172a]">
-    New Game
-    <span class="text-[#ef1e3e]">
-     Top-Up
-    </span>
-   </h2>
-  </section>  
-  <!-- Game Cards Grid -->
-  <section class="grid grid-cols-2 gap-6 px-4 max-w-4xl mx-auto mb-12">
-   <!-- Card 1 (Clickable Full Box) -->
+
+<!-- Title -->
+<section class="text-center mt-6 mb-8 px-4">
+  <h2 class="text-2xl font-semibold text-[#0f172a]">
+    New Game <span class="text-[#ef1e3e]">Top-Up</span>
+  </h2>
+</section>  
+
+<!-- Game Cards Grid -->
+<section class="grid grid-cols-2 gap-6 px-4 max-w-4xl mx-auto mb-12">
+  <!-- তোমার আগের গেম কার্ডগুলো 그대로 থাকবে -->
+  ... <!-- (তোমার বিদ্যমান game cards code) -->
+  <!-- Card 1 (Clickable Full Box) -->
 <a href="idcode.html" target="_blank">
   <div class="bg-black rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200">
     <img src="https://i.ibb.co/NgpMdT19/download.jpg"
@@ -114,21 +176,11 @@
     </p>
   </div>
 </a>
-  </section>
-  <!-- Tawk.to Script -->
-<script type="text/javascript">
-  var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-  (function () {
-    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-    s1.async = true;
-    s1.src = 'https://embed.tawk.to/68886767a71a56192dda53fc/1j1ad7s3d';
-    s1.charset = 'UTF-8';
-    s1.setAttribute('crossorigin', '*');
-    s0.parentNode.insertBefore(s1, s0);
-  })();
-</script>
+</section>
 
-   <!-- About -->
+<!-- Footer Content -->
+<footer class="text-center text-xs mt-10 mb-5">
+<!-- About -->
    <div class="max-w-xs mx-auto mb-10">
     <h3 class="tracking-widest text-sm mb-6">
      ABOUT
@@ -208,6 +260,37 @@
     </span>
    </p>
   </footer>
- </body>
-  </html>
-      
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+
+  menuBtn.addEventListener('click', ()=>{
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+  });
+  overlay.addEventListener('click', ()=>{
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+  });
+
+  // Load user info
+  const currentMobile = localStorage.getItem("currentUser");
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const currentUser = users[currentMobile];
+
+  if(currentUser){
+    document.getElementById('username').innerText = currentUser.username || currentUser.name;
+    document.getElementById('email').innerText = currentUser.email || "No email";
+    document.getElementById('userId').innerText = "User ID: #" + currentUser.id;
+    document.getElementById('profilePic').src = currentUser.profilePic || "https://via.placeholder.com/70";
+  }
+
+  function logout(){
+    localStorage.removeItem("currentUser");
+    window.location.href="login.html";
+  }
+</script>
+</body>
+ </html>
