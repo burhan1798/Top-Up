@@ -101,25 +101,24 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
 
   const mobile = document.getElementById("number").value.trim();
   const password = document.getElementById("password").value;
-
   const users = JSON.parse(localStorage.getItem("users")) || {};
-  const currentUser = users[mobile];
+  const user = users[mobile];
 
-  if(!currentUser){
+  if(!user){
     alert("❌ User not found. Please register first!");
     return;
   }
 
-  if(currentUser.password !== password){
+  if(user.password !== password){
     alert("❌ Wrong password!");
     return;
   }
 
-  // ✅ Login successful → mark as current user
+  // ✅ Mark this user as logged in
   localStorage.setItem("currentUser", mobile);
 
   alert("✅ Login successful!");
-  window.location.href = "main.html"; // Redirect to dashboard/home
+  window.location.href = "main.html";
 });
 </script>
 </body>
