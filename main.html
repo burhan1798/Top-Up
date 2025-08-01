@@ -189,6 +189,23 @@
     s0.parentNode.insertBefore(s1, s0);
   })();
       </script>
+  <script>
+    const currentMobile = localStorage.getItem("currentUser");
+const users = JSON.parse(localStorage.getItem("users")) || {};
+const currentUser = users[currentMobile];
+
+if(currentUser){
+  document.getElementById('username').innerText = currentUser.username || currentUser.name;
+  document.getElementById('email').innerText = currentUser.email;
+  document.getElementById('userId').innerText = "User ID: #" + currentUser.id;
+  document.getElementById('profilePic').src = currentUser.profilePic || "https://via.placeholder.com/70";
+} else {
+  // force logout if no user found
+  function logout(){
+  localStorage.removeItem("currentUser");
+  window.location.href = "index.html";
+    }
+    </script>
 <!-- Footer Content -->
 <footer class="text-center text-xs mt-10 mb-5">
 <!-- About -->
