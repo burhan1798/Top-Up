@@ -103,24 +103,24 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
   const password = document.getElementById("password").value;
 
   const users = JSON.parse(localStorage.getItem("users")) || {};
+  const currentUser = users[mobile];
 
-  if(!users[mobile]){
+  if(!currentUser){
     alert("❌ User not found. Please register first!");
     return;
   }
 
-  const currentUser = users[mobile];
   if(currentUser.password !== password){
     alert("❌ Wrong password!");
     return;
   }
 
-  // ✅ এই লাইনটা খুব গুরুত্বপূর্ণ
+  // ✅ Login successful → mark as current user
   localStorage.setItem("currentUser", mobile);
 
   alert("✅ Login successful!");
-  window.location.href = "main.html";
+  window.location.href = "main.html"; // Redirect to dashboard/home
 });
 </script>
 </body>
- </html>
+</html>
