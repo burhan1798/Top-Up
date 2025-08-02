@@ -143,7 +143,11 @@ if(userOrders.length === 0){
     ordersContainer.appendChild(card);
   });
   }
-
+// Scroll to top after status change
+window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+});
 // Floating Bubble Animation (no money sign)
 const bubbleContainer = document.getElementById('bubbleContainer');
 
