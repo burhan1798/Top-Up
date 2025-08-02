@@ -40,7 +40,7 @@
     }
     button:hover {background:#00A843;}
   </style>
-</head>
+
 <body>
 
   <h2>💰 ADD MONEY</h2>
@@ -48,11 +48,11 @@
 
   <div class="payment-methods">
     <div class="method" id="bkash" onclick="selectMethod('Bkash')">
-      <img src="https://i.ibb.co/0jkYNV3/bkash.png" alt="Bkash">
+      <img src="https://iili.io/FreBYsj.png" alt="Bkash">
       Bkash
     </div>
     <div class="method" id="nagad" onclick="selectMethod('Nagad')">
-      <img src="https://i.ibb.co/5s0mYpV/nagad.png" alt="Nagad">
+      <img src="https://iili.io/FrOPDnj.png" alt="Nagad">
       Nagad
     </div>
   </div>
@@ -79,27 +79,19 @@
     document.querySelectorAll(".method").forEach(m => m.classList.remove("selected"));
     document.getElementById(method.toLowerCase()).classList.add("selected");
 
-    if(method==="Bkash"){
-      paymentInfoBox.style.display="block";
-      paymentInfoBox.innerHTML = `
-        <b>Send ৳${selectedPackage.amount} to:</b><br>
-        017XXXXXXXX<br><br>
-        1️⃣ Send Money via Bkash App<br>
-        2️⃣ Use Personal Number<br>
-        3️⃣ Send Exact Amount<br>
-        4️⃣ Click Pay Now after sending
-      `;
-    } else if(method==="Nagad"){
-      paymentInfoBox.style.display="block";
-      paymentInfoBox.innerHTML = `
-        <b>Send ৳${selectedPackage.amount} to:</b><br>
-        018XXXXXXXX<br><br>
-        1️⃣ Send Money via Nagad App<br>
-        2️⃣ Use Personal Number<br>
-        3️⃣ Send Exact Amount<br>
-        4️⃣ Click Pay Now after sending
-      `;
-    }
+    let number = method==="Bkash" ? "01704481919" : "01704481919";
+
+    paymentInfoBox.style.display="block";
+    paymentInfoBox.innerHTML = `
+      <b>Send ৳${selectedPackage.amount} to:</b><br>
+      ${number}<br><br>
+      1️⃣ Send Money via ${method} App<br>
+      2️⃣ উপরের দেওয়া নাম্বারে টাকা পাঠান<br>
+      3️⃣ প্যাকেজ অনুসারে টাকা পাঠানান!<br>
+      4️⃣ টাকা পাঠিয়ে PAY NOW এ ক্লিক করুন!
+      5️⃣ টাকা এড হইতে বা যেকোনো সমস্যায় সাপোর্ট এ মেসেজ দিন।
+      6️⃣ সাময়িক সময়ের জন্য বিকাশ অফ আছে তাই নগদে লেনদেন করুন!
+    `;
   }
 
   function submitPayment() {
@@ -123,6 +115,7 @@
 
     const payments = JSON.parse(localStorage.getItem("payments")) || [];
     const newPayment = {
+      type: "topup", // Admin Panel এ আলাদা করার জন্য
       userId: currentUser.id,
       username: currentUser.username || currentUser.name,
       mobile: currentUser.mobile,
@@ -143,4 +136,4 @@
 </script>
 
 </body>
-    </html>
+</html>
