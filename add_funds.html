@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Funds | BullaTopUp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin:0; font-family:'Poppins',sans-serif;
+      background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:white; display:flex; flex-direction:column;
+      align-items:center; padding:30px;
+    }
+    h2 {margin-bottom:20px;}
+    .package-info {
+      background:rgba(255,255,255,0.1); padding:15px 25px; border-radius:10px;
+      margin-bottom:20px; font-size:18px; font-weight:600; text-align:center;
+    }
+    .payment-methods {
+      display:flex; gap:20px; margin-bottom:20px;
+    }
+    .method {
+      background:white; color:black;
+      padding:15px; border-radius:12px; cursor:pointer;
+      display:flex; flex-direction:column; align-items:center;
+      width:120px; transition:0.3s;
+    }
+    .method img {width:60px; margin-bottom:5px;}
+    .method.selected {border:3px solid #00C853; transform:scale(1.05);}
+    .info-box {
+      display:none; background:rgba(255,255,255,0.1);
+      padding:15px; border-radius:10px; margin-bottom:20px;
+      width:300px; text-align:center;
+    }
+    button {
+      background:#00C853; border:none; color:white;
+      padding:12px 25px; border-radius:8px; cursor:pointer;
+      font-weight:600; font-size:16px; transition:0.3s;
+    }
+    button:hover {background:#00A843;}
+  </style>
+</head>
+<body>
+
+  <h2>💰 ADD MONEY</h2>
+  <div class="package-info" id="packageInfo">Loading package...</div>
+
+  <div class="payment-methods">
+    <div class="method" id="bkash" onclick="selectMethod('Bkash')">
+      <img src="https://i.ibb.co/0jkYNV3/bkash.png" alt="Bkash">
+      Bkash
+    </div>
+    <div class="method" id="nagad" onclick="selectMethod('Nagad')">
+      <img src="https://i.ibb.co/5s0mYpV/nagad.png" alt="Nagad">
+      Nagad
+    </div>
+  </div>
+
+  <div class="info-box" id="paymentInfo"></div>
+
+  <button onclick="submitPayment()">Pay Now</button>
+
+<script>
+  let selectedMethod = null;
+  const packageInfoBox = document.getElementById('packageInfo');
+  const paymentInfoBox = document.getElementById('paymentInfo');
+
+  // Load selected package from localStorage
+  const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
+  if(!selectedPackage.name){
+    packageInfoBox.innerText = "⚠ No package selected!";
+  } else {
+    packageInfoBox.innerText = `UID: ${selectedPackage.uid} | ${selectedPackage.name} - ৳${selectedPackage.amount}`;
+  }
+
+  function selectMethod(method) {
+    selectedMethod = method;
+    document.querySelectorAll(".method").forEach(m => m.classList.remove("selected"));
+    document.getElementById(method.toLowerCase()).classList.add("selected");
+
+    if(method==="Bkash"){
+      paymentInfoBox.style.display="block";
+      paymentInfoBox.innerHTML = `
+        <b>Send ৳${selectedPackage.amount} to:</b><br>
+        017XXXXXXXX<br><br>
+        1️⃣ Send Money via Bkash App<br>
+        2️⃣ Use Personal Number<br>
+        3️⃣ Send Exact Amount<br>
+        4️⃣ Click Pay Now after sending
+      `;
+    } else if(method==="Nagad"){
+      paymentInfoBox.style.display="block";
+      paymentInfoBox.innerHTML = `
+        <b>Send ৳${selectedPackage.amount} to:</b><br>
+        018XXXXXXXX<br><br>
+        1️⃣ Send Money via Nagad App<br>
+        2️⃣ Use Personal Number<br>
+        3️⃣ Send Exact Amount<br>
+        4️⃣ Click Pay Now after sending
+      `;
+    }
+  }
+
+  function submitPayment() {
+    if(!selectedMethod){
+      alert("Please select a payment method first!");
+      return;
+    }
+
+    const currentUserMobile = localStorage.getItem("currentUser");
+    if(!currentUserMobile){
+      alert("Please login first!");
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+    const currentUser = users[currentUserMobile];
+    if(!currentUser){
+      alert("User not found!");
+      return;
+    }
+
+    const payments = JSON.parse(localStorage.getItem("payments")) || [];
+    const newPayment = {
+      userId: currentUser.id,
+      username: currentUser.username || currentUser.name,
+      mobile: currentUser.mobile,
+      package: selectedPackage.name,
+      uid: selectedPackage.uid,
+      amount: selectedPackage.amount,
+      method: selectedMethod,
+      status: "Pending",
+      date: new Date().toLocaleString()
+    };
+
+    payments.push(newPayment);
+    localStorage.setItem("payments", JSON.stringify(payments));
+
+    alert("✅ Payment submitted!\nPlease wait 5 minutes for approval.");
+    window.location.href = "wallet.html"; // Redirect to wallet after submit
+  }
+</script>
+
+</body>
+    </html>
