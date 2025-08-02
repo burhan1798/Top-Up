@@ -6,50 +6,42 @@
   <title>Admin Panel | BullaTopUp</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin:0; font-family:'Poppins',sans-serif;
-      background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
-      overflow:hidden;
-    }
-    header {
-      background: linear-gradient(90deg, #ff416c, #ff4b2b);
-      color:white; padding:20px; font-size:24px; font-weight:bold;
-      position:relative; z-index:2;
-    }
-    #bubbles {position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;}
-    .bubble {
-      position:absolute; bottom:-100px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,0,100,0.9), rgba(0,150,255,0.8));
-      animation: rise 6s linear forwards;
-      opacity: 0.85;
-      box-shadow:0 0 15px rgba(0,0,0,0.3);
-    }
-    @keyframes rise {
-      0% {transform:translateY(0) scale(0.7); opacity:0.9;}
-      50% {opacity:0.6;}
-      100% {transform:translateY(-120vh) scale(1.3); opacity:0;}
-    }
-
-    .tabs {display:flex;gap:10px;padding:15px;background:rgba(255,255,255,0.85);margin:10px;border-radius:10px;z-index:2;position:relative;}
-    .tab {padding:10px 20px;border-radius:8px;cursor:pointer;background:#eee;font-weight:500;}
-    .tab.active {background:#ff4b2b;color:white;}
-
-    .content {padding:20px;position:relative;z-index:2;}
-    .card {background:rgba(255,255,255,0.9);padding:15px;margin-bottom:15px;border-radius:10px;box-shadow:0 3px 8px rgba(0,0,0,0.05);}
+    body {margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#f0f4ff,#d9e4ff);}
+    header {background:linear-gradient(90deg,#ff416c,#ff4b2b);color:white;padding:20px;font-size:24px;font-weight:bold;text-align:center;}
+    
+    .tabs {display:flex;gap:10px;padding:15px;justify-content:center;}
+    .tab {padding:10px 20px;border-radius:8px;cursor:pointer;background:#eee;font-weight:500;transition:0.3s;}
+    .tab.active {background:#ff4b2b;color:white;transform:scale(1.05);}
+    
+    .content {padding:20px;max-width:1000px;margin:auto;}
+    .card {background:rgba(255,255,255,0.9);padding:15px;margin-bottom:15px;border-radius:12px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.1);transition:0.3s;}
+    .card:hover{transform:translateY(-5px);}
     
     .btn {padding:6px 12px;border:none;border-radius:6px;color:white;cursor:pointer;margin:5px;font-weight:600;}
-    .complete {background:#00c853;}
-    .fail {background:#d50000;}
-
+    .complete {background:#00c853;} .fail {background:#d50000;}
     .status-pending {color:orange;font-weight:bold;}
     .status-completed {color:green;font-weight:bold;}
     .status-failed {color:red;font-weight:bold;}
+    
+    /* Admin Login Modal */
+    #adminLoginOverlay {position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;z-index:9999;}
+    #adminLoginBox {background:white;padding:40px 30px;border-radius:15px;text-align:center;width:300px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);animation:popIn 0.5s ease forwards;}
+    @keyframes popIn {0%{transform:scale(0.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
+    #adminLoginBox h2 {margin-bottom:15px;color:#333;}
+    #adminPassword {width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bottom:15px;font-size:16px;outline:none;}
+    #adminPassword:focus {border-color:#ff5c8d;box-shadow:0 0 10px rgba(255,92,141,0.5);}
+    #adminLoginBtn {width:100%;padding:10px;border:none;background:linear-gradient(90deg,#ff3b30,#ff5c8d,#a020f0);
+      color:white;font-weight:bold;border-radius:8px;cursor:pointer;transition:0.3s;}
+    #adminLoginBtn:hover {opacity:0.85;}
+    #adminError {color:red;font-size:14px;display:none;margin-top:10px;}
   </style>
 </head>
 <body>
 
 <header>Admin Panel</header>
-<div id="bubbles"></div>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('users')">Registered Users</div>
@@ -61,82 +53,7 @@
   <div id="topupTab" style="display:none;"></div>
 </div>
 
-<style>
-  /* Fullscreen overlay */
-  #adminLoginOverlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-  }
-
-  /* Login Box */
-  #adminLoginBox {
-    background: white;
-    padding: 40px 30px;
-    border-radius: 15px;
-    text-align: center;
-    width: 700px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    animation: popIn 0.5s ease forwards;
-  }
-
-  @keyframes popIn {
-    0% { transform: scale(0.7); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-
-  #adminLoginBox h2 {
-    margin-bottom: 15px;
-    font-family: 'Poppins', sans-serif;
-    color: #333;
-  }
-
-  #adminPassword {
-    width: 100%;
-    padding: 10px;
-    border-radius:8px;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s;
-  }
-
-  #adminPassword:focus {
-    border-color: #ff5c8d;
-    box-shadow: 0 0 10px rgba(255,92,141,0.5);
-  }
-
-  #adminLoginBtn {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background: linear-gradient(90deg,#ff3b30,#ff5c8d,#a020f0);
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  #adminLoginBtn:hover {
-    opacity: 0.85;
-  }
-
-  #adminError {
-    color: red;
-    font-size: 14px;
-    display: none;
-    margin-top: 10px;
-  }
-</style>
-
-<!-- Overlay Modal -->
+<!-- Admin Login Modal -->
 <div id="adminLoginOverlay">
   <div id="adminLoginBox">
     <h2>🔒 Admin Login</h2>
@@ -147,52 +64,28 @@
 </div>
 
 <script>
-  const correctPassword = "burhan1"; // তোমার পাসওয়ার্ড
-  
-  const overlay = document.getElementById('adminLoginOverlay');
-  const loginBtn = document.getElementById('adminLoginBtn');
-  const passwordInput = document.getElementById('adminPassword');
-  const errorMsg = document.getElementById('adminError');
+/* === Admin Password Modal === */
+const correctPassword = "burhan1"; 
+const overlay = document.getElementById('adminLoginOverlay');
+const loginBtn = document.getElementById('adminLoginBtn');
+const passwordInput = document.getElementById('adminPassword');
+const errorMsg = document.getElementById('adminError');
 
-  // Enter key চাপলেও login হবে
-  passwordInput.addEventListener('keypress', function(e){
-    if(e.key === 'Enter'){ loginBtn.click(); }
-  });
+passwordInput.addEventListener('keypress', e => { if(e.key === 'Enter') loginBtn.click(); });
+loginBtn.addEventListener('click', ()=>{
+  if(passwordInput.value === correctPassword){
+    overlay.style.display = 'none';
+  } else {
+    errorMsg.style.display = 'block';
+    passwordInput.value='';
+    passwordInput.focus();
+  }
+});
 
-  loginBtn.addEventListener('click', function(){
-    const inputPass = passwordInput.value;
-    if(inputPass === correctPassword){
-      overlay.style.display = 'none'; // Hide overlay
-    } else {
-      errorMsg.style.display = 'block';
-      passwordInput.value = '';
-      passwordInput.focus();
-    }
-  });
-</script>
-  <script>
-// === Bubble Generator ===
-const bubbleContainer=document.getElementById('bubbles');
-for(let i=0;i<20;i++){
-  const bubble=document.createElement('div');
-  bubble.className='bubble';
-  const size=Math.random()*50+30;
-  bubble.style.width=size+'px';
-  bubble.style.height=size+'px';
-  bubble.style.left=Math.random()*100+'%';
-  bubble.style.animationDuration=(Math.random()*3+4)+'s';
-  bubbleContainer.appendChild(bubble);
-}
- 
- 
-// === LocalStorage Data ===
-  #adminLoginBox h2 {
+/* === LocalStorage === */
 const users = JSON.parse(localStorage.getItem('users')) || {};
-    margin-bottom: 50px;
-const payments = JSON.parse(localStorage.getItem('payments')) || [];
-    font-family: 'Poppins', sans-serif;
-const topups = payments.filter(p => p.type==="topup");
-    color: #333;
+let payments = JSON.parse(localStorage.getItem('payments')) || [];
+let topups = payments.filter(p => p.type==="topup");
 
 function showTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -203,16 +96,16 @@ function showTab(tab){
   }else{
     document.querySelectorAll('.tab')[1].classList.add('active');
     document.getElementById('topupTab').style.display='block';
-   }
-   }
+  }
 }
-// === Render Registered Users ===
+
+/* === Render Users === */
 function renderUsers(){
   let html = `<h3>Registered Users</h3>
-  <table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
-  <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
-  
-  topups.slice().reverse().forEach(tx => { ... });
+    <table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
+    <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
+  Object.values(users).slice().reverse().forEach(u=>{
+    html += `<tr>
       <td>${u.userId||'---'}</td>
       <td>${u.name||'-'}</td>
       <td>${u.username||'-'}</td>
@@ -225,7 +118,6 @@ function renderUsers(){
   document.getElementById('usersTab').innerHTML = html;
 }
 
-// === Delete User ===
 function deleteUser(mobile){
   if(confirm("Delete this user?")){
     delete users[mobile];
@@ -234,43 +126,42 @@ function deleteUser(mobile){
   }
 }
 
-// === Render Topups ===
+/* === Render Topups === */
 function renderTopups(){
+  payments = JSON.parse(localStorage.getItem('payments')) || [];
+  topups = payments.filter(p => p.type==="topup");
+
   let html = `<h3>Topup Requests</h3>`;
   if(topups.length===0){html += `<p>No topup requests yet.</p>`;}
-  topups.forEach((t,i)=>{
+  
+  topups.slice().reverse().forEach((t,i)=>{
     html += `<div class="card">
       <b>ID #${t.id||i+1} | ${t.username||'Unknown'} | ${t.package} - ৳${t.amount}</b><br>
       User ID: ${t.userId} | Mobile: ${t.mobile} | UID: ${t.uid}<br>
       Method: ${t.method} | Status: <span class="status-${t.status.toLowerCase()}">${t.status}</span><br>
       Date: ${t.date}<br>
       ${t.status==='Pending'?`
-        <button class="btn complete" onclick="updateStatus(${i},'Completed')">Complete</button>
-        <button class="btn fail" onclick="updateStatus(${i},'Failed')">Fail</button>`:''}
+        <button class="btn complete" onclick="updateStatus(${t.id},'Completed')">Complete</button>
+        <button class="btn fail" onclick="updateStatus(${t.id},'Failed')">Fail</button>`:''}
     </div>`;
   });
   document.getElementById('topupTab').innerHTML = html;
 }
 
-// === Update Status ===
-function updateStatus(index,status){
-  const payments = JSON.parse(localStorage.getItem('payments')) || [];
-  const topups = payments.filter(p=>p.type==="topup");
-  topups[index].status=status;
-  // Save back
-  let allPayments = payments.map(p=>{
-    if(p.type==="topup" && p.id===topups[index].id){p.status=status;}
+/* === Update Status === */
+function updateStatus(id,status){
+  let payments = JSON.parse(localStorage.getItem('payments')) || [];
+  payments = payments.map(p=>{
+    if(p.type==="topup" && p.id===id){p.status=status;}
     return p;
   });
-  localStorage.setItem('payments', JSON.stringify(allPayments));
+  localStorage.setItem('payments', JSON.stringify(payments));
   alert(`Topup ${status}!`);
-  location.reload();
+
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderTopups();
 }
-// Scroll to top after status change
-window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-});
+
 renderUsers();
 renderTopups();
 </script>
