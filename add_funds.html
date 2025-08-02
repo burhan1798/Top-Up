@@ -79,12 +79,12 @@ function submitPayment(){
 
   const newPayment = {
     id: lastId,
-    type: "topup",
-    userId: currentUser.id,
+    type: "topup",  // admin & orders script এইটাই ধরবে
+    userId: currentUser.userId || currentUser.id || currentUserMobile,
     username: currentUser.username || currentUser.name,
-    mobile: currentUser.mobile,
+    mobile: currentUser.mobile || currentUserMobile,
     package: selectedPackage.name,
-    uid: selectedPackage.uid,
+    uid: selectedPackage.uid || "-", // যদি না থাকে ফাঁকা রাখো
     amount: selectedPackage.amount,
     method: selectedMethod,
     status: "Pending",
@@ -94,9 +94,9 @@ function submitPayment(){
   payments.push(newPayment);
   localStorage.setItem("payments", JSON.stringify(payments));
 
-  alert("✅ Payment submitted!\nPlease wait 5 minutes for approval.");
+  alert("✅ Payment submitted!\nPlease wait for admin approval.");
   window.location.href = "my_orders.html";
-}
+  }
 </script>
 
 </body>
