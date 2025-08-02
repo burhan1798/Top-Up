@@ -25,9 +25,7 @@
 </head>
 <body>
 
-<header style="background:#fff; display:flex; justify-content:center; align-items:center; height:50px; padding-right:200px;">
-  <img src="https://iili.io/FrNiI71.md.png" alt="BullaTopUp Logo" style="height:150px; width:auto; object-fit:contain;">
-</header>
+<header>🔹 Admin Panel</header>
 
 <nav>
   <button id="tabUsers" class="active" onclick="showTab('users')">Registered Users</button>
@@ -36,156 +34,127 @@
 </nav>
 
 <div class="container">
-  <!-- Users Tab -->
-  <div id="usersTab">
-    <h3>Registered Users</h3>
-    <div id="usersList"></div>
-  </div>
-
-  <!-- Payments Tab -->
-  <div id="paymentsTab" style="display:none;">
-    <h3>Payment Requests</h3>
-    <div id="paymentsList"></div>
-  </div>
-
-  <!-- Topups Tab -->
-  <div id="topupsTab" style="display:none;">
-    <h3>Topup Requests</h3>
-    <div id="topupsList"></div>
-  </div>
+  <div id="usersTab"><h3>Registered Users</h3><div id="usersList"></div></div>
+  <div id="paymentsTab" style="display:none;"><h3>Payment Requests</h3><div id="paymentsList"></div></div>
+  <div id="topupsTab" style="display:none;"><h3>Topup Requests</h3><div id="topupsList"></div></div>
 </div>
 
 <script>
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-  let payments = JSON.parse(localStorage.getItem("payments")) || [];
+let users = JSON.parse(localStorage.getItem("users")) || {};
+let payments = JSON.parse(localStorage.getItem("payments")) || [];
 
-  const usersList = document.getElementById("usersList");
-  const paymentsList = document.getElementById("paymentsList");
-  const topupsList = document.getElementById("topupsList");
+const usersList=document.getElementById("usersList");
+const paymentsList=document.getElementById("paymentsList");
+const topupsList=document.getElementById("topupsList");
 
-  // Load Users
-  function loadUsers(){
-    usersList.innerHTML = "";
-    Object.values(users).forEach(u=>{
-      const card = document.createElement("div");
-      card.className="card";
-      card.innerHTML = `
-        <h4>${u.name || '-'} (${u.username || '-'})</h4>
-        <p><b>User ID:</b> ${u.id || '-'} | 
-           <b>Email:</b> ${u.email || '-'} | 
-           <b>Phone:</b> ${u.mobile || '-'}</p>
-        <div class="actions">
-          <button class="btn btn-fail" onclick="deleteUser('${u.mobile}')">Delete User</button>
-        </div>
-      `;
-      usersList.appendChild(card);
-    });
-  }
+function loadUsers(){
+  usersList.innerHTML="";
+  Object.values(users).forEach(u=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <h4>${u.name||'-'} (${u.username||'-'})</h4>
+      <p><b>User ID:</b> ${u.id||'-'} | <b>Email:</b> ${u.email||'-'} | <b>Phone:</b> ${u.mobile||'-'}</p>
+      <div class="actions"><button class="btn btn-fail" onclick="deleteUser('${u.mobile}')">Delete User</button></div>`;
+    usersList.appendChild(card);
+  });
+}
 
-  // Delete User
-  function deleteUser(mobile){
-    if(confirm("⚠ আপনি কি নিশ্চিত এই User টি Delete করতে চান?")){
-      delete users[mobile];
-      localStorage.setItem("users",JSON.stringify(users));
-
-      // Delete all related payments/topups
-      payments = payments.filter(p=>p.mobile!==mobile);
-      localStorage.setItem("payments",JSON.stringify(payments));
-
-      alert("✅ User Deleted Successfully!");
-      loadUsers(); loadPayments(); loadTopups();
-    }
-  }
-
-  // Load Payments
-  function loadPayments(){
-    paymentsList.innerHTML = "";
-    payments.filter(p=>p.type!=="topup").forEach((p,i)=>{
-      const card = document.createElement("div");
-      card.className="card";
-      card.innerHTML = `
-        <h4>${p.username || '-'} | ৳${p.amount}</h4>
-        <p><b>User ID:</b> ${p.userId} | <b>Mobile:</b> ${p.mobile}</p>
-        <p><b>Method:</b> ${p.method} | <b>Status:</b> <span class="status-${p.status.toLowerCase()}">${p.status}</span></p>
-        <p><b>Date:</b> ${p.date}</p>
-        <div class="actions">
-          ${p.status==="Pending"?`
-            <button class="btn btn-complete" onclick="completePayment(${i})">Complete</button>
-            <button class="btn btn-fail" onclick="failPayment(${i})">Fail</button>
-          `:""}
-        </div>
-      `;
-      paymentsList.appendChild(card);
-    });
-  }
-
-  // Load Topups
-  function loadTopups(){
-    topupsList.innerHTML = "";
-    payments.filter(p=>p.type==="topup").forEach((p,i)=>{
-      const card = document.createElement("div");
-      card.className="card";
-      card.innerHTML = `
-        <h4>${p.username || '-'} | ${p.package} - ৳${p.amount}</h4>
-        <p><b>User ID:</b> ${p.userId} | <b>Mobile:</b> ${p.mobile} | <b>UID:</b> ${p.uid}</p>
-        <p><b>Method:</b> ${p.method} | <b>Status:</b> <span class="status-${p.status.toLowerCase()}">${p.status}</span></p>
-        <p><b>Date:</b> ${p.date}</p>
-        <div class="actions">
-          ${p.status==="Pending"?`
-            <button class="btn btn-complete" onclick="completeTopup(${i})">Complete</button>
-            <button class="btn btn-fail" onclick="failTopup(${i})">Fail</button>
-          `:""}
-        </div>
-      `;
-      topupsList.appendChild(card);
-    });
-  }
-
-  // Complete / Fail Payment
-  function completePayment(i){
-    payments[i].status="Completed";
-    const mobile=payments[i].mobile;
-    if(users[mobile]){
-      users[mobile].wallet=(users[mobile].wallet||0)+payments[i].amount;
-      localStorage.setItem("users",JSON.stringify(users));
-    }
+function deleteUser(mobile){
+  if(confirm("⚠ আপনি কি নিশ্চিত এই User টি Delete করতে চান?")){
+    delete users[mobile];
+    localStorage.setItem("users",JSON.stringify(users));
+    payments=payments.filter(p=>p.mobile!==mobile);
     localStorage.setItem("payments",JSON.stringify(payments));
-    loadPayments(); alert("✅ Payment Completed & Wallet Updated");
+    alert("✅ User Deleted Successfully!");
+    loadUsers(); loadPayments(); loadTopups();
   }
-  function failPayment(i){
-    payments[i].status="Failed";
-    localStorage.setItem("payments",JSON.stringify(payments));
-    loadPayments(); alert("❌ Payment Failed");
-  }
+}
 
-  // Complete / Fail Topup
-  function completeTopup(i){
-    payments[i].status="Completed";
-    const mobile=payments[i].mobile;
-    if(users[mobile]){
-      users[mobile].wallet=0; // topup complete → wallet reset
-      localStorage.setItem("users",JSON.stringify(users));
-    }
-    localStorage.setItem("payments",JSON.stringify(payments));
-    loadTopups(); alert("✅ Topup Completed & Wallet Reset");
-  }
-  function failTopup(i){
-    payments[i].status="Failed";
-    localStorage.setItem("payments",JSON.stringify(payments));
-    loadTopups(); alert("❌ Topup Failed");
-  }
+function loadPayments(){
+  paymentsList.innerHTML="";
+  payments.filter(p=>p.type!=="topup").forEach((p,i)=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <h4>ID #${p.id} | ${p.username||'-'} | ৳${p.amount}</h4>
+      <p><b>User ID:</b> ${p.userId} | <b>Mobile:</b> ${p.mobile}</p>
+      <p><b>Method:</b> ${p.method} | <b>Status:</b> <span class="status-${p.status.toLowerCase()}">${p.status}</span></p>
+      <p><b>Date:</b> ${p.date}</p>
+      <div class="actions">
+        ${p.status==="Pending"?`
+          <button class="btn btn-complete" onclick="completePayment(${i})">Complete</button>
+          <button class="btn btn-fail" onclick="failPayment(${i})">Fail</button>
+        `:""}
+      </div>`;
+    paymentsList.appendChild(card);
+  });
+}
 
-  // Tab Switch
-  function showTab(tab){
-    document.getElementById("usersTab").style.display = tab==="users"?"block":"none";
-    document.getElementById("paymentsTab").style.display = tab==="payments"?"block":"none";
-    document.getElementById("topupsTab").style.display = tab==="topups"?"block":"none";
-    document.getElementById("tabUsers").classList.toggle("active",tab==="users");
-    document.getElementById("tabPayments").classList.toggle("active",tab==="payments");
-    document.getElementById("tabTopups").classList.toggle("active",tab==="topups");
-  }
+function loadTopups(){
+  topupsList.innerHTML="";
+  payments.filter(p=>p.type==="topup").forEach((p,i)=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <h4>ID #${p.id} | ${p.username||'-'} | ${p.package} - ৳${p.amount}</h4>
+      <p><b>User ID:</b> ${p.userId} | <b>Mobile:</b> ${p.mobile} | <b>UID:</b> ${p.uid}</p>
+      <p><b>Method:</b> ${p.method} | <b>Status:</b> <span class="status-${p.status.toLowerCase()}">${p.status}</span></p>
+      <p><b>Date:</b> ${p.date}</p>
+      <div class="actions">
+        ${p.status==="Pending"?`
+          <button class="btn btn-complete" onclick="completeTopup(${i})">Complete</button>
+          <button class="btn btn-fail" onclick="failTopup(${i})">Fail</button>
+        `:""}
+      </div>`;
+    topupsList.appendChild(card);
+  });
+}
 
-  loadUsers(); loadPayments(); loadTopups();
+function completePayment(i){
+  payments[i].status="Completed";
+  const mobile=payments[i].mobile;
+  if(users[mobile]){
+    users[mobile].wallet=(users[mobile].wallet||0)+payments[i].amount;
+    localStorage.setItem("users",JSON.stringify(users));
+  }
+  localStorage.setItem("payments",JSON.stringify(payments));
+  loadPayments(); alert("✅ Payment Completed & Wallet Updated");
+}
+
+function failPayment(i){
+  payments[i].status="Failed";
+  localStorage.setItem("payments",JSON.stringify(payments));
+  loadPayments(); alert("❌ Payment Failed");
+}
+
+function completeTopup(i){
+  payments[i].status="Completed";
+  const mobile=payments[i].mobile;
+  if(users[mobile]){
+    users[mobile].wallet=0; // wallet reset
+    localStorage.setItem("users",JSON.stringify(users));
+  }
+  localStorage.setItem("payments",JSON.stringify(payments));
+  loadTopups(); alert("✅ Topup Completed & Wallet Reset");
+}
+
+function failTopup(i){
+  payments[i].status="Failed";
+  localStorage.setItem("payments",JSON.stringify(payments));
+  loadTopups(); alert("❌ Topup Failed");
+}
+
+function showTab(tab){
+  document.getElementById("usersTab").style.display=tab==="users"?"block":"none";
+  document.getElementById("paymentsTab").style.display=tab==="payments"?"block":"none";
+  document.getElementById("topupsTab").style.display=tab==="topups"?"block":"none";
+  document.getElementById("tabUsers").classList.toggle("active",tab==="users");
+  document.getElementById("tabPayments").classList.toggle("active",tab==="payments");
+  document.getElementById("tabTopups").classList.toggle("active",tab==="topups");
+}
+
+loadUsers(); loadPayments(); loadTopups();
 </script>
 
 </body>
