@@ -77,7 +77,7 @@
   /* Login Box */
   #adminLoginBox {
     background: white;
-    padding: 300px 200px;
+    padding: 40px 30px;
     border-radius: 15px;
     text-align: center;
     width: 700px;
@@ -91,18 +91,18 @@
   }
 
   #adminLoginBox h2 {
-    margin-bottom: 50px;
+    margin-bottom: 15px;
     font-family: 'Poppins', sans-serif;
     color: #333;
   }
 
   #adminPassword {
     width: 100%;
-    padding: 20px;
-    border-radius:16px;
+    padding: 10px;
+    border-radius:8px;
     border: 1px solid #ccc;
     margin-bottom: 15px;
-    font-size: 30px;
+    font-size: 16px;
     outline: none;
     transition: 0.3s;
   }
@@ -114,7 +114,7 @@
 
   #adminLoginBtn {
     width: 100%;
-    padding: 30px;
+    padding: 10px;
     border: none;
     background: linear-gradient(90deg,#ff3b30,#ff5c8d,#a020f0);
     color: white;
@@ -212,9 +212,7 @@ function renderUsers(){
   <table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
   <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
   
-  Object.values(users).slice().reverse().forEach(u=>{
-    html += `<tr> ...`;
-});
+  topups.slice().reverse().forEach(tx => { ... });
       <td>${u.userId||'---'}</td>
       <td>${u.name||'-'}</td>
       <td>${u.username||'-'}</td>
