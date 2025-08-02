@@ -114,17 +114,13 @@
 <script>
 const currentUserMobile = localStorage.getItem("currentUser");
 const users = JSON.parse(localStorage.getItem("users")) || {};
-const topups = JSON.parse(localStorage.getItem("topups")) || [];
+const payments = JSON.parse(localStorage.getItem("payments")) || [];
 
-if(!currentUserMobile || !users[currentUserMobile]){
-  alert("Please login first!");
-  window.location.href = "index.html";
-}
+// Filter only this user's topup orders
+const userOrders = payments.filter(p => p.type==="topup" && p.mobile == currentUserMobile);
 
 const ordersContainer = document.getElementById("ordersContainer");
 const noOrders = document.getElementById("noOrders");
-
-const userOrders = topups.filter(t => t.mobile === currentUserMobile);
 
 if(userOrders.length === 0){
   noOrders.style.display="block";
@@ -146,7 +142,7 @@ if(userOrders.length === 0){
     `;
     ordersContainer.appendChild(card);
   });
-}
+  }
 
 // Floating Bubble Animation (no money sign)
 const bubbleContainer = document.getElementById('bubbleContainer');
