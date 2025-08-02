@@ -7,72 +7,156 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin:0; font-family:'Poppins',sans-serif;
-      background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
-      color:white; display:flex; flex-direction:column; align-items:center;
-      padding:30px;
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:white;
+      min-height:100vh;
+      padding:20px;
+      overflow:hidden;
     }
-    h2 {margin-bottom:20px;}
-    table {
-      width:90%; border-collapse:collapse; background:rgba(255,255,255,0.08);
-      border-radius:12px; overflow:hidden;
+    h2 {
+      text-align:center;
+      margin-bottom:20px;
+      position:relative;
+      z-index:2;
     }
-    table th, table td {padding:12px; text-align:left;}
-    table th {background:rgba(255,255,255,0.1);}
-    tr.completed td {color:#00C853;}
-    tr.pending td {color:orange;}
-    tr.failed td {color:#ff4757;}
-    table tr:hover {background:rgba(255,255,255,0.05);}
+    .orders-container {
+      max-width: 900px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      position:relative;
+      z-index:2;
+    }
+    .order-card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      transition: 0.3s;
+    }
+    .order-card:hover {
+      transform: translateY(-5px);
+    }
+    .order-header {
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .order-id {
+      font-weight:600;
+      font-size:18px;
+    }
+    .status {
+      padding:4px 10px;
+      border-radius:20px;
+      font-size:13px;
+      font-weight:600;
+    }
+    .pending {background:orange;color:white;}
+    .completed {background:#00C853;color:white;}
+    .failed {background:#ff4757;color:white;}
+    .order-body p {
+      margin:6px 0;
+      font-size:14px;
+    }
+    .no-orders {
+      text-align:center;
+      margin-top:50px;
+      font-size:18px;
+      opacity:0.8;
+      position:relative;
+      z-index:2;
+    }
+
+    /* Bubble Animation */
+    .bubble {
+      position:absolute;
+      bottom:-100px;
+      width:60px;
+      height:60px;
+      background:rgba(255,215,0,0.9);
+      border-radius:50%;
+      animation: rise 7s linear forwards;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      color:black;
+      font-weight:bold;
+      font-size:22px;
+      box-shadow:0 0 25px rgba(255,215,0,0.8);
+    }
+    @keyframes rise {
+      0% {transform:translateY(0) scale(0.7); opacity:0.8;}
+      50% {opacity:1; transform:translateY(-50vh) scale(1);}
+      100% {transform:translateY(-110vh) scale(1.2); opacity:0;}
+    }
   </style>
 </head>
 <body>
 
-  <h2>📦 My Orders</h2>
+<h2>📦 My Orders</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>UID</th>
-        <th>Package</th>
-        <th>Amount</th>
-        <th>Method</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="orderTable"></tbody>
-  </table>
+<div class="orders-container" id="ordersContainer"></div>
+<div class="no-orders" id="noOrders" style="display:none;">No orders yet.</div>
+
+<!-- Bubble Container -->
+<div id="bubbleContainer"></div>
 
 <script>
-  const currentUserMobile = localStorage.getItem("currentUser");
-  const users = JSON.parse(localStorage.getItem("users")) || {};
-  const payments = JSON.parse(localStorage.getItem("payments")) || [];
+const currentUserMobile = localStorage.getItem("currentUser");
+const users = JSON.parse(localStorage.getItem("users")) || {};
+const payments = JSON.parse(localStorage.getItem("payments")) || [];
 
-  if(!currentUserMobile || !users[currentUserMobile]){
-    alert("Please login first!");
-    window.location.href = "login.html";
-  }
+if(!currentUserMobile || !users[currentUserMobile]){
+  alert("Please login first!");
+  window.location.href = "index.html";
+}
 
-  const orderTable = document.getElementById("orderTable");
-  const userOrders = payments.filter(o => o.mobile === currentUserMobile && o.type==="topup");
+const ordersContainer = document.getElementById("ordersContainer");
+const noOrders = document.getElementById("noOrders");
 
-  if(userOrders.length === 0){
-    orderTable.innerHTML = `<tr><td colspan="6" style="text-align:center;color:white;">No orders found</td></tr>`;
-  } else {
-    userOrders.forEach(order => {
-      const tr = document.createElement("tr");
-      tr.className = order.status.toLowerCase();
-      tr.innerHTML = `
-        <td>${order.date}</td>
-        <td>${order.uid || '-'}</td>
-        <td>${order.package}</td>
-        <td>৳${order.amount}</td>
-        <td>${order.method}</td>
-        <td>${order.status}</td>
-      `;
-      orderTable.appendChild(tr);
-    });
-  }
+// Filter Topup Orders Only
+const userOrders = payments.filter(p => p.mobile===currentUserMobile && p.type==="topup");
+
+if(userOrders.length === 0){
+  noOrders.style.display="block";
+} else {
+  userOrders.forEach(tx => {
+    const card = document.createElement("div");
+    card.className = "order-card";
+    card.innerHTML = `
+      <div class="order-header">
+        <span class="order-id">Order ID: ${tx.id}</span>
+        <span class="status ${tx.status.toLowerCase()}">${tx.status}</span>
+      </div>
+      <div class="order-body">
+        <p><b>Date:</b> ${tx.date}</p>
+        <p><b>Total Price:</b> ৳${tx.amount}</p>
+        <p><b>Package:</b> ${tx.package || '-'}</p>
+        <p><b>Player UID:</b> ${tx.uid || '-'}</p>
+      </div>
+    `;
+    ordersContainer.appendChild(card);
+  });
+}
+
+// Floating Bubble Animation
+const bubbleContainer = document.getElementById('bubbleContainer');
+function createBubble(){
+  const bubble = document.createElement('div');
+  bubble.className='bubble';
+  bubble.innerText='৳';
+  bubble.style.left=Math.random()*90+'vw';
+  bubble.style.animationDuration=(4+Math.random()*3)+'s';
+  bubbleContainer.appendChild(bubble);
+  setTimeout(()=>{bubble.remove();},8000);
+}
+setInterval(createBubble,600); // প্রতি 0.6 সেকেন্ডে bubble তৈরি
 </script>
 
 </body>
