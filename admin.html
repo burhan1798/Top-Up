@@ -251,11 +251,7 @@ function renderTopups(){
   });
   document.getElementById('topupTab').innerHTML = html;
 }
-// Scroll to top after status change
-window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-});
+
 // === Update Status ===
 function updateStatus(index,status){
   const payments = JSON.parse(localStorage.getItem('payments')) || [];
@@ -270,7 +266,11 @@ function updateStatus(index,status){
   alert(`Topup ${status}!`);
   location.reload();
 }
-
+// Scroll to top after status change
+window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+});
 renderUsers();
 renderTopups();
 </script>
