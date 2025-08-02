@@ -5,11 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AIR DROP TOP UP</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  <header style="background:#fff; display:flex; justify-content:center; align-items:center; height:100px; padding-right:140px;">
+  <img src="https://iili.io/FrNiI71.md.png" alt="BullaTopUp Logo" style="height:200px; width:auto; object-fit:contain;"onclick="window.location.href="main.html'">
+</header>
+<style>
+/* ===== Animated Colorful Background with Bubbles ===== */
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #ff7eb3, #65d6ff, #a18cd1);
+    background-size: 600% 600%;
+    animation: gradientMove 8s ease infinite;
+    /* overflow: hidden;  <-- এটা মুছে দাও */
+    position: relative;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Gradient Animation */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Bubbles */
+.bubble {
+    position: absolute;
+    bottom: -100px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.1));
+    border-radius: 50%;
+    animation: rise 8s infinite ease-in;
+}
+
+/* Bubble Floating Animation */
+@keyframes rise {
+    0% { transform: translateY(0) scale(1); opacity: 0.9; }
+    50% { transform: translateY(-50vh) scale(1.2); opacity: 0.6; }
+    100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+}
+
+/* Generate multiple bubbles */
+.bubble:nth-child(1) { left: 10%; width: 60px; height: 60px; animation-delay: 0s; }
+.bubble:nth-child(2) { left: 25%; width: 40px; height: 40px; animation-delay: 1s; }
+.bubble:nth-child(3) { left: 40%; width: 80px; height: 80px; animation-delay: 2s; }
+.bubble:nth-child(4) { left: 55%; width: 50px; height: 50px; animation-delay: 3s; }
+.bubble:nth-child(5) { left: 70%; width: 100px; height: 100px; animation-delay: 1.5s; }
+.bubble:nth-child(6) { left: 85%; width: 30px; height: 30px; animation-delay: 2.5s; }
+</style>
 <body class="bg-gray-100 font-sans">
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+
 
   <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
-    <img src="https://i.ibb.co/VWKcNtw0/images-5.jpg" alt="Free Fire" class="w-full h-48 object-cover rounded mb-4">
+    <img src="https://iili.io/Fr6P6iB.jpg" alt="Free Fire" class="w-full h-48 object-cover rounded mb-4">
 
     <h2 class="text-2xl font-bold mb-4 text-center">✅AIRDROP✅</h2>
 
@@ -34,26 +90,35 @@
     </select>
 
     <!-- Buy Button -->
-    <button onclick="sendToWhatsApp()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now on WhatsApp</button>
+    <button onclick="goToAddFunds()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now</button>
   </div>
 
   <script>
-    function sendToWhatsApp() {
+    function goToAddFunds() {
       const uid = document.getElementById('uid').value.trim();
-      const package = document.getElementById('package').value;
-      const payment = document.getElementById('payment').value;
-      const phoneNumber = "8801704481919"; // 🟢 Replace with your WhatsApp number
+      const selectedPackage = document.getElementById('package').value;
 
       if (!uid) {
         alert("Please enter your UID.");
         return;
       }
 
-      const message = `Hello, I want to order:\nGame: Free Fire\nUID: ${uid}\nPackage: ${package}\nPayment: ${payment}`;
-      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
+      // Extract name and amount
+      const [name, amountStr] = selectedPackage.split(" - ");
+      const amount = parseInt(amountStr.replace("৳","").trim());
+
+      // Save to localStorage for add_funds.html
+      localStorage.setItem("selectedPackage", JSON.stringify({
+        uid: uid,
+        name: name,
+        amount: amount
+      }));
+
+      // Redirect to add_funds.html
+      window.location.href = "add_funds.html";
     }
   </script>
 
 </body>
-</html>
+    </html>
+  
