@@ -6,97 +6,78 @@
   <title>Admin Panel | BullaTopUp</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0; font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
-      color: white;
+    body {margin:0; font-family:'Poppins',sans-serif; background:#f5f6fa;}
+    header {background:linear-gradient(135deg,#FF3B30,#FF5C8D); color:white; padding:15px 20px; font-size:20px; font-weight:600;}
+    nav {background:white; display:flex; gap:20px; padding:10px 20px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+    nav button {
+      padding:8px 16px; border:none; border-radius:6px; cursor:pointer; font-weight:600;
     }
-    header {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
-      padding: 20px;
-      font-size: 22px;
-      font-weight: 600;
-      display:flex; justify-content:space-between; align-items:center;
-      box-shadow:0 2px 12px rgba(0,0,0,0.2);
-    }
-    header .btn-logout {
-      background: #ff4757; border: none; color: white;
-      padding: 8px 16px; border-radius: 8px; cursor: pointer;
-      font-weight: 600; transition:0.3s;
-    }
-    header .btn-logout:hover { background:#e84118; }
-    .container { padding: 20px; }
-
-    /* Search Box */
-    .search-box {
-      margin-bottom: 20px; max-width: 400px;
-    }
-    .search-box input {
-      width:100%; padding:12px 15px; border-radius:10px;
-      border:none; outline:none; font-size:14px;
-      background:rgba(255,255,255,0.1); color:white;
-      backdrop-filter: blur(10px);
-    }
-
-    /* Table */
-    table {
-      width:100%; border-collapse:collapse;
-      background:rgba(255,255,255,0.05);
-      border-radius:12px; overflow:hidden;
-    }
-    table th, table td {
-      padding: 12px; text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    table th {
-      background: rgba(255,255,255,0.08);
-      font-weight:600;
-    }
-    table tr:hover { background: rgba(255,255,255,0.05); }
-
-    /* Buttons */
-    .btn {
-      padding:6px 12px; font-size:12px; font-weight:600;
-      border:none; border-radius:6px; cursor:pointer;
-      margin-right:5px;
-    }
-    .btn-view { background:#00C853; color:white; }
-    .btn-view:hover { background:#00A843; }
-    .btn-del { background:#ff4757; color:white; }
-    .btn-del:hover { background:#e84118; }
+    nav button.active {background:#FF5C8D; color:white;}
+    .container {padding:20px;}
+    table {width:100%; border-collapse:collapse; margin-top:15px; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    table th, table td {padding:10px; border-bottom:1px solid #eee; text-align:left;}
+    table th {background:#f1f1f1;}
+    table tr:hover {background:#f9f9f9;}
+    .btn {padding:4px 8px; font-size:12px; border:none; border-radius:4px; cursor:pointer;}
+    .btn-complete {background:#00C853; color:white;}
+    .btn-fail {background:#ff4757; color:white;}
   </style>
 </head>
 <body>
 
-<header>
-  🔹 Admin Panel - Registered Users
-  <button class="btn-logout" onclick="logout()">Logout</button>
-</header>
+<header>🔹 Admin Panel</header>
+
+<nav>
+  <button id="tabUsers" class="active" onclick="showTab('users')">Registered Users</button>
+  <button id="tabPayments" onclick="showTab('payments')">Payments / Topups</button>
+</nav>
 
 <div class="container">
-  <div class="search-box">
-    <input type="text" id="search" placeholder="Search by name, phone, or email..." oninput="filterUsers()">
+  <!-- Users Table -->
+  <div id="usersTab">
+    <h3>Registered Users</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>User ID</th>
-        <th>Name</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="userTable"></tbody>
-  </table>
+  <!-- Payments Table -->
+  <div id="paymentsTab" style="display:none;">
+    <h3>Payment Requests</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Txn ID</th>
+          <th>User ID</th>
+          <th>Username</th>
+          <th>Package</th>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="paymentTable"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-  let users = JSON.parse(localStorage.getItem("users")) || {};
   const userTable = document.getElementById("userTable");
+  const paymentTable = document.getElementById("paymentTable");
+
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  let payments = JSON.parse(localStorage.getItem("payments")) || [];
 
   function loadUsers() {
     userTable.innerHTML = "";
@@ -108,61 +89,74 @@
         <td>${user.username || "-"}</td>
         <td>${user.email || "-"}</td>
         <td>${user.mobile || "-"}</td>
-        <td>
-          <button class="btn btn-view" onclick='viewUser(${JSON.stringify(user.mobile)})'>View</button>
-          <button class="btn btn-del" onclick='deleteUser(${JSON.stringify(user.mobile)})'>Delete</button>
-        </td>
       `;
       userTable.appendChild(tr);
     });
   }
 
-  function filterUsers() {
-    const searchVal = document.getElementById("search").value.toLowerCase();
-    userTable.innerHTML = "";
-    Object.values(users).filter(user =>
-      (user.name || "").toLowerCase().includes(searchVal) ||
-      (user.username || "").toLowerCase().includes(searchVal) ||
-      (user.email || "").toLowerCase().includes(searchVal) ||
-      (user.mobile || "").toLowerCase().includes(searchVal)
-    ).forEach(user => {
+  function loadPayments() {
+    paymentTable.innerHTML = "";
+    payments.forEach((p, index) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${user.id || "N/A"}</td>
-        <td>${user.name || "-"}</td>
-        <td>${user.username || "-"}</td>
-        <td>${user.email || "-"}</td>
-        <td>${user.mobile || "-"}</td>
+        <td>${index+1}</td>
+        <td>${p.userId}</td>
+        <td>${p.username || "-"}</td>
+        <td>${p.package}</td>
+        <td>৳${p.amount}</td>
+        <td>${p.method}</td>
+        <td>${p.status}</td>
+        <td>${p.date}</td>
         <td>
-          <button class="btn btn-view" onclick='viewUser(${JSON.stringify(user.mobile)})'>View</button>
-          <button class="btn btn-del" onclick='deleteUser(${JSON.stringify(user.mobile)})'>Delete</button>
+          ${p.status==="Pending" ? `
+            <button class="btn btn-complete" onclick="completePayment(${index})">Complete</button>
+            <button class="btn btn-fail" onclick="failPayment(${index})">Fail</button>
+          ` : "-"}
         </td>
       `;
-      userTable.appendChild(tr);
+      paymentTable.appendChild(tr);
     });
   }
 
-  function viewUser(mobile) {
-    const user = users[mobile];
-    alert(
-      `👤 User Profile\n\nID: ${user.id || "N/A"}\nName: ${user.name}\nUsername: ${user.username || "-"}\nEmail: ${user.email || "-"}\nPhone: ${user.mobile}\nPassword: ${user.password || "-"}`
-    );
-  }
+  function completePayment(index) {
+    payments[index].status = "Completed";
+    localStorage.setItem("payments", JSON.stringify(payments));
 
-  function deleteUser(mobile) {
-    if(confirm("Are you sure you want to delete this user?")) {
-      delete users[mobile];
+    // Add to user's wallet & transaction history
+    const mobile = payments[index].mobile;
+    if(users[mobile]){
+      users[mobile].wallet = (users[mobile].wallet || 0) + payments[index].amount;
+      users[mobile].transactions = users[mobile].transactions || [];
+      users[mobile].transactions.push({
+        package: payments[index].package,
+        amount: payments[index].amount,
+        method: payments[index].method,
+        status: "Completed",
+        date: new Date().toLocaleString()
+      });
       localStorage.setItem("users", JSON.stringify(users));
-      loadUsers();
-      alert("User deleted successfully ✅");
     }
+
+    loadPayments();
+    alert("✅ Payment marked as Completed & Wallet updated!");
   }
 
-  function logout(){
-    window.location.href="login.html"; // admin login page if needed
+  function failPayment(index) {
+    payments[index].status = "Failed";
+    localStorage.setItem("payments", JSON.stringify(payments));
+    loadPayments();
+    alert("❌ Payment marked as Failed!");
+  }
+
+  function showTab(tab) {
+    document.getElementById("usersTab").style.display = tab==="users" ? "block" : "none";
+    document.getElementById("paymentsTab").style.display = tab==="payments" ? "block" : "none";
+    document.getElementById("tabUsers").classList.toggle("active", tab==="users");
+    document.getElementById("tabPayments").classList.toggle("active", tab==="payments");
   }
 
   loadUsers();
+  loadPayments();
 </script>
 
 </body>
