@@ -60,19 +60,43 @@
   <div id="usersTab"></div>
   <div id="topupTab" style="display:none;"></div>
 </div>
+</style>
+
+<!-- Overlay Modal -->
+<div id="adminLoginOverlay">
+  <div id="adminLoginBox">
+    <h2>🔒 Admin Login</h2>
+    <input type="password" id="adminPassword" placeholder="Enter Password">
+    <button id="adminLoginBtn">Login</button>
+    <div id="adminError">❌ Wrong password!</div>
+  </div>
+</div>
 
 <script>
-  // পেজ লোড হবার সাথে সাথে পাসওয়ার্ড চাইবে
-  document.addEventListener("DOMContentLoaded", function () {
-    const correctPassword = "burhan1"; // এখানে তোমার পাসওয়ার্ড
+  const correctPassword = "burhan1"; // তোমার পাসওয়ার্ড
+  
+  const overlay = document.getElementById('adminLoginOverlay');
+  const loginBtn = document.getElementById('adminLoginBtn');
+  const passwordInput = document.getElementById('adminPassword');
+  const errorMsg = document.getElementById('adminError');
 
-    let pass = prompt("🔒 Enter Admin Password to access:");
+  // Enter key চাপলেও login হবে
+  passwordInput.addEventListener('keypress', function(e){
+    if(e.key === 'Enter'){ loginBtn.click(); }
+  });
 
-    if(pass !== correctPassword){
-        alert("❌ Wrong password! Access Denied.");
-        window.location.href = "index.html"; // ভুল হলে অন্য পেজে নিয়ে যাবে
+  loginBtn.addEventListener('click', function(){
+    const inputPass = passwordInput.value;
+    if(inputPass === correctPassword){
+      overlay.style.display = 'none'; // Hide overlay
+    } else {
+      errorMsg.style.display = 'block';
+      passwordInput.value = '';
+      passwordInput.focus();
     }
   });
+</script>
+<script>  
 
 // === Bubble Generator ===
 const bubbleContainer=document.getElementById('bubbles');
@@ -163,16 +187,15 @@ function updateStatus(index,status){
   });
   localStorage.setItem('payments', JSON.stringify(allPayments));
   alert(`Topup ${status}!`);
-  // Scroll to top after status change
-window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-});
-  location.reload();
-}
+ // Smooth scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
-renderUsers();
-renderTopups();
+  // Delay দিয়ে rerender করলে scroll কাজ করবে
+  setTimeout(()=>{
+    renderUsers();
+    renderTopups();
+  }, 600);
+  } 
 </script>
 </body>
   </html>
