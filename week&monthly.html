@@ -43,24 +43,32 @@
     </select>
 
     <!-- Buy Button -->
-    <button onclick="sendToWhatsApp()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now on WhatsApp</button>
+    <button onclick="goToAddFunds()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now</button>
   </div>
 
   <script>
-    function sendToWhatsApp() {
+    function goToAddFunds() {
       const uid = document.getElementById('uid').value.trim();
-      const package = document.getElementById('package').value;
-      const payment = document.getElementById('payment').value;
-      const phoneNumber = "8801704481919"; // 🟢 Replace with your WhatsApp number
+      const selectedPackage = document.getElementById('package').value;
 
       if (!uid) {
         alert("Please enter your UID.");
         return;
       }
 
-      const message = `Hello, I want to order:\nGame: Free Fire\nUID: ${uid}\nPackage: ${package}\nPayment: ${payment}`;
-      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
+      // Extract name and amount
+      const [name, amountStr] = selectedPackage.split(" - ");
+      const amount = parseInt(amountStr.replace("৳","").trim());
+
+      // Save to localStorage for add_funds.html
+      localStorage.setItem("selectedPackage", JSON.stringify({
+        uid: uid,
+        name: name,
+        amount: amount
+      }));
+
+      // Redirect to add_funds.html
+      window.location.href = "add_funds.html";
     }
   </script>
 
