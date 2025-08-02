@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wallet | BullaTopUp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin:0; font-family:'Poppins',sans-serif;
+      background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:white; display:flex; flex-direction:column; align-items:center;
+      padding:30px;
+    }
+    h2 {margin-bottom:20px;}
+    .balance-box {
+      background:rgba(255,255,255,0.1); padding:20px 30px;
+      border-radius:12px; margin-bottom:30px; text-align:center;
+      font-size:22px; font-weight:600;
+    }
+    table {
+      width:90%; border-collapse:collapse; background:rgba(255,255,255,0.08);
+      border-radius:12px; overflow:hidden;
+    }
+    table th, table td {padding:12px; text-align:left;}
+    table th {background:rgba(255,255,255,0.1);}
+    tr.completed td {color:#00C853;}
+    tr.pending td {color:orange;}
+    tr.failed td {color:#ff4757;}
+    table tr:hover {background:rgba(255,255,255,0.05);}
+  </style>
+</head>
+<body>
+
+  <h2>💳 My Wallet</h2>
+  <div class="balance-box" id="balanceBox">Loading...</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Package</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="txTable"></tbody>
+  </table>
+
+<script>
+  const currentUserMobile = localStorage.getItem("currentUser");
+  const users = JSON.parse(localStorage.getItem("users")) || {};
+  const payments = JSON.parse(localStorage.getItem("payments")) || [];
+
+  if(!currentUserMobile || !users[currentUserMobile]){
+    alert("Please login first!");
+    window.location.href = "index.html";
+  }
+
+  const user = users[currentUserMobile];
+  const balanceBox = document.getElementById("balanceBox");
+  const txTable = document.getElementById("txTable");
+
+  // Wallet balance
+  balanceBox.innerText = `Current Balance: ৳${user.wallet || 0}`;
+
+  // Transaction History
+  const userPayments = payments.filter(p => p.mobile===currentUserMobile);
+  txTable.innerHTML = "";
+
+  userPayments.forEach(tx => {
+    const tr = document.createElement("tr");
+    tr.className = tx.status.toLowerCase();
+    tr.innerHTML = `
+      <td>${tx.date}</td>
+      <td>${tx.package}</td>
+      <td>৳${tx.amount}</td>
+      <td>${tx.method}</td>
+      <td>${tx.status}</td>
+    `;
+    txTable.appendChild(tr);
+  });
+</script>
+
+</body>
+</html>
