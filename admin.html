@@ -62,13 +62,17 @@
 </div>
 
 <script>
-// === Admin Login Prompt ===
-const uname = prompt("Enter Admin Username:");
-const pass = prompt("Enter Admin Password:");
-if(uname !== "burhan" || pass !== "burhan1"){
-  alert("❌ Access Denied!");
-  window.location.href = "index.html";
-}
+  // পেজ লোড হবার সাথে সাথে পাসওয়ার্ড চাইবে
+  document.addEventListener("DOMContentLoaded", function () {
+    const correctPassword = "burhan1"; // এখানে তোমার পাসওয়ার্ড
+
+    let pass = prompt("🔒 Enter Admin Password to access:");
+
+    if(pass !== correctPassword){
+        alert("❌ Wrong password! Access Denied.");
+        window.location.href = "index.html"; // ভুল হলে অন্য পেজে নিয়ে যাবে
+    }
+  })
 
 // === Bubble Generator ===
 const bubbleContainer=document.getElementById('bubbles');
@@ -106,8 +110,9 @@ function renderUsers(){
   <table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
   <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
   
-  Object.values(users).forEach(u=>{
-    html += `<tr>
+  Object.values(users).slice().reverse().forEach(u=>{
+    html += `<tr> ...`;
+});
       <td>${u.userId||'---'}</td>
       <td>${u.name||'-'}</td>
       <td>${u.username||'-'}</td>
@@ -146,7 +151,11 @@ function renderTopups(){
   });
   document.getElementById('topupTab').innerHTML = html;
 }
-
+// Scroll to top after status change
+window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+});
 // === Update Status ===
 function updateStatus(index,status){
   const payments = JSON.parse(localStorage.getItem('payments')) || [];
