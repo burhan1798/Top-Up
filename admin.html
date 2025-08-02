@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | BullaTopUp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0; font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color: white;
+    }
+    header {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      display:flex; justify-content:space-between; align-items:center;
+      box-shadow:0 2px 12px rgba(0,0,0,0.2);
+    }
+    header .btn-logout {
+      background: #ff4757; border: none; color: white;
+      padding: 8px 16px; border-radius: 8px; cursor: pointer;
+      font-weight: 600; transition:0.3s;
+    }
+    header .btn-logout:hover { background:#e84118; }
+    .container { padding: 20px; }
+
+    /* Search Box */
+    .search-box {
+      margin-bottom: 20px; max-width: 400px;
+    }
+    .search-box input {
+      width:100%; padding:12px 15px; border-radius:10px;
+      border:none; outline:none; font-size:14px;
+      background:rgba(255,255,255,0.1); color:white;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Table */
+    table {
+      width:100%; border-collapse:collapse;
+      background:rgba(255,255,255,0.05);
+      border-radius:12px; overflow:hidden;
+    }
+    table th, table td {
+      padding: 12px; text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    table th {
+      background: rgba(255,255,255,0.08);
+      font-weight:600;
+    }
+    table tr:hover { background: rgba(255,255,255,0.05); }
+
+    /* Buttons */
+    .btn {
+      padding:6px 12px; font-size:12px; font-weight:600;
+      border:none; border-radius:6px; cursor:pointer;
+      margin-right:5px;
+    }
+    .btn-view { background:#00C853; color:white; }
+    .btn-view:hover { background:#00A843; }
+    .btn-del { background:#ff4757; color:white; }
+    .btn-del:hover { background:#e84118; }
+  </style>
+</head>
+<body>
+
+<header>
+  🔹 Admin Panel - Registered Users
+  <button class="btn-logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search by name, phone, or email..." oninput="filterUsers()">
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+</div>
+
+<script>
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  const userTable = document.getElementById("userTable");
+
+  function loadUsers() {
+    userTable.innerHTML = "";
+    Object.values(users).forEach(user => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${user.id || "N/A"}</td>
+        <td>${user.name || "-"}</td>
+        <td>${user.username || "-"}</td>
+        <td>${user.email || "-"}</td>
+        <td>${user.mobile || "-"}</td>
+        <td>
+          <button class="btn btn-view" onclick='viewUser(${JSON.stringify(user.mobile)})'>View</button>
+          <button class="btn btn-del" onclick='deleteUser(${JSON.stringify(user.mobile)})'>Delete</button>
+        </td>
+      `;
+      userTable.appendChild(tr);
+    });
+  }
+
+  function filterUsers() {
+    const searchVal = document.getElementById("search").value.toLowerCase();
+    userTable.innerHTML = "";
+    Object.values(users).filter(user =>
+      (user.name || "").toLowerCase().includes(searchVal) ||
+      (user.username || "").toLowerCase().includes(searchVal) ||
+      (user.email || "").toLowerCase().includes(searchVal) ||
+      (user.mobile || "").toLowerCase().includes(searchVal)
+    ).forEach(user => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${user.id || "N/A"}</td>
+        <td>${user.name || "-"}</td>
+        <td>${user.username || "-"}</td>
+        <td>${user.email || "-"}</td>
+        <td>${user.mobile || "-"}</td>
+        <td>
+          <button class="btn btn-view" onclick='viewUser(${JSON.stringify(user.mobile)})'>View</button>
+          <button class="btn btn-del" onclick='deleteUser(${JSON.stringify(user.mobile)})'>Delete</button>
+        </td>
+      `;
+      userTable.appendChild(tr);
+    });
+  }
+
+  function viewUser(mobile) {
+    const user = users[mobile];
+    alert(
+      `👤 User Profile\n\nID: ${user.id || "N/A"}\nName: ${user.name}\nUsername: ${user.username || "-"}\nEmail: ${user.email || "-"}\nPhone: ${user.mobile}\nPassword: ${user.password || "-"}`
+    );
+  }
+
+  function deleteUser(mobile) {
+    if(confirm("Are you sure you want to delete this user?")) {
+      delete users[mobile];
+      localStorage.setItem("users", JSON.stringify(users));
+      loadUsers();
+      alert("User deleted successfully ✅");
+    }
+  }
+
+  function logout(){
+    window.location.href="login.html"; // admin login page if needed
+  }
+
+  loadUsers();
+</script>
+
+</body>
+</html>
