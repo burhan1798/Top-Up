@@ -3,116 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
+  <title>Admin Panel | BullaTopUp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    overflow: hidden;
-    background: linear-gradient(135deg, #f5f6fa, #dfe9f3);
-    position: relative;
-    height: 100vh;
-  }
+    body {
+      margin:0; font-family:'Poppins',sans-serif;
+      background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
+      overflow:hidden;
+    }
+    header {
+      background: linear-gradient(90deg, #ff416c, #ff4b2b);
+      color:white; padding:20px; font-size:24px; font-weight:bold;
+      position:relative; z-index:2;
+    }
+    #bubbles {position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;}
+    .bubble {
+      position:absolute; bottom:-100px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,0,100,0.9), rgba(0,150,255,0.8));
+      animation: rise 6s linear forwards;
+      opacity: 0.85;
+      box-shadow:0 0 15px rgba(0,0,0,0.3);
+    }
+    @keyframes rise {
+      0% {transform:translateY(0) scale(0.7); opacity:0.9;}
+      50% {opacity:0.6;}
+      100% {transform:translateY(-120vh) scale(1.3); opacity:0;}
+    }
 
-  header {
-    background: linear-gradient(90deg, #ff416c, #ff4b2b);
-    padding: 20px;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    position: relative;
-    z-index: 2;
-  }
+    .tabs {display:flex;gap:10px;padding:15px;background:rgba(255,255,255,0.85);margin:10px;border-radius:10px;z-index:2;position:relative;}
+    .tab {padding:10px 20px;border-radius:8px;cursor:pointer;background:#eee;font-weight:500;}
+    .tab.active {background:#ff4b2b;color:white;}
 
-  /* Fullscreen bubble container */
-  #bubbles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    overflow: hidden;
-  }
+    .content {padding:20px;position:relative;z-index:2;}
+    .card {background:rgba(255,255,255,0.9);padding:15px;margin-bottom:15px;border-radius:10px;box-shadow:0 3px 8px rgba(0,0,0,0.05);}
+    
+    .btn {padding:6px 12px;border:none;border-radius:6px;color:white;cursor:pointer;margin:5px;font-weight:600;}
+    .complete {background:#00c853;}
+    .fail {background:#d50000;}
 
-  .bubble {
-    position: absolute;
-    bottom: -100px;
-    border-radius: 50%;
-    animation: rise 6s linear infinite;
-    opacity: 0.7;
-    filter: blur(1px);
-  }
-
-  /* Colorful gradient bubbles */
-  .bubble::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,0,150,0.6), rgba(0,200,255,0.4));
-  }
-
-  @keyframes rise {
-    0% { transform: translateY(0) scale(1); opacity: 0.7; }
-    50% { opacity: 0.4; }
-    100% { transform: translateY(-120vh) scale(1.3); opacity: 0; }
-  }
-
-  .tabs {
-    display: flex;
-    gap: 10px;
-    padding: 15px;
-    background: rgba(255,255,255,0.8);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border-radius: 10px;
-    margin: 10px;
-    z-index: 2;
-    position: relative;
-  }
-
-  .tab {
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    background: #eee;
-  }
-
-  .tab.active {
-    background: #ff4b2b;
-    color: white;
-  }
-
-  .content {
-    padding: 20px;
-    z-index: 2;
-    position: relative;
-  }
-
-  .card {
-    background: rgba(255,255,255,0.9);
-    margin-bottom: 15px;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-    animation: fadeIn 0.6s ease;
-  }
-
-  @keyframes fadeIn {
-    from {opacity:0;transform: translateY(10px);}
-    to {opacity:1;transform: translateY(0);}
-  }
-</style>
+    .status-pending {color:orange;font-weight:bold;}
+    .status-completed {color:green;font-weight:bold;}
+    .status-failed {color:red;font-weight:bold;}
+  </style>
 </head>
 <body>
 
-<header>
-  Admin Panel
-  <!-- Bubble container -->
-  <div id="bubbles"></div>
-</header>
+<header>Admin Panel</header>
+<div id="bubbles"></div>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('users')">Registered Users</div>
@@ -125,22 +62,31 @@
 </div>
 
 <script>
-  // Bubble Generator for full screen
-  const bubbleContainer = document.createElement('div');
-  bubbleContainer.id = 'bubbles';
-  document.body.appendChild(bubbleContainer);
+// === Admin Login Prompt ===
+const uname = prompt("Enter Admin Username:");
+const pass = prompt("Enter Admin Password:");
+if(uname !== "burhan" || pass !== "burhan1"){
+  alert("❌ Access Denied!");
+  window.location.href = "index.html";
+}
 
-  for(let i=0; i<20; i++){
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    const size = Math.random()*50 + 20;
-    bubble.style.width = size + 'px';
-    bubble.style.height = size + 'px';
-    bubble.style.left = Math.random()*100 + '%';
-    bubble.style.animationDuration = (Math.random()*3+4) + 's';
-    bubbleContainer.appendChild(bubble);
-  }
+// === Bubble Generator ===
+const bubbleContainer=document.getElementById('bubbles');
+for(let i=0;i<20;i++){
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
+  const size=Math.random()*50+30;
+  bubble.style.width=size+'px';
+  bubble.style.height=size+'px';
+  bubble.style.left=Math.random()*100+'%';
+  bubble.style.animationDuration=(Math.random()*3+4)+'s';
+  bubbleContainer.appendChild(bubble);
+}
 
+// === LocalStorage Data ===
+const users = JSON.parse(localStorage.getItem('users')) || {};
+const payments = JSON.parse(localStorage.getItem('payments')) || [];
+const topups = payments.filter(p => p.type==="topup");
 
 function showTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -154,27 +100,27 @@ function showTab(tab){
   }
 }
 
-const users = JSON.parse(localStorage.getItem('users')) || {};
-const topups = JSON.parse(localStorage.getItem('topups')) || [];
-
+// === Render Registered Users ===
 function renderUsers(){
-  let html = `<h3>Registered Users</h3>`;
-  html += `<table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
-            <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
+  let html = `<h3>Registered Users</h3>
+  <table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
+  <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
+  
   Object.values(users).forEach(u=>{
     html += `<tr>
-              <td>${u.userId||'---'}</td>
-              <td>${u.name}</td>
-              <td>${u.username||'-'}</td>
-              <td>${u.email||'-'}</td>
-              <td>${u.mobile}</td>
-              <td><button class="fail" onclick="deleteUser('${u.mobile}')">Delete</button></td>
-            </tr>`;
+      <td>${u.userId||'---'}</td>
+      <td>${u.name||'-'}</td>
+      <td>${u.username||'-'}</td>
+      <td>${u.email||'-'}</td>
+      <td>${u.mobile||'-'}</td>
+      <td><button class="btn fail" onclick="deleteUser('${u.mobile}')">Delete</button></td>
+    </tr>`;
   });
   html += `</table>`;
   document.getElementById('usersTab').innerHTML = html;
 }
 
+// === Delete User ===
 function deleteUser(mobile){
   if(confirm("Delete this user?")){
     delete users[mobile];
@@ -183,8 +129,10 @@ function deleteUser(mobile){
   }
 }
 
+// === Render Topups ===
 function renderTopups(){
   let html = `<h3>Topup Requests</h3>`;
+  if(topups.length===0){html += `<p>No topup requests yet.</p>`;}
   topups.forEach((t,i)=>{
     html += `<div class="card">
       <b>ID #${t.id||i+1} | ${t.username||'Unknown'} | ${t.package} - ৳${t.amount}</b><br>
@@ -192,28 +140,30 @@ function renderTopups(){
       Method: ${t.method} | Status: <span class="status-${t.status.toLowerCase()}">${t.status}</span><br>
       Date: ${t.date}<br>
       ${t.status==='Pending'?`
-        <button class="btn complete" onclick="completeTopup(${i})">Complete</button>
-        <button class="btn fail" onclick="failTopup(${i})">Fail</button>`:''}
+        <button class="btn complete" onclick="updateStatus(${i},'Completed')">Complete</button>
+        <button class="btn fail" onclick="updateStatus(${i},'Failed')">Fail</button>`:''}
     </div>`;
   });
   document.getElementById('topupTab').innerHTML = html;
 }
 
-function completeTopup(i){
-  topups[i].status = "Completed";
-  localStorage.setItem('topups', JSON.stringify(topups));
-  alert("✅ Topup Completed!");
-  renderTopups();
-}
-function failTopup(i){
-  topups[i].status = "Failed";
-  localStorage.setItem('topups', JSON.stringify(topups));
-  alert("❌ Topup Failed!");
-  renderTopups();
+// === Update Status ===
+function updateStatus(index,status){
+  const payments = JSON.parse(localStorage.getItem('payments')) || [];
+  const topups = payments.filter(p=>p.type==="topup");
+  topups[index].status=status;
+  // Save back
+  let allPayments = payments.map(p=>{
+    if(p.type==="topup" && p.id===topups[index].id){p.status=status;}
+    return p;
+  });
+  localStorage.setItem('payments', JSON.stringify(allPayments));
+  alert(`Topup ${status}!`);
+  location.reload();
 }
 
 renderUsers();
 renderTopups();
 </script>
 </body>
-    </html>
+</html>
