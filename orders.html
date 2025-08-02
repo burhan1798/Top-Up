@@ -3,64 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Orders | Bulla Top Up</title>
+  <title>My Orders | BullaTopUp</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body{
-      margin:0;font-family:'Poppins',sans-serif;
-      min-height:100vh;
-      background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
-      color:white;display:flex;flex-direction:column;align-items:center;padding:30px;
+    body {
+      margin:0; font-family:'Poppins',sans-serif;
+      background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:white; display:flex; flex-direction:column; align-items:center;
+      padding:30px;
     }
-    h1{margin-bottom:20px;}
-    .orders-container{width:100%;max-width:600px;}
-    .order-card{
-      background:rgba(255,255,255,0.08);
-      border-radius:15px;
-      padding:20px;margin-bottom:20px;
-      backdrop-filter:blur(12px);
-      box-shadow:0 5px 20px rgba(0,0,0,0.3);
-      position:relative;transition:0.3s;
+    h2 {margin-bottom:20px;}
+    table {
+      width:90%; border-collapse:collapse; background:rgba(255,255,255,0.08);
+      border-radius:12px; overflow:hidden;
     }
-    .order-card:hover{transform:translateY(-3px);}
-    .status{
-      position:absolute;top:20px;right:20px;
-      padding:5px 12px;border-radius:15px;font-size:12px;font-weight:600;
-    }
-    .completed{background:#c8f7dc;color:#2e7d32;}
-    .pending{background:#fff3cd;color:#856404;}
-    .order-card p{margin:6px 0;font-size:14px;}
+    table th, table td {padding:12px; text-align:left;}
+    table th {background:rgba(255,255,255,0.1);}
+    tr.completed td {color:#00C853;}
+    tr.pending td {color:orange;}
+    tr.failed td {color:#ff4757;}
+    table tr:hover {background:rgba(255,255,255,0.05);}
   </style>
 </head>
 <body>
-  <h1>My Orders</h1>
-  <div class="orders-container" id="orders"></div>
+
+  <h2>📦 My Orders</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Package</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="orderTable"></tbody>
+  </table>
 
 <script>
-  const currentMobile = localStorage.getItem("currentUser");
+  const currentUserMobile = localStorage.getItem("currentUser");
   const users = JSON.parse(localStorage.getItem("users")) || {};
-  const currentUser = users[currentMobile];
+  const payments = JSON.parse(localStorage.getItem("payments")) || [];
 
-  const container = document.getElementById('orders');
-  if(!currentUser){
-    container.innerHTML="<p>No user logged in!</p>";
-  } else if(!currentUser.orders || currentUser.orders.length===0){
-    container.innerHTML="<p>No orders found.</p>";
+  if(!currentUserMobile || !users[currentUserMobile]){
+    alert("Please login first!");
+    window.location.href = "index.html";
+  }
+
+  const orderTable = document.getElementById("orderTable");
+  const userOrders = payments.filter(o => o.mobile === currentUserMobile);
+
+  if(userOrders.length === 0){
+    orderTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:white;">No orders found</td></tr>`;
   } else {
-    currentUser.orders.forEach(order=>{
-      const card=document.createElement('div');
-      card.className='order-card';
-      card.innerHTML=`
-        <div class="status ${order.status.toLowerCase()}">${order.status}</div>
-        <p><b>Order ID:</b> ${order.id}</p>
-        <p><b>Date:</b> ${order.date}</p>
-        <p><b>Total Price:</b> ${order.price}৳</p>
-        <p><b>Package:</b> ${order.package}</p>
-        <p><b>Player ID:</b> ${order.playerId}</p>
+    userOrders.forEach(order => {
+      const tr = document.createElement("tr");
+      tr.className = order.status.toLowerCase();
+      tr.innerHTML = `
+        <td>${order.date}</td>
+        <td>${order.package}</td>
+        <td>৳${order.amount}</td>
+        <td>${order.method}</td>
+        <td>${order.status}</td>
       `;
-      container.appendChild(card);
+      orderTable.appendChild(tr);
     });
   }
 </script>
+
 </body>
 </html>
