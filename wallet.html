@@ -55,7 +55,7 @@
 
   if(!currentUserMobile || !users[currentUserMobile]){
     alert("Please login first!");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   }
 
   const user = users[currentUserMobile];
@@ -66,22 +66,26 @@
   balanceBox.innerText = `Current Balance: ৳${user.wallet || 0}`;
 
   // Transaction History
-  const userPayments = payments.filter(p => p.mobile===currentUserMobile);
+  const userPayments = payments.filter(p => p.mobile===currentUserMobile && p.type!=="topup");
   txTable.innerHTML = "";
 
-  userPayments.forEach(tx => {
-    const tr = document.createElement("tr");
-    tr.className = tx.status.toLowerCase();
-    tr.innerHTML = `
-      <td>${tx.date}</td>
-      <td>${tx.package}</td>
-      <td>৳${tx.amount}</td>
-      <td>${tx.method}</td>
-      <td>${tx.status}</td>
-    `;
-    txTable.appendChild(tr);
-  });
+  if(userPayments.length === 0){
+    txTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:white;">No transactions found</td></tr>`;
+  } else {
+    userPayments.forEach(tx => {
+      const tr = document.createElement("tr");
+      tr.className = tx.status.toLowerCase();
+      tr.innerHTML = `
+        <td>${tx.date}</td>
+        <td>${tx.package || '-'}</td>
+        <td>৳${tx.amount}</td>
+        <td>${tx.method}</td>
+        <td>${tx.status}</td>
+      `;
+      txTable.appendChild(tr);
+    });
+  }
 </script>
 
 </body>
-</html>
+  </html>
