@@ -3,51 +3,169 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ID CODE TOP UP</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Unique ID Code Topup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Futuristic Gradient Background */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      overflow-x: hidden;
+      position: relative;
+      color: white;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating Elements */
+    .floating {
+      position: fixed;
+      bottom: -100px;
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 15px;
+      transform: rotate(45deg);
+      animation: floatUp 10s infinite ease-in;
+      backdrop-filter: blur(4px);
+      z-index: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(45deg); opacity: 0.8; }
+      50% { transform: translateY(-50vh) rotate(90deg); opacity: 0.5; }
+      100% { transform: translateY(-110vh) rotate(180deg); opacity: 0; }
+    }
+
+    .floating:nth-child(1) { left: 10%; animation-delay: 0s; width:50px; height:50px;}
+    .floating:nth-child(2) { left: 30%; animation-delay: 2s; width:40px; height:40px;}
+    .floating:nth-child(3) { left: 50%; animation-delay: 4s; width:70px; height:70px;}
+    .floating:nth-child(4) { left: 70%; animation-delay: 1s; width:60px; height:60px;}
+    .floating:nth-child(5) { left: 85%; animation-delay: 3s; width:30px; height:30px;}
+
+    /* Glassmorphic Card */
+    .card {
+      max-width: 380px;
+      margin: 60px auto;
+      padding: 25px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 1.2s ease;
+    }
+
+    @keyframes fadeIn {
+      0% {opacity:0; transform: translateY(30px);}
+      100% {opacity:1; transform: translateY(0);}
+    }
+
+    /* Inputs Neon Style */
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      color: white;
+      outline: none;
+      transition: 0.3s;
+      font-size: 14px;
+    }
+    input:focus, select:focus {
+      border-color: #ffdd57;
+      box-shadow: 0 0 15px rgba(255,221,87,0.6);
+    }
+    option { color: black; }
+
+    /* Button Neon Glow */
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg,#ff512f,#dd2476);
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 20px rgba(255,100,150,0.8);
+    }
+
+    header img {
+      height: 150px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    header img:hover { transform: scale(1.08); }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-  <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md">
-    <img src="https://i.ibb.co/MkjNhfRK/images-4.jpg" alt="Free Fire" class="w-full h-48 object-cover rounded mb-4">
+  <!-- Floating Diamonds -->
+  <div class="floating"></div>
+  <div class="floating"></div>
+  <div class="floating"></div>
+  <div class="floating"></div>
+  <div class="floating"></div>
 
-    <h2 class="text-2xl font-bold mb-4 text-center">✅ID CODE TOPUP✅</h2>
+  <!-- Header Logo -->
+  <header style="display:flex;justify-content:center;">
+    <img src="https://iili.io/FrNiI71.md.png" alt="Free Fire" onclick="window.location.href='main.html'">
+  </header>
 
-    <!-- UID input -->
-    <label class="block mb-2 font-semibold">Enter UID:</label>
-    <input type="text" id="uid" placeholder="Enter your Free Fire UID" class="w-full px-4 py-2 border rounded mb-4"/>
+  <!-- Glass Card -->
+  <div class="card">
+    <h2 style="text-align:center;font-weight:bold;color:#ffd700;margin:15px 0;">⚡ UNIQUE ID TOPUP ⚡</h2>
 
-    <!-- Package select -->
-    <label class="block mb-2 font-semibold">Select Package:</label>
-    <select id="package" class="w-full px-4 py-2 border rounded mb-4">
+    <label>Enter UID:</label>
+    <input type="text" id="uid" placeholder="Enter your Free Fire UID">
+
+    <label>Select Package:</label>
+    <select id="package">
       <option value="25 Diamonds - 32৳">25 Diamonds - 32৳</option>
       <option value="50 Diamonds - 50৳">50 Diamonds - 50৳</option>
       <option value="115 Diamonds - 85৳">115 Diamonds - 85৳</option>
       <option value="240 Diamonds - 166৳">240 Diamonds - 166৳</option>
-      <option value="355 Diamond - 251৳">355 Diamonds - 251৳</option>
-      <option value="480 Diamonds - 323৳">480 Diamonds - 323৳</option>
-      <option value="610 Diamonds - 407৳">610 Diamonds - 407৳</option>
-      <option value="850 Diamonds - 630৳">850 Diamonds - 630৳</option>
-      <option value="1090 Diamonds - 755৳">1090 Diamonds - 755৳</option>
-      <option value="1240 Diamonds - 820৳">1240 Diamonds - 820৳</option>
-      <option value="1480 Diamonds - 975৳">1480 Diamonds - 975৳</option>
-      <option value="2540 Diamonds - 1640৳">2540 Diamonds - 1640৳</option>
-      <option value="5060 Diamonds - 3240৳">5060 Diamonds - 3240৳</option>
     </select>
 
-    <!-- Payment select -->
-    <label class="block mb-2 font-semibold">Select Payment Method:</label>
-    <select id="payment" class="w-full px-4 py-2 border rounded mb-4">
+    <label>Select Payment Method:</label>
+    <select id="payment">
       <option value="Nagad">Nagad</option>
       <option value="Bkash">Bkash</option>
-      <option value="Rocket">Rocket</option>
-      <option value="Upay">Upay</option>
     </select>
 
-    <!-- Buy Button -->
-    <button onclick="goToAddFunds()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">BUY NOW</button>
+    <button onclick="goToAddFunds()">BUY NOW</button>
   </div>
-
+<!-- Tawk.to Script -->
+<script type="text/javascript">
+  var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+  (function () {
+    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src = 'https://embed.tawk.to/68886767a71a56192dda53fc/1j1ad7s3d';
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin', '*');
+    s0.parentNode.insertBefore(s1, s0);
+  })();
+</script>
   <script>
     function goToAddFunds() {
       const uid = document.getElementById('uid').value.trim();
@@ -58,21 +176,18 @@
         return;
       }
 
-      // Extract name and amount
       const [name, amountStr] = selectedPackage.split(" - ");
       const amount = parseInt(amountStr.replace("৳","").trim());
 
-      // Save to localStorage for add_funds.html
       localStorage.setItem("selectedPackage", JSON.stringify({
         uid: uid,
         name: name,
         amount: amount
       }));
 
-      // Redirect to add_funds.html
       window.location.href = "add_funds.html";
     }
-      </script>
+  </script>
 
 </body>
-</html>
+  </html>
