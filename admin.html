@@ -60,42 +60,6 @@
   <div id="usersTab"></div>
   <div id="topupTab" style="display:none;"></div>
 </div>
-</style>
-
-<!-- Overlay Modal -->
-<div id="adminLoginOverlay">
-  <div id="adminLoginBox">
-    <h2>🔒 Admin Login</h2>
-    <input type="password" id="adminPassword" placeholder="Enter Password">
-    <button id="adminLoginBtn">Login</button>
-    <div id="adminError">❌ Wrong password!</div>
-  </div>
-</div>
-
-<script>
-  const correctPassword = "burhan1"; // তোমার পাসওয়ার্ড
-  
-  const overlay = document.getElementById('adminLoginOverlay');
-  const loginBtn = document.getElementById('adminLoginBtn');
-  const passwordInput = document.getElementById('adminPassword');
-  const errorMsg = document.getElementById('adminError');
-
-  // Enter key চাপলেও login হবে
-  passwordInput.addEventListener('keypress', function(e){
-    if(e.key === 'Enter'){ loginBtn.click(); }
-  });
-
-  loginBtn.addEventListener('click', function(){
-    const inputPass = passwordInput.value;
-    if(inputPass === correctPassword){
-      overlay.style.display = 'none'; // Hide overlay
-    } else {
-      errorMsg.style.display = 'block';
-      passwordInput.value = '';
-      passwordInput.focus();
-    }
-  });
-</script>
 <script>  
 
 // === Bubble Generator ===
