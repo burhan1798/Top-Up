@@ -33,6 +33,7 @@
     <thead>
       <tr>
         <th>Date</th>
+        <th>UID</th>
         <th>Package</th>
         <th>Amount</th>
         <th>Method</th>
@@ -49,20 +50,21 @@
 
   if(!currentUserMobile || !users[currentUserMobile]){
     alert("Please login first!");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   }
 
   const orderTable = document.getElementById("orderTable");
-  const userOrders = payments.filter(o => o.mobile === currentUserMobile);
+  const userOrders = payments.filter(o => o.mobile === currentUserMobile && o.type==="topup");
 
   if(userOrders.length === 0){
-    orderTable.innerHTML = `<tr><td colspan="5" style="text-align:center;color:white;">No orders found</td></tr>`;
+    orderTable.innerHTML = `<tr><td colspan="6" style="text-align:center;color:white;">No orders found</td></tr>`;
   } else {
     userOrders.forEach(order => {
       const tr = document.createElement("tr");
       tr.className = order.status.toLowerCase();
       tr.innerHTML = `
         <td>${order.date}</td>
+        <td>${order.uid || '-'}</td>
         <td>${order.package}</td>
         <td>৳${order.amount}</td>
         <td>${order.method}</td>
