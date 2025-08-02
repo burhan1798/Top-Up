@@ -60,7 +60,15 @@
   <div id="usersTab"></div>
   <div id="topupTab" style="display:none;"></div>
 </div>
-<script>  
+
+<script>
+// === Admin Login Prompt ===
+const uname = prompt("Enter Admin Username:");
+const pass = prompt("Enter Admin Password:");
+if(uname !== "burhan" || pass !== "burhan1"){
+  alert("❌ Access Denied!");
+  window.location.href = "index.html";
+}
 
 // === Bubble Generator ===
 const bubbleContainer=document.getElementById('bubbles');
@@ -151,15 +159,11 @@ function updateStatus(index,status){
   });
   localStorage.setItem('payments', JSON.stringify(allPayments));
   alert(`Topup ${status}!`);
- // Smooth scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  location.reload();
+}
 
-  // Delay দিয়ে rerender করলে scroll কাজ করবে
-  setTimeout(()=>{
-    renderUsers();
-    renderTopups();
-  }, 600);
-  } 
+renderUsers();
+renderTopups();
 </script>
 </body>
   </html>
