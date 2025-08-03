@@ -158,18 +158,26 @@ footer p span {
   </style>
  </head>
  <body class="bg-white text-black">
-  <!-- Sidebar Drawer -->
+  <div class="sidebar" id="sidebar">
   <div class="user-info">
-  <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
-  <h2 id="username">Guest User</h2>
-  <p id="email">guest@example.com</p> <!-- এখানে এখন Email show হবে -->
-  <p id="userId">User ID: #0000</p>
+    <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
+    <h2 id="username">Guest User</h2>
+    <p id="email">guest@example.com</p>
+    <p id="userId">User ID: #0000</p>
   </div>
-   <div class="menu">
-    <a href="profile.html" target="_blank">My Profile</a> <a href="add_funds.html" target="_blank">Add Funds</a> <a href="my_orders.html" target="_blank">Order History</a>  <a href="about.html" target="_blank">About</a> <a href="help.html" target="_blank">Help</a>
-   </div><a class="logout" href="index.html" onclick="logout()">Logout</a>
-  </div><!-- Overlay -->
-  <div class="overlay" id="overlay"></div><!-- Three-dot Menu Button -->
+
+  <div class="menu">
+    <a href="profile.html">My Profile</a>
+    <a href="add_funds.html">Add Funds</a>
+    <a href="my_orders.html">Order History</a>
+    <a href="about.html">About</a>
+    <a href="help.html">Help</a>
+  </div>
+
+  <a class="logout" href="index.html" onclick="logoutUser()">Logout</a>
+</div>
+<div class="overlay" id="overlay"></div>
+  <!-- Three-dot Menu Button -->
   <div class="menu-btn" id="menuBtn">
    <span></span> <span></span> <span></span>
   </div>
