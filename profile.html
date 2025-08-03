@@ -1,154 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Profile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin:0; padding:0;
-      font-family:'Poppins', sans-serif;
-      min-height:100vh;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      display:flex; justify-content:center; align-items:center;
-    }
-    .profile-card {
-      background:rgba(255,255,255,0.08);
-      border-radius:20px;
-      backdrop-filter: blur(15px);
-      box-shadow:0 8px 25px rgba(0,0,0,0.4);
-      width:350px; padding:30px;
-      text-align:center; color:white;
-      animation:fadeIn 0.8s ease;
-    }
-    @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
-
-    .profile-card img {
-      width:120px; height:120px; border-radius:50%; object-fit:cover;
-      border:4px solid rgba(255,255,255,0.5);
-      margin-bottom:15px; transition:0.3s;
-    }
-    .profile-card img:hover { transform:scale(1.05); }
-
-    h2 { font-size:22px; margin-bottom:5px; }
-    p { font-size:14px; margin-bottom:15px; opacity:0.8; }
-
-    input[type="file"] { display:none; }
-    label.upload-btn {
-      display:inline-block; margin-bottom:20px;
-      background:linear-gradient(135deg,#6e45e2,#88d3ce);
-      color:white; padding:8px 20px;
-      border-radius:30px; cursor:pointer; font-size:14px;
-      transition:0.3s;
-    }
-    label.upload-btn:hover { opacity:0.8; }
-
-    .profile-card input {
-      width:100%; padding:10px; margin:8px 0;
-      border:none; border-radius:8px;
-      outline:none;
-      background:rgba(255,255,255,0.1);
-      color:white; font-size:14px;
-      transition:0.3s;
-    }
-    .profile-card input:focus {
-      background:rgba(255,255,255,0.2);
-    }
-
-    .save-btn {
-      margin-top:12px; width:100%; padding:12px;
-      background:linear-gradient(135deg,#6e45e2,#88d3ce);
-      color:white; border:none; border-radius:30px;
-      cursor:pointer; font-weight:600; font-size:15px;
-      transition:0.3s;
-    }
-    .save-btn:hover { transform:translateY(-2px); opacity:0.9; }
-
-    .section-title {
-      text-align:left; font-weight:600; margin-top:15px; font-size:14px;
-      opacity:0.9;
-    }
-  </style>
-</head>
-<body>
-  <div class="profile-card">
-    <img id="profilePic" src="https://via.placeholder.com/120" alt="Profile Picture">
-    <label for="profileImage" class="upload-btn">Change Photo</label>
-    <input type="file" id="profileImage" accept="image/*">
-
-    <h2 id="usernameDisplay">Guest User</h2>
-    <p id="userIdDisplay">User ID: #0000</p>
-
-    <div class="section-title">Edit Profile</div>
-    <input type="email" id="email" placeholder="Email">
-    <input type="text" id="phone" placeholder="Phone">
-
-    <div class="section-title">Change Password</div>
-    <input type="password" id="oldPass" placeholder="Old Password">
-    <input type="password" id="newPass" placeholder="New Password">
-
-    <button class="save-btn" onclick="saveProfile()">Save Changes</button>
-  </div>
-
-<script>
-  const currentMobile = localStorage.getItem("currentUser");
-const users = JSON.parse(localStorage.getItem("users")) || {};
-const currentUser = users[currentMobile];
-
-if(!currentUser){
-  alert("Not logged user!");
-  localStorage.removeItem("currentUser");
-  window.location.href="index.html";
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  color: white;
+  overflow: hidden;
 }
 
-  // Load profile data
-  document.getElementById('usernameDisplay').innerText = currentUser.username || currentUser.name;
-  document.getElementById('userIdDisplay').innerText = "User ID: #" + currentUser.id;
-  document.getElementById('email').value = currentUser.email || "";
-  document.getElementById('phone').value = currentUser.mobile || "";
-  document.getElementById('profilePic').src = currentUser.profilePic || "https://via.placeholder.com/120";
+/* Neon bubble background */
+body::before, body::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0,255,200,0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatBubble 15s infinite ease-in-out alternate;
+  z-index: 0;
+}
+body::after {
+  width: 500px;
+  height: 500px;
+  left: auto;
+  right: -150px;
+  background: radial-gradient(circle, rgba(0,200,255,0.4) 0%, transparent 70%);
+  animation-delay: 5s;
+}
 
-  // Change photo
-  document.getElementById('profileImage').addEventListener('change', function(e) {
+@keyframes floatBubble {
+  0% { transform: translateY(0) translateX(0) scale(1); }
+  50% { transform: translateY(-50px) translateX(30px) scale(1.1); }
+  100% { transform: translateY(0) translateX(-20px) scale(1); }
+}
+
+.profile-container {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(15px);
+  padding: 30px;
+  border-radius: 20px;
+  width: 360px;
+  box-shadow: 0 0 25px rgba(0,255,200,0.3), 0 0 40px rgba(0,200,255,0.2);
+  text-align: center;
+  animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn { 
+  from { opacity:0; transform:scale(0.9);} 
+  to { opacity:1; transform:scale(1);} 
+}
+
+.profile-container img {
+  width: 90px; height: 90px; border-radius: 50%;
+  border: 3px solid #00ffc3;
+  margin-bottom: 15px;
+  cursor: pointer;
+  box-shadow: 0 0 15px #00ffc3, 0 0 25px #00ccff;
+  transition: 0.3s;
+}
+.profile-container img:hover {
+  transform: scale(1.05) rotate(3deg);
+  box-shadow: 0 0 25px #00ffc3, 0 0 45px #00ccff;
+}
+
+.profile-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-size: 14px;
+  transition: 0.3s;
+}
+.profile-container input:focus {
+  background: rgba(0,255,200,0.2);
+  box-shadow: 0 0 10px rgba(0,255,200,0.4);
+}
+.profile-container input::placeholder { color: #ccc; }
+
+button {
+  width: 100%; 
+  padding: 12px;
+  margin-top: 10px;
+  background: linear-gradient(45deg,#00ff99,#00ccff);
+  border: none; border-radius: 8px;
+  color: black; font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px rgba(0,255,200,0.4);
+}
+button:hover { 
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0,255,200,0.7), 0 0 25px rgba(0,200,255,0.5);
+}
+</style>
+</head>
+<body>
+
+<div class="profile-container">
+  <h2>MY PROFILE</h2>
+  <img id="profilePic" src="https://via.placeholder.com/90" alt="Profile Picture" title="Click to Change">
+  <input type="file" id="profileUpload" accept="image/*" style="display:none;">
+  
+  <input type="text" id="fullname" placeholder="Full Name">
+  <input type="text" id="username" placeholder="Username" readonly>
+  <input type="text" id="phone" placeholder="Phone" readonly>
+  <input type="email" id="email" placeholder="Email">
+
+  <h3 style="margin-top:15px;">Change Password</h3>
+  <input type="password" id="oldPassword" placeholder="Old Password">
+  <input type="password" id="newPassword" placeholder="New Password">
+
+  <button onclick="saveProfile()">Save Changes</button>
+  <button style="background:#ff4444; color:white;" onclick="logoutUser()">Logout</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+    authDomain: "bulla-bazar.firebaseapp.com",
+    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+    projectId: "bulla-bazar",
+    storageBucket: "bulla-bazar.appspot.com",
+    messagingSenderId: "597341196963",
+    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const storage = firebase.storage();
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if(!currentUser){
+    window.location.href="login.html";
+  }
+
+  let userKey = null;
+
+  // Load profile info
+  db.ref("users").orderByChild("phone").equalTo(currentUser.phone).once("value")
+    .then(snapshot => {
+      snapshot.forEach(child => {
+        const u = child.val();
+        userKey = child.key;
+
+        document.getElementById("fullname").value = u.fullname || "";
+        document.getElementById("username").value = u.username || "";
+        document.getElementById("phone").value = u.phone || "";
+        document.getElementById("email").value = u.email || "";
+        if(u.profilePic){
+          document.getElementById("profilePic").src = u.profilePic;
+        }
+      });
+    });
+
+  // Profile pic upload
+  document.getElementById("profilePic").addEventListener("click", ()=>{
+    document.getElementById("profileUpload").click();
+  });
+  document.getElementById("profileUpload").addEventListener("change", e=>{
     const file = e.target.files[0];
-    if(file){
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        document.getElementById('profilePic').src = evt.target.result;
-        currentUser.profilePic = evt.target.result;
-        users[currentMobile] = currentUser;
-        localStorage.setItem('users', JSON.stringify(users));
-      };
-      reader.readAsDataURL(file);
-    }
+    if(!file || !userKey) return;
+    const storageRef = storage.ref("profilePics/"+userKey+"_"+file.name);
+    storageRef.put(file).then(snap=>{
+      snap.ref.getDownloadURL().then(url=>{
+        db.ref("users/"+userKey+"/profilePic").set(url);
+        document.getElementById("profilePic").src = url;
+        currentUser.profilePic = url;
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        alert("Profile picture updated!");
+      });
+    });
   });
 
   function saveProfile(){
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const oldPass = document.getElementById('oldPass').value;
-    const newPass = document.getElementById('newPass').value;
+    const fullname = document.getElementById("fullname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const oldPass = document.getElementById("oldPassword").value.trim();
+    const newPass = document.getElementById("newPassword").value.trim();
 
     if(oldPass && oldPass !== currentUser.password){
-      alert("❌ Old password incorrect!");
+      alert("Old password is incorrect!");
       return;
     }
+
     if(newPass){
       currentUser.password = newPass;
-      alert("✅ Password updated!");
     }
 
+    currentUser.fullname = fullname;
     currentUser.email = email;
-    currentUser.mobile = phone;
 
-    users[currentMobile] = currentUser;
-    localStorage.setItem('users', JSON.stringify(users));
+    // Update Firebase
+    db.ref("users/"+userKey).update({
+      fullname: fullname,
+      email: email,
+      password: currentUser.password
+    }).then(()=>{
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      alert("Profile updated successfully!");
+      document.getElementById("oldPassword").value="";
+      document.getElementById("newPassword").value="";
+    });
+  }
 
-    alert("✅ Profile saved successfully!");
-    document.getElementById('oldPass').value = "";
-    document.getElementById('newPass').value = "";
+  function logoutUser(){
+    localStorage.removeItem("currentUser");
+    window.location.href="login.html";
   }
 </script>
+
 </body>
-      </html>
+</html>
