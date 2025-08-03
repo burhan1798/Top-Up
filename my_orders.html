@@ -111,43 +111,60 @@
 <!-- Bubble Container -->
 <div id="bubbleContainer"></div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
-const currentUserMobile = localStorage.getItem("currentUser");
-const users = JSON.parse(localStorage.getItem("users")) || {};
-const payments = JSON.parse(localStorage.getItem("payments")) || [];
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+    authDomain: "bulla-bazar.firebaseapp.com",
+    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+    projectId: "bulla-bazar",
+    storageBucket: "bulla-bazar.firebasestorage.app",
+    messagingSenderId: "597341196963",
+    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-// Filter only this user's topup orders
-const userOrders = payments.filter(p => p.type==="topup" && p.mobile == currentUserMobile);
-
-const ordersContainer = document.getElementById("ordersContainer");
-const noOrders = document.getElementById("noOrders");
-
-if(userOrders.length === 0){
-  noOrders.style.display="block";
-} else {
-  userOrders.forEach((tx,i) => {
-    const card = document.createElement("div");
-    card.className = "order-card";
-    card.innerHTML = `
-      <div class="order-header">
-        <span class="order-id">Order ID: ${tx.id || i+1}</span>
-        <span class="status ${tx.status.toLowerCase()}">${tx.status}</span>
-      </div>
-      <div class="order-body">
-        <p><b>Date:</b> ${tx.date}</p>
-        <p><b>Total Price:</b> ৳${tx.amount}</p>
-        <p><b>Package:</b> ${tx.package || '-'}</p>
-        <p><b>Player UID:</b> ${tx.uid || '-'}</p>
-      </div>
-    `;
-    ordersContainer.appendChild(card);
-  });
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) {
+    alert("Please login first!");
+    window.location.href = "index.html";
   }
-// Scroll to top after status change
-window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-});
+
+  const orderTable = document.getElementById("orderTable");
+
+  // Listen for orders of current user
+  db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
+    .on("child_added", snap => {
+      const r = snap.val();
+      let row = `<tr>
+        <td>${r.amount}</td>
+        <td>${r.operator}</td>
+        <td>${r.status}</td>
+        <td>${r.time}</td>
+      </tr>`;
+      orderTable.insertAdjacentHTML('afterbegin', row);
+    });
+
+  // Update status in realtime
+  db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
+    .on("child_changed", snap => {
+      orderTable.innerHTML = ""; // refresh table
+      db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
+        .once("value", snapshot => {
+          snapshot.forEach(child => {
+            const r = child.val();
+            let row = `<tr>
+              <td>${r.amount}</td>
+              <td>${r.operator}</td>
+              <td>${r.status}</td>
+              <td>${r.time}</td>
+            </tr>`;
+            orderTable.insertAdjacentHTML('afterbegin', row);
+          });
+        });
+    });
 // Floating Bubble Animation (no money sign)
 const bubbleContainer = document.getElementById('bubbleContainer');
 
