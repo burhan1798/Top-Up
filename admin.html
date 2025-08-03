@@ -3,167 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel | BullaTopUp</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <title>Admin Panel</title>
   <style>
     body {
-      margin:0; font-family:'Poppins',sans-serif;
-      background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
-      overflow:hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ff9966, #ff5e62);
+      margin: 0;
+      color: white;
     }
-    header {
-      background: linear-gradient(90deg, #ff416c, #ff4b2b);
-      color:white; padding:20px; font-size:24px; font-weight:bold;
-      position:relative; z-index:2;
+    h2 { text-align: center; margin-top: 20px; }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
     }
-    #bubbles {position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;}
-    .bubble {
-      position:absolute; bottom:-100px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,0,100,0.9), rgba(0,150,255,0.8));
-      animation: rise 6s linear forwards;
-      opacity: 0.85;
-      box-shadow:0 0 15px rgba(0,0,0,0.3);
+    .tab-btn {
+      padding: 10px 20px;
+      margin: 0 5px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      border: none;
+      color: white;
+      font-weight: bold;
     }
-    @keyframes rise {
-      0% {transform:translateY(0) scale(0.7); opacity:0.9;}
-      50% {opacity:0.6;}
-      100% {transform:translateY(-120vh) scale(1.3); opacity:0;}
-    }
+    .tab-btn.active { background: #00ff99; color: black; }
+    .tab-content { display: none; padding: 10px; }
+    .active-tab { display: block; }
 
-    .tabs {display:flex;gap:10px;padding:15px;background:rgba(255,255,255,0.85);margin:10px;border-radius:10px;z-index:2;position:relative;}
-    .tab {padding:10px 20px;border-radius:8px;cursor:pointer;background:#eee;font-weight:500;}
-    .tab.active {background:#ff4b2b;color:white;}
-
-    .content {padding:20px;position:relative;z-index:2;}
-    .card {background:rgba(255,255,255,0.9);padding:15px;margin-bottom:15px;border-radius:10px;box-shadow:0 3px 8px rgba(0,0,0,0.05);}
-    
-    .btn {padding:6px 12px;border:none;border-radius:6px;color:white;cursor:pointer;margin:5px;font-weight:600;}
-    .complete {background:#00c853;}
-    .fail {background:#d50000;}
-
-    .status-pending {color:orange;font-weight:bold;}
-    .status-completed {color:green;font-weight:bold;}
-    .status-failed {color:red;font-weight:bold;}
+    table {
+      width: 95%;
+      margin: 10px auto;
+      border-collapse: collapse;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(8px);
+    }
+    th, td {
+      border: 1px solid white;
+      padding: 8px;
+      text-align: center;
+    }
+    th { background: rgba(255,255,255,0.1); }
+    tr:nth-child(even) { background: rgba(255,255,255,0.05); }
+    button.action {
+      padding: 5px 10px;
+      margin: 2px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .delete { background: red; color: white; }
+    .complete { background: lime; color: black; }
+    .fail { background: orange; color: black; }
   </style>
 </head>
 <body>
+  <h2>Admin Panel</h2>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('registerTab')">Register Tab</button>
+    <button class="tab-btn" onclick="showTab('requestTab')">Topup Request Tab</button>
+  </div>
 
-<header>Admin Panel</header>
-<div id="bubbles"></div>
+  <div id="registerTab" class="tab-content active-tab">
+    <table>
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Username</th>
+          <th>Phone</th>
+          <th>Time</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="showTab('users')">Registered Users</div>
-  <div class="tab" onclick="showTab('topups')">Topup Requests</div>
-</div>
+  <div id="requestTab" class="tab-content">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Phone</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="requestTable"></tbody>
+    </table>
+  </div>
 
-<div class="content">
-  <div id="usersTab"></div>
-  <div id="topupTab" style="display:none;"></div>
-</div>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+  authDomain: "bulla-bazar.firebaseapp.com",
+  databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+  projectId: "bulla-bazar",
+  storageBucket: "bulla-bazar.firebasestorage.app",
+  messagingSenderId: "597341196963",
+  appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-<script>
-// === Admin Login Prompt ===
-const uname = prompt("Enter Admin Username:");
-const pass = prompt("Enter Admin Password:");
-if(uname !== "burhan" || pass !== "burhan1"){
-  alert("❌ Access Denied!");
-  window.location.href = "index.html";
-}
+    // 🔹 Tab Switching
+    function showTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active-tab'));
+      event.target.classList.add('active');
+      document.getElementById(id).classList.add('active-tab');
+    }
 
-// === Bubble Generator ===
-const bubbleContainer=document.getElementById('bubbles');
-for(let i=0;i<20;i++){
-  const bubble=document.createElement('div');
-  bubble.className='bubble';
-  const size=Math.random()*50+30;
-  bubble.style.width=size+'px';
-  bubble.style.height=size+'px';
-  bubble.style.left=Math.random()*100+'%';
-  bubble.style.animationDuration=(Math.random()*3+4)+'s';
-  bubbleContainer.appendChild(bubble);
-}
+    // 🔹 Load Users
+    const userTable = document.getElementById('userTable');
+    db.ref('users').on('child_added', snapshot => {
+      const key = snapshot.key;
+      const u = snapshot.val();
+      let row = `<tr id="user-${key}">
+        <td>${u.fullname}</td>
+        <td>${u.username}</td>
+        <td>${u.phone}</td>
+        <td>${u.time}</td>
+        <td><button class="action delete" onclick="deleteUser('${key}')">Delete</button></td>
+      </tr>`;
+      userTable.innerHTML += row;
+    });
 
-// === LocalStorage Data ===
-const users = JSON.parse(localStorage.getItem('users')) || {};
-const payments = JSON.parse(localStorage.getItem('payments')) || [];
-const topups = payments.filter(p => p.type==="topup");
+    function deleteUser(key){
+      if(confirm("Are you sure to delete this user?")){
+        db.ref('users/'+key).remove();
+        document.getElementById('user-'+key).remove();
+      }
+    }
 
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.content>div').forEach(c=>c.style.display='none');
-  if(tab==='users'){
-    document.querySelectorAll('.tab')[0].classList.add('active');
-    document.getElementById('usersTab').style.display='block';
-  }else{
-    document.querySelectorAll('.tab')[1].classList.add('active');
-    document.getElementById('topupTab').style.display='block';
-  }
-}
+    // 🔹 Load Requests (Step 2 main.html will add)
+    const requestTable = document.getElementById('requestTable');
+    db.ref('topupRequests').orderByKey().on('child_added', snap => {
+      const key = snap.key;
+      const r = snap.val();
+      alert("New Topup Request Arrived!"); // popup
 
-// === Render Registered Users ===
-function renderUsers(){
-  let html = `<h3>Registered Users</h3>
-  <table border="1" width="100%" cellpadding="6" style="border-collapse:collapse;text-align:center">
-  <tr><th>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Action</th></tr>`;
-  
-  Object.values(users).forEach(u=>{
-    html += `<tr>
-      <td>${u.userId||'---'}</td>
-      <td>${u.name||'-'}</td>
-      <td>${u.username||'-'}</td>
-      <td>${u.email||'-'}</td>
-      <td>${u.mobile||'-'}</td>
-      <td><button class="btn fail" onclick="deleteUser('${u.mobile}')">Delete</button></td>
-    </tr>`;
-  });
-  html += `</table>`;
-  document.getElementById('usersTab').innerHTML = html;
-}
+      let row = `<tr id="req-${key}">
+        <td>${r.username}</td>
+        <td>${r.phone}</td>
+        <td>${r.amount}</td>
+        <td id="status-${key}">${r.status}</td>
+        <td>
+          <button class="action complete" onclick="markComplete('${key}')">Complete</button>
+          <button class="action fail" onclick="markFailed('${key}')">Failed</button>
+        </td>
+      </tr>`;
+      requestTable.insertAdjacentHTML('afterbegin', row);
+    });
 
-// === Delete User ===
-function deleteUser(mobile){
-  if(confirm("Delete this user?")){
-    delete users[mobile];
-    localStorage.setItem('users', JSON.stringify(users));
-    renderUsers();
-  }
-}
+    function markComplete(key){
+      db.ref('topupRequests/'+key+'/status').set("Completed");
+      document.getElementById('status-'+key).innerText = "Completed";
+    }
 
-// === Render Topups ===
-function renderTopups(){
-  let html = `<h3>Topup Requests</h3>`;
-  if(topups.length===0){html += `<p>No topup requests yet.</p>`;}
-  topups.forEach((t,i)=>{
-    html += `<div class="card">
-      <b>ID #${t.id||i+1} | ${t.username||'Unknown'} | ${t.package} - ৳${t.amount}</b><br>
-      User ID: ${t.userId} | Mobile: ${t.mobile} | UID: ${t.uid}<br>
-      Method: ${t.method} | Status: <span class="status-${t.status.toLowerCase()}">${t.status}</span><br>
-      Date: ${t.date}<br>
-      ${t.status==='Pending'?`
-        <button class="btn complete" onclick="updateStatus(${i},'Completed')">Complete</button>
-        <button class="btn fail" onclick="updateStatus(${i},'Failed')">Fail</button>`:''}
-    </div>`;
-  });
-  document.getElementById('topupTab').innerHTML = html;
-}
-
-// === Update Status ===
-function updateStatus(index,status){
-  const payments = JSON.parse(localStorage.getItem('payments')) || [];
-  const topups = payments.filter(p=>p.type==="topup");
-  topups[index].status=status;
-  // Save back
-  let allPayments = payments.map(p=>{
-    if(p.type==="topup" && p.id===topups[index].id){p.status=status;}
-    return p;
-  });
-  localStorage.setItem('payments', JSON.stringify(allPayments));
-  alert(`Topup ${status}!`);
-  location.reload();
-}
-
-renderUsers();
-renderTopups();
-</script>
+    function markFailed(key){
+      db.ref('topupRequests/'+key+'/status').set("Failed");
+      document.getElementById('status-'+key).innerText = "Failed";
+    }
+  </script>
 </body>
-  </html>
+    </html>
