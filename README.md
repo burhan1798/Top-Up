@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="https://your-banner-url.com/banner.png" alt="Bulla Top-Up Banner" />
+  <img src="https://iili.io/FrNiI71.md.png" alt="Bulla Top-Up Banner" />
 </p>
-<h1 align="center">💎 Bulla Top-Up BaZaR💎</h1>
+<h1 align="center">💎 Bulla BaZaR💎</h1>
 
 <p align="center">
   <b>Fast, Secure & Real-time Game Top-Up Solution</b> <br>
