@@ -143,13 +143,6 @@
 
     // Save to Firebase for Admin live request
     db.ref("topupRequests").push(request).then(()=>{ 
-      // Get selected package from localStorage
-    const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage"));
-
-    if (!selectedPackage || !selectedPackage.uid || !selectedPackage.name || !selectedPackage.amount) {
-        alert("No package selected!");
-        return;
-    }
 
     // Prepare email data
     const emailData = {
@@ -170,7 +163,7 @@
     .then(data => {
         if (data.success) {
             alert("✅ Email sent with package details to admin!");
-            // Optionally redirect or clear storage
+          window.location.href = "my_orders.html";
         } else {
             alert("⚠️ Email failed: " + data.message);
         }
@@ -178,10 +171,7 @@
     .catch(err => {
         alert("❌ Error sending email: " + err.message);
     });
-});
-      window.location.href = "my_orders.html";
-    });
-  }  
+});    
 </script>
 </body>
 </html>
