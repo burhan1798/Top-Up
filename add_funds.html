@@ -6,31 +6,74 @@
   <title>Add Funds | BullaTopUp</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {margin:0; font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#0f0c29,#302b63,#24243e); color:white; display:flex; flex-direction:column; align-items:center; padding:30px;}
-    h2 {margin-bottom:20px;}
-    .package-info {background:rgba(255,255,255,0.1); padding:15px 25px; border-radius:10px; margin-bottom:20px; font-size:18px; font-weight:600; text-align:center;}
-    .payment-methods {display:flex; gap:20px; margin-bottom:20px;}
-    .method {background:white; color:black; padding:15px; border-radius:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; width:120px; transition:0.3s;}
+    body {
+      margin:0; font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:white; display:flex; flex-direction:column; align-items:center; padding:30px;
+    }
+    h2 {margin-bottom:20px; animation: fadeIn 1s;}
+    @keyframes fadeIn {from{opacity:0;transform:translateY(-20px);} to{opacity:1;transform:translateY(0);}}
+    
+    .package-info {
+      background:rgba(255,255,255,0.15);
+      padding:20px 25px;
+      border-radius:15px;
+      margin-bottom:20px;
+      font-size:18px;
+      font-weight:600;
+      text-align:center;
+      box-shadow:0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .payment-methods {
+      display:flex; gap:20px; margin-bottom:20px;
+    }
+    .method {
+      background:white; color:black;
+      padding:15px; border-radius:15px;
+      cursor:pointer; display:flex; flex-direction:column; align-items:center;
+      width:120px; transition:0.3s;
+    }
     .method img {width:60px; margin-bottom:5px;}
-    .method.selected {border:3px solid #00C853; transform:scale(1.05);}
-    .info-box {display:none; background:rgba(255,255,255,0.1); padding:15px; border-radius:10px; margin-bottom:20px; width:300px; text-align:center;}
-    button {background:#00C853; border:none; color:white; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:600; font-size:16px; transition:0.3s;}
+    .method.selected {border:3px solid #00C853; transform:scale(1.08);}
+
+    .info-box {
+      display:none;
+      background:rgba(255,255,255,0.12);
+      padding:20px;
+      border-radius:15px;
+      margin-bottom:20px;
+      width:330px;
+      text-align:center;
+      font-size:16px;
+      box-shadow:0 0 10px rgba(0,0,0,0.4);
+    }
+    .big-number {
+      font-size:22px; font-weight:700; color:#00ff99; margin:10px 0;
+    }
+    .tips {
+      font-size:14px; text-align:left; margin-top:10px; line-height:1.4;
+    }
+
+    button {
+      background:#00C853; border:none; color:white;
+      padding:12px 25px; border-radius:8px;
+      cursor:pointer; font-weight:600; font-size:16px; transition:0.3s;
+    }
     button:hover {background:#00A843;}
   </style>
 </head>
 <body>
 
-<h2>💰 ADD MONEY</h2>
+<h2>💰 Add Money</h2>
 <div class="package-info" id="packageInfo">Loading package...</div>
 
 <div class="payment-methods">
   <div class="method" id="bkash" onclick="selectMethod('Bkash')">
-    <img src="https://i.ibb.co/0jkYNV3/bkash.png" alt="Bkash">
-    Bkash
+    <img src="https://iili.io/F4f7uOg.png" alt="Bkash">Bkash
   </div>
   <div class="method" id="nagad" onclick="selectMethod('Nagad')">
-    <img src="https://i.ibb.co/5s0mYpV/nagad.png" alt="Nagad">
-    Nagad
+    <img src="https://iili.io/F4fY7pe.png" alt="Nagad">Nagad
   </div>
 </div>
 
@@ -38,66 +81,72 @@
 
 <button onclick="submitPayment()">Pay Now</button>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
-let selectedMethod = null;
-const packageInfoBox = document.getElementById('packageInfo');
-const paymentInfoBox = document.getElementById('paymentInfo');
-
-// Load package
-const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
-if(!selectedPackage.name){
-  packageInfoBox.innerText = "⚠ No package selected!";
-} else {
-  packageInfoBox.innerText = `UID: ${selectedPackage.uid} | ${selectedPackage.name} - ৳${selectedPackage.amount}`;
-}
-
-function selectMethod(method){
-  selectedMethod = method;
-  document.querySelectorAll(".method").forEach(m => m.classList.remove("selected"));
-  document.getElementById(method.toLowerCase()).classList.add("selected");
-  let number = method==="Bkash"?"017XXXXXXXX":"018XXXXXXXX";
-  paymentInfoBox.style.display="block";
-  paymentInfoBox.innerHTML = `<b>Send ৳${selectedPackage.amount} to:</b><br>${number}<br><br>
-    1️⃣ Send Money via ${method} App<br>
-    2️⃣ Use Personal Number<br>
-    3️⃣ Send Exact Amount<br>
-    4️⃣ Click Pay Now after sending`;
-}
-
-function submitPayment(){
-  if(!selectedMethod){alert("Please select a payment method first!"); return;}
-  const currentUserMobile = localStorage.getItem("currentUser");
-  if(!currentUserMobile){alert("Please login first!"); return;}
-
-  const users = JSON.parse(localStorage.getItem("users")) || {};
-  const currentUser = users[currentUserMobile];
-  if(!currentUser){alert("User not found!"); return;}
-
-  let payments = JSON.parse(localStorage.getItem("payments")) || [];
-  let lastId = parseInt(localStorage.getItem("lastTxnId")||0)+1;
-  localStorage.setItem("lastTxnId", lastId);
-
-  const newPayment = {
-    id: lastId,
-    type: "topup",  // admin & orders script এইটাই ধরবে
-    userId: currentUser.userId || currentUser.id || currentUserMobile,
-    username: currentUser.username || currentUser.name,
-    mobile: currentUser.mobile || currentUserMobile,
-    package: selectedPackage.name,
-    uid: selectedPackage.uid || "-", // যদি না থাকে ফাঁকা রাখো
-    amount: selectedPackage.amount,
-    method: selectedMethod,
-    status: "Pending",
-    date: new Date().toLocaleString()
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+    authDomain: "bulla-bazar.firebaseapp.com",
+    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+    projectId: "bulla-bazar",
+    storageBucket: "bulla-bazar.firebasestorage.app",
+    messagingSenderId: "597341196963",
+    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
   };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  payments.push(newPayment);
-  localStorage.setItem("payments", JSON.stringify(payments));
+  let selectedMethod = null;
+  const packageInfoBox = document.getElementById('packageInfo');
+  const paymentInfoBox = document.getElementById('paymentInfo');
 
-  alert("✅ Payment submitted!\nPlease wait for admin approval.");
-  window.location.href = "my_orders.html";
+  const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
+  if(!selectedPackage.name){
+    packageInfoBox.innerText = "⚠ No package selected!";
+  } else {
+    packageInfoBox.innerText = `UID: ${selectedPackage.uid || '-'} | ${selectedPackage.name} - ৳${selectedPackage.amount}`;
+  }
+
+  function selectMethod(method){
+    selectedMethod = method;
+    document.querySelectorAll(".method").forEach(m => m.classList.remove("selected"));
+    document.getElementById(method.toLowerCase()).classList.add("selected");
+
+    let number = method==="Bkash"?"Bkash Personal : 017XXXXXXXX":"Nagad Personal : 01704481919";
+    paymentInfoBox.style.display="block";
+    paymentInfoBox.innerHTML = `<b>Send ৳${selectedPackage.amount} to:</b>
+      <div class="big-number">${number}</div>
+      <div class="tips">
+      1️⃣ টাকা না পাঠিয়ে Pay Now এ ক্লিক করবেন না<br>
+      2️⃣ সঠিক নাম্বার এবং পরিমাণে টাকা পাঠান<br>
+      3️⃣ ভুলে গেলে রিফান্ড হবে না<br>
+      4️⃣ Pay Now ক্লিক করলে রিকুয়েস্ট এডমিনে যাবে
+      </div>`;
+  }
+
+  function submitPayment(){
+    if(!selectedMethod){alert("Please select a payment method first!"); return;}
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if(!currentUser){alert("Please login first!"); return;}
+
+    const request = {
+      username: currentUser.username,
+      phone: currentUser.phone,
+      amount: selectedPackage.amount,
+      package: selectedPackage.name,
+      uid: selectedPackage.uid || "-",
+      method: selectedMethod,
+      status: "Pending",
+      time: new Date().toLocaleString()
+    };
+
+    // Save to Firebase for Admin live request
+    db.ref("topupRequests").push(request).then(()=>{
+      alert("✅ Payment submitted! Please wait for admin approval.");
+      window.location.href = "my_order.html";
+    });
   }
 </script>
-
 </body>
 </html>
