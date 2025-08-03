@@ -7,73 +7,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin:0;
       font-family:'Poppins',sans-serif;
-      background:linear-gradient(135deg,#eef2f3,#d9e4f5);
-      color:#333;
+      margin:0;
+      background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:white;
       min-height:100vh;
-      padding:20px;
-      overflow:hidden;
-      position:relative;
-    }
-    h2 {
-      text-align:center;
-      margin-bottom:20px;
-      position:relative;
-      z-index:2;
-    }
-    .orders-container {
-      max-width: 900px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      position:relative;
-      z-index:2;
-    }
-    .order-card {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(8px);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      transition: 0.3s;
-    }
-    .order-card:hover {
-      transform: translateY(-5px);
-    }
-    .order-header {
       display:flex;
-      justify-content: space-between;
+      flex-direction:column;
       align-items:center;
-      margin-bottom:10px;
+      padding:30px;
     }
-    .order-id {
-      font-weight:600;
-      font-size:18px;
-    }
-    .status {
-      padding:4px 10px;
-      border-radius:20px;
-      font-size:13px;
-      font-weight:600;
-    }
-    .pending {background:orange;color:white;}
-    .completed {background:#00C853;color:white;}
-    .failed {background:#ff4757;color:white;}
-    .order-body p {
-      margin:6px 0;
-      font-size:14px;
-    }
-    .no-orders {
-      text-align:center;
-      margin-top:50px;
-      font-size:18px;
-      opacity:0.8;
-      position:relative;
-      z-index:2;
-    }
+    h2 { margin-bottom:20px; animation:fadeIn 1s; }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);}}
 
+    table {
+      width:95%; max-width:800px;
+      border-collapse: collapse;
+      background:rgba(255,255,255,0.1);
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 0 15px rgba(0,0,0,0.5);
+      animation: fadeIn 1s;
+    }
+    th, td {
+      padding:12px;
+      text-align:center;
+    }
+    th {
+      background:rgba(0,0,0,0.3);
+      font-weight:600;
+    }
+    tr:nth-child(even){background:rgba(255,255,255,0.05);}
+    .status-pending {color:orange;font-weight:bold;}
+    .status-completed {color:lime;font-weight:bold;}
+    .status-failed {color:red;font-weight:bold;}
+    .empty {margin-top:40px;font-size:18px;opacity:0.8;}
     /* Bubble Animation */
     #bubbleContainer {
       position: fixed;
@@ -103,14 +71,23 @@
 </head>
 <body>
 
-<h2>📦 My Orders</h2>
+<h2>📜 My Orders</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Package</th>
+      <th>Amount</th>
+      <th>Method</th>
+      <th>Status</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody id="orderTable"></tbody>
+</table>
 
-<div class="orders-container" id="ordersContainer"></div>
-<div class="no-orders" id="noOrders" style="display:none;">No orders yet.</div>
+<div class="empty" id="emptyMsg" style="display:none;">আপনার কোন অর্ডার নেই!</div>
 
-<!-- Bubble Container -->
-<div id="bubbleContainer"></div>
-
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
@@ -127,45 +104,47 @@
   const db = firebase.database();
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (!currentUser) {
+  if(!currentUser){
     alert("Please login first!");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
   }
 
   const orderTable = document.getElementById("orderTable");
+  const emptyMsg = document.getElementById("emptyMsg");
 
-  // Listen for orders of current user
-  db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
-    .on("child_added", snap => {
-      const r = snap.val();
-      let row = `<tr>
-        <td>${r.amount}</td>
-        <td>${r.operator}</td>
-        <td>${r.status}</td>
-        <td>${r.time}</td>
-      </tr>`;
-      orderTable.insertAdjacentHTML('afterbegin', row);
-    });
+  function renderStatus(status){
+    if(status==="Completed") return `<span class="status-completed">Completed</span>`;
+    if(status==="Failed") return `<span class="status-failed">Failed</span>`;
+    return `<span class="status-pending">Pending</span>`;
+  }
 
-  // Update status in realtime
+  // Listen for current user's orders
   db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
-    .on("child_changed", snap => {
-      orderTable.innerHTML = ""; // refresh table
-      db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
-        .once("value", snapshot => {
-          snapshot.forEach(child => {
-            const r = child.val();
-            let row = `<tr>
-              <td>${r.amount}</td>
-              <td>${r.operator}</td>
-              <td>${r.status}</td>
-              <td>${r.time}</td>
-            </tr>`;
-            orderTable.insertAdjacentHTML('afterbegin', row);
-          });
-        });
+    .on("value", snapshot => {
+      orderTable.innerHTML="";
+      if(!snapshot.exists()){ emptyMsg.style.display="block"; return; }
+      emptyMsg.style.display="none";
+
+      const orders = [];
+      snapshot.forEach(child => {
+        orders.push(child.val());
+      });
+
+      // sort by time (latest first)
+      orders.sort((a,b) => new Date(b.time) - new Date(a.time));
+
+      orders.forEach(order => {
+        const row = `<tr>
+          <td>${order.package || "-"}</td>
+          <td>৳${order.amount}</td>
+          <td>${order.method}</td>
+          <td>${renderStatus(order.status)}</td>
+          <td>${order.time}</td>
+        </tr>`;
+        orderTable.insertAdjacentHTML('beforeend', row);
+      });
     });
-// Floating Bubble Animation (no money sign)
+    // Floating Bubble Animation (no money sign)
 const bubbleContainer = document.getElementById('bubbleContainer');
 
 function createBubble(){
@@ -181,6 +160,5 @@ function createBubble(){
 }
 setInterval(createBubble,500);
 </script>
-
 </body>
-</html>
+  </html>
