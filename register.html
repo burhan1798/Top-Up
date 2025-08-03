@@ -67,16 +67,17 @@
     <input type="password" id="password" placeholder="Password" required>
     <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
     <button onclick="registerUser()">Register</button>
-    <span class="link" onclick="window.location.href='index.html'">Already have an account? Login</span>
+<span class="link" onclick="window.location.href='index.html'">
+  Already have an account? Login
+</span>
   </div>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-  <script>
-    // Replace with your Firebase config
-    const firebaseConfig = {
+<script>
+  // ✅ Your Firebase config
+  const firebaseConfig = {
     apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
     authDomain: "bulla-bazar.firebaseapp.com",
     databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
@@ -85,52 +86,53 @@
     messagingSenderId: "597341196963",
     appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
   };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-    function registerUser() {
-      const fullname = document.getElementById('fullname').value.trim();
-      const username = document.getElementById('username').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+  function registerUser() {
+    const fullname = document.getElementById('fullname').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
 
-      if (!fullname || !username || !phone || !password || !confirmPassword) {
-        alert("All fields are required!");
-        return;
-      }
-      if (password !== confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
+    if (!fullname || !username || !phone || !password || !confirmPassword) {
+      alert("All fields are required!");
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
 
-      db.ref("users").once("value", snapshot => {
-        let duplicate = false;
-        snapshot.forEach(child => {
-          const u = child.val();
-          if (u.phone === phone || u.username.toLowerCase() === username.toLowerCase()) {
-            duplicate = true;
-          }
-        });
-
-        if (duplicate) {
-          alert("Already registered, please login!");
-        } else {
-          const user = {
-            fullname,
-            username,
-            phone,
-            password,
-            time: new Date().toLocaleString()
-          };
-          db.ref("users").push(user).then(() => {
-            alert("Registration Successful!");
-            localStorage.setItem("currentUser", JSON.stringify(user));
-            window.location.href = "main.html";
-          });
+    // 🔹 Duplicate check in Firebase
+    db.ref("users").once("value", snapshot => {
+      let duplicate = false;
+      snapshot.forEach(child => {
+        const u = child.val();
+        if (u.phone === phone || u.username.toLowerCase() === username.toLowerCase()) {
+          duplicate = true;
         }
       });
-    }
+
+      if (duplicate) {
+        alert("Already registered, please login!");
+      } else {
+        const user = {
+          fullname,
+          username,
+          phone,
+          password,
+          time: new Date().toLocaleString()
+        };
+
+        // 🔹 Save to Firebase + LocalStorage
+        db.ref("users").push(user).then(() => {
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          alert("Registration Successful! Redirecting to dashboard...");
+          window.location.href = "main.html"; // ✅ Direct redirect
+        });
+      }
+    });
+  }
   </script>
-</body>
-      </html>
