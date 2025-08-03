@@ -144,9 +144,48 @@
     // Save to Firebase for Admin live request
     db.ref("topupRequests").push(request).then(()=>{
       alert("✅ Payment submitted! Please wait for admin approval.");
-      window.location.href = "my_order.html";
+      window.location.href = "my_orders.html";
     });
   }
 </script>
+  <script>
+document.getElementById("payNowBtn").addEventListener("click", () => {
+    // Get selected package from localStorage
+    const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage"));
+
+    if (!selectedPackage || !selectedPackage.uid || !selectedPackage.name || !selectedPackage.amount) {
+        alert("No package selected!");
+        return;
+    }
+
+    // Prepare email data
+    const emailData = {
+        userId: selectedPackage.uid,        // User entered UID
+        packageName: selectedPackage.name,  // Package name
+        diamonds: selectedPackage.name.match(/\d+/)?.[0] || "N/A", // Extract numeric diamonds from name
+        amount: selectedPackage.amount,     // Package amount
+        uid: selectedPackage.uid            // Same UID for email
+    };
+
+    // Send to backend (Render Email API)
+    fetch("https://email-backend-vrgq.onrender.com/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(emailData)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("✅ Email sent with package details to admin!");
+            // Optionally redirect or clear storage
+        } else {
+            alert("⚠️ Email failed: " + data.message);
+        }
+    })
+    .catch(err => {
+        alert("❌ Error sending email: " + err.message);
+    });
+});
+  </script>
 </body>
 </html>
