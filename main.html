@@ -161,11 +161,11 @@ footer p span {
   <!-- Sidebar Drawer -->
   <div class="sidebar" id="sidebar">
    <div class="user-info">
-    <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
-    <h2 id="username">Guest User</h2>
-    <p id="email">guest@example.com</p>
-    <p id="userId">User ID: #0000</p>
-   </div>
+  <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
+  <h2 id="username">Guest User</h2>
+  <p id="email">guest@example.com</p>
+  <p id="userId">User ID: #0000</p>
+  </div>
    <div class="menu">
     <a href="profile.html" target="_blank">My Profile</a> <a href="add_funds.html" target="_blank">Add Funds</a> <a href="my_orders.html" target="_blank">Order History</a> <a href="wallet.html" target="_blank">My Wallet</a> <a href="about.html" target="_blank">About</a> <a href="help.html" target="_blank">Help</a>
    </div><a class="logout" href="index.html" onclick="logout()">Logout</a>
@@ -220,23 +220,54 @@ footer p span {
     s0.parentNode.insertBefore(s1, s0);
   })();
       </script>
-  <script>
-    const currentMobile = localStorage.getItem("currentUser");
-const users = JSON.parse(localStorage.getItem("users")) || {};
-const currentUser = users[currentMobile];
+  <!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-if(currentUser){
-  document.getElementById('username').innerText = currentUser.username || currentUser.name;
-  document.getElementById('email').innerText = currentUser.email;
-  document.getElementById('userId').innerText = "User ID: #" + currentUser.id;
-  document.getElementById('profilePic').src = currentUser.profilePic || "https://via.placeholder.com/70";
-} else {
-  // force logout if no user found
-  function logout(){
-  localStorage.removeItem("currentUser");
-  window.location.href = "index.html";
-    }
-    </script><!-- Footer Content -->
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+    authDomain: "bulla-bazar.firebaseapp.com",
+    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+    projectId: "bulla-bazar",
+    storageBucket: "bulla-bazar.appspot.com",
+    messagingSenderId: "597341196963",
+    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // LocalStorage থেকে current user
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (!currentUser) {
+    window.location.href = "login.html";
+  } else {
+    // Firebase থেকে info নাও
+    db.ref("users").orderByChild("phone").equalTo(currentUser.phone).once("value")
+      .then(snapshot => {
+        snapshot.forEach(child => {
+          const u = child.val();
+          document.getElementById("username").innerText = u.username;
+          document.getElementById("email").innerText = u.phone + "@phone";
+          document.getElementById("userId").innerText = "User ID: #" + child.key.slice(-4).toUpperCase();
+
+          // যদি profile picture future এ save করো localStorage/Firebase এ
+          if (u.profilePic) {
+            document.getElementById("profilePic").src = u.profilePic;
+          }
+        });
+      })
+      .catch(err => console.error("Firebase fetch error:", err));
+  }
+
+  // Logout function
+  function logoutUser() {
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
+  }
+</script>
+  <!-- Footer Content -->
   <footer class="text-center text-xs mt-10 mb-5">
    <!-- About -->
    <div class="max-w-xs mx-auto mb-10">
@@ -266,36 +297,5 @@ if(currentUser){
    <p class="text-xs font-light">© Copyright 2025. All Rights Reserved. <br>
      Developed by <span class="font-semibold"> Burhan </span></p>
   </footer>
-  <script>
-  const menuBtn = document.getElementById('menuBtn');
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('overlay');
-
-  menuBtn.addEventListener('click', ()=>{
-    sidebar.classList.add('active');
-    overlay.classList.add('active');
-  });
-  overlay.addEventListener('click', ()=>{
-    sidebar.classList.remove('active');
-    overlay.classList.remove('active');
-  });
-
-  // Load user info
-  const currentMobile = localStorage.getItem("currentUser");
-  const users = JSON.parse(localStorage.getItem("users")) || {};
-  const currentUser = users[currentMobile];
-
-  if(currentUser){
-    document.getElementById('username').innerText = currentUser.username || currentUser.name;
-    document.getElementById('email').innerText = currentUser.email || "No email";
-    document.getElementById('userId').innerText = "User ID: #" + currentUser.id;
-    document.getElementById('profilePic').src = currentUser.profilePic || "https://via.placeholder.com/70";
-  }
-
-  function logout(){
-    localStorage.removeItem("currentUser");
-    window.location.href="login.html";
-  }
-</script>
  </body>
   </html>
