@@ -142,15 +142,8 @@
     };
 
     // Save to Firebase for Admin live request
-    db.ref("topupRequests").push(request).then(()=>{
-      alert("✅ Payment submitted! Please wait for admin approval.");
-      window.location.href = "my_orders.html";
-    });
-  }
-</script>
-  <script>
-document.getElementById("payNowBtn").addEventListener("click", () => {
-    // Get selected package from localStorage
+    db.ref("topupRequests").push(request).then(()=>{ 
+      // Get selected package from localStorage
     const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage"));
 
     if (!selectedPackage || !selectedPackage.uid || !selectedPackage.name || !selectedPackage.amount) {
@@ -186,6 +179,9 @@ document.getElementById("payNowBtn").addEventListener("click", () => {
         alert("❌ Error sending email: " + err.message);
     });
 });
-  </script>
+      window.location.href = "my_orders.html";
+    });
+  }  
+</script>
 </body>
 </html>
