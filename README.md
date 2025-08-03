@@ -1,4 +1,4 @@
-<h1 align="center">💎 Bulla Top-Up System 💎</h1>
+<h1 align="center">💎 Bulla Top-Up BaZaR💎</h1>
 
 <p align="center">
   <b>Fast, Secure & Real-time Game Top-Up Solution</b> <br>
@@ -54,3 +54,4 @@
 ---
 
 ## 📂 Project Structure
+Bulla-TopUp/ │ ├── 📄 index.html           # 🔹 Login Page ├── 📄 register.html        # 🔹 User Registration ├── 📄 main.html            # 🔹 User Dashboard ├── 📄 add_funds.html       # 🔹 Package Purchase Page ├── 📄 my_orders.html       # 🔹 Order History Page ├── 📄 admin.html           # 🔹 Admin Panel (Topup Requests & Users) │ ├── 📂 assets/              # 🎨 Images, CSS, JS │   ├── 📄 style.css        # 🔹 Main styling │   └── 📄 script.js        # 🔹 Optional scripts │ ├── 📂 backend/             # ⚡ Email Backend (Node.js on Render) │   ├── 📄 server.js        # 🔹 Node.js Express server │   └── 📄 package.json     # 🔹 Node project config │ └── 📄 README.md            # 📘 Project Documentation
