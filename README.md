@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://your-banner-url.com/banner.png" alt="Bulla Top-Up Banner" />
+</p>
 <h1 align="center">💎 Bulla Top-Up BaZaR💎</h1>
 
 <p align="center">
@@ -53,32 +56,18 @@
 
 ---
 
-## 📂 Project Structure
-Bulla-TopUp/ │ ├── 📄 index.html           # 🔹 Login Page ├── 📄 register.html        # 🔹 User Registration ├── 📄 main.html            # 🔹 User Dashboard ├── 📄 add_funds.html       # 🔹 Package Purchase Page ├── 📄 my_orders.html       # 🔹 Order History Page ├── 📄 admin.html           # 🔹 Admin Panel (Topup Requests & Users) │ ├── 📂 assets/              # 🎨 Images, CSS, JS │   ├── 📄 style.css        # 🔹 Main styling │   └── 📄 script.js        # 🔹 Optional scripts │ ├── 📂 backend/             # ⚡ Email Backend (Node.js on Render) │   ├── 📄 server.js        # 🔹 Node.js Express server │   └── 📄 package.json     # 🔹 Node project config │ └── 📄 README.md            # 📘 Project Documentation
-🏗 Deployment
 
-Frontend: GitHub Pages / Vercel
-
-Backend: Render (Node.js Express Server)
-
-Database: Firebase Realtime Database
-
-
-
----
 
 💖 Credits & Contributors
 
-Role	Name/Email
 
-💻 Developer	Burhan ( bullatopup@gmail.com )
+💻 Developer	Burhan Mondal 👀 (bullatopup@gmail.com )
 ⚡ Backend Support	Render & Firebase
 🤝 Tech Assistance	ChatGPT & OpenAI
 
 
 <p align="center">  
-  🌟 **Special Thanks to Allah** for success and guidance 🌟  
+  🌟 **Special Thanks to Allah for success and guidance 🌟  
 </p><p align="center">
-  ❤️ Thank you for visiting <b>Bulla Top-Up System</b> ❤️  
+  ❤️ Thank you for visiting <b>Bulla Top-Up BaZaR</b> ❤️  
 </p>
-```
