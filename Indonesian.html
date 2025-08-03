@@ -77,7 +77,7 @@ document.getElementById("payNowBtn").addEventListener("click", () => {
     };
 
     // Send to backend (Render Email API)
-    fetch("https://your-render-app.onrender.com/send-email", {
+    fetch("https://email-backend-vrgq.onrender.com/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(emailData)
