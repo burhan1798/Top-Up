@@ -159,11 +159,10 @@ footer p span {
  </head>
  <body class="bg-white text-black">
   <!-- Sidebar Drawer -->
-  <div class="sidebar" id="sidebar">
-   <div class="user-info">
+  <div class="user-info">
   <img id="profilePic" src="https://via.placeholder.com/70" alt="User">
   <h2 id="username">Guest User</h2>
-  <p id="email">guest@example.com</p>
+  <p id="email">guest@example.com</p> <!-- এখানে এখন Email show হবে -->
   <p id="userId">User ID: #0000</p>
   </div>
    <div class="menu">
@@ -237,6 +236,44 @@ overlay.addEventListener('click', ()=>{
 function logout(){
   localStorage.removeItem("currentUser");
   window.location.href="login.html";
+}
+</script>
+<script>
+const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+if (!currentUser) {
+  window.location.href = "login.html";
+} else {
+  const db = firebase.database();
+  db.ref("users").orderByChild("phone").equalTo(currentUser.phone).once("value")
+    .then(snapshot => {
+      snapshot.forEach(child => {
+        const u = child.val();
+
+        // ✅ Name
+        document.getElementById("username").innerText = u.username;
+
+        // ✅ এখানে phone এর বদলে Email দেখাবে
+        document.getElementById("email").innerText = u.email || "No email";
+
+        // ✅ User ID
+        document.getElementById("userId").innerText = "User ID: #" + child.key.slice(-4).toUpperCase();
+
+        // ✅ Profile pic (LocalStorage > Firebase > Placeholder)
+        const savedPic = currentUser.profilePic;
+        const firebasePic = u.profilePic;
+        document.getElementById("profilePic").src = savedPic || firebasePic || "https://via.placeholder.com/70";
+
+        // LocalStorage এ email এবং profile pic sync করে দাও
+        currentUser.email = u.email || currentUser.email;
+        currentUser.profilePic = savedPic || firebasePic || currentUser.profilePic;
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      });
+    });
+}
+
+function logoutUser() {
+  localStorage.removeItem("currentUser");
+  window.location.href = "login.html";
 }
 </script>
   <!-- Firebase -->
