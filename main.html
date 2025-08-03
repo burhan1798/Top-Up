@@ -122,7 +122,7 @@ footer p span {
       box-shadow: 2px 0 15px rgba(0,0,0,0.3);
     }
     .sidebar.active {left: 0;}
-    .sidebar .user-info {text-align:center; padding:30px 20px; border-bottom:1px solid rgba(255,255,255,0.1);}
+    .sidebar .user-info {text-align:center; padding:30px 40px; border-bottom:1px solid rgba(255,255,255,0.1);}
     .sidebar .user-info img {width:70px; height:70px; border-radius:50%; border:3px solid white; margin-bottom:10px;}
     .sidebar .user-info h2 {font-size:18px; margin-bottom:5px;}
     .sidebar .user-info p {font-size:13px; color:#bbb;}
@@ -220,6 +220,25 @@ footer p span {
     s0.parentNode.insertBefore(s1, s0);
   })();
       </script>
+      <script>
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+menuBtn.addEventListener('click', ()=>{
+  sidebar.classList.add('active');
+  overlay.classList.add('active');
+});
+overlay.addEventListener('click', ()=>{
+  sidebar.classList.remove('active');
+  overlay.classList.remove('active');
+});
+
+function logout(){
+  localStorage.removeItem("currentUser");
+  window.location.href="login.html";
+}
+</script>
   <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -289,7 +308,7 @@ footer p span {
     <h3 class="tracking-widest text-sm mb-6">STAY CONNECTED</h3>
     <p class="mb-3 font-light text-sm">Bulla Top Up</p>
     <p class="mb-3 font-light text-sm">House #20 (3rd Floor) Road # 17, Nikanjia-2 Dhaka,</p>
-    <p class="mb-6 font-light text-sm">Email: <span class="font-semibold"> bullatopupofficial@gmail.com </span></p>
+    <p class="mb-6 font-light text-sm">Email: <span class="font-semibold"> bullatopup@gmail.com </span></p>
     <div class="flex justify-center space-x-6 text-white text-xl">
      <a aria-label="Facebook" class="opacity-80 hover:opacity-100 transition" href="#"> <i class="fab fa-facebook-f"> </i> </a> <a aria-label="YouTube" class="opacity-80 hover:opacity-100 transition" href="#"> <i class="fab fa-youtube"> </i> </a> <a aria-label="Instagram" class="opacity-80 hover:opacity-100 transition" href="#"> <i class="fab fa-instagram"> </i> </a>
     </div>
@@ -299,3 +318,4 @@ footer p span {
   </footer>
  </body>
   </html>
+  
