@@ -85,33 +85,40 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
-    authDomain: "bulla-bazar.firebaseapp.com",
-    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
-    projectId: "bulla-bazar",
-    storageBucket: "bulla-bazar.firebasestorage.app",
-    messagingSenderId: "597341196963",
-    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+const firebaseConfig = {
+  apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+  authDomain: "bulla-bazar.firebaseapp.com",
+  databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+  projectId: "bulla-bazar",
+  storageBucket: "bulla-bazar.firebasestorage.app",
+  messagingSenderId: "597341196963",
+  appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-  let selectedMethod = null;
-  const packageInfoBox = document.getElementById('packageInfo');
-  const paymentInfoBox = document.getElementById('paymentInfo');
+let selectedMethod = null;
 
-  const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
-  if(!selectedPackage.name){
-    packageInfoBox.innerText = "⚠ No package selected!";
-  } else {
-    packageInfoBox.innerText = `UID: ${selectedPackage.uid || '-'} | ${selectedPackage.name} - ৳${selectedPackage.amount}`;
-  }
+// Package info load after DOM ready
+window.addEventListener("DOMContentLoaded", () => {
+    const packageInfoBox = document.getElementById('packageInfo');
+    const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
 
-  function selectMethod(method){
+    if(!selectedPackage.name){
+        packageInfoBox.innerText = "⚠ No package selected!";
+    } else {
+        packageInfoBox.innerText = `UID: ${selectedPackage.uid || '-'} | ${selectedPackage.name} - ৳${selectedPackage.amount}`;
+    }
+});
+
+// Payment method select
+function selectMethod(method){
     selectedMethod = method;
     document.querySelectorAll(".method").forEach(m => m.classList.remove("selected"));
     document.getElementById(method.toLowerCase()).classList.add("selected");
+
+    const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
+    const paymentInfoBox = document.getElementById('paymentInfo');
 
     let number = method==="Bkash"?"Bkash Personal : 017XXXXXXXX":"Nagad Personal : 01704481919";
     paymentInfoBox.style.display="block";
@@ -123,67 +130,72 @@
       3️⃣ ভুলে গেলে রিফান্ড হবে না<br>
       4️⃣ Pay Now ক্লিক করলে রিকুয়েস্ট এডমিনে যাবে
       </div>`;
-  }
+}
 
-  function submitPayment(){
-    if(!selectedMethod){alert("Please select a payment method first!"); return;}
+// Submit payment
+function submitPayment(){
+    if(!selectedMethod){ alert("Please select a payment method first!"); return; }
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if(!currentUser){alert("Please login first!"); return;}
+    if(!currentUser){ alert("Please login first!"); return; }
 
+    const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
+    if(!selectedPackage.name){ alert("⚠ No package selected!"); return; }
+
+    // 1️⃣ Firebase Save
     const request = {
-      username: currentUser.username,
-      phone: currentUser.phone,
-      amount: selectedPackage.amount,
-      package: selectedPackage.name,
-      uid: selectedPackage.uid || "-",
-      method: selectedMethod,
-      status: "Pending",
-      time: new Date().toLocaleString()
+        username: currentUser.username,
+        phone: currentUser.phone,
+        amount: selectedPackage.amount,
+        package: selectedPackage.name,
+        uid: selectedPackage.uid || "-",
+        method: selectedMethod,
+        status: "Pending",
+        time: new Date().toLocaleString()
     };
 
-    // Save to Firebase for Admin live request
-    db.ref("topupRequests").push(request).then(()=>{ 
+    db.ref("topupRequests").push(request).then(()=>{
 
-    // Prepare email data
-    const emailData = {
-        userId: selectedPackage.uid,        // User entered UID
-        packageName: selectedPackage.name,  // Package name
-        diamonds: selectedPackage.name.match(/\d+/)?.[0] || "N/A", // Extract numeric diamonds from name
-        amount: selectedPackage.amount,     // Package amount
-        uid: selectedPackage.uid            // Same UID for email
-    };
+        // 2️⃣ Email Notification
+        const emailData = {
+            userId: selectedPackage.uid,
+            packageName: selectedPackage.name,
+            diamonds: selectedPackage.name.match(/\d+/)?.[0] || "N/A",
+            amount: selectedPackage.amount,
+            uid: selectedPackage.uid
+        };
 
-    // Send to backend (Render Email API)
-    fetch("https://email-backend-vrgq.onrender.com/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(emailData)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            
-// 3️⃣ Telegram Notification
-        const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
-        const chatId = "7984550108"; 
-        const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট\nUID: ${selectedPackage.uid}\nPackage: ${selectedPackage.name}\nAmount: ৳${selectedPackage.amount}\nUser: ${currentUser.username} (${currentUser.phone})\nMethod: ${selectedMethod}`;
-
-        fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        fetch("https://email-backend-vrgq.onrender.com/send-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: chatId, text: message })
+            body: JSON.stringify(emailData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            // 3️⃣ Telegram Notification
+            const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
+            const chatId = "7984550108"; 
+            const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট
+UID: ${selectedPackage.uid}
+Package: ${selectedPackage.name}
+Amount: ৳${selectedPackage.amount}
+User: ${currentUser.username} (${currentUser.phone})
+Method: ${selectedMethod}`;
+
+            fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: chatId, text: message })
+            });
+
+            // সবশেষে redirect
+            window.location.href = "my_orders.html";
+        })
+        .catch(err => {
+            console.error("Email Error:", err);
+            window.location.href = "my_orders.html";
         });
-        
-  // সব শেষ হলে redirect
-    window.location.href = "my_orders.html";
-})
-.catch(err => {
-    // error হলেও redirect হবে
-    console.error("Email Error:", err);
-    window.location.href = "my_orders.html";
-});
-};
-  }
+    });
+}
 </script>
 </body>
 </html>
