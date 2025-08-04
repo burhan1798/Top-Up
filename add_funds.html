@@ -163,14 +163,18 @@
     .then(data => {
         if (data.success) {
             alert("✅ Email sent with package details to admin!");
+// 3️⃣ Telegram Notification
+        const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
+        const chatId = "7984550108"; 
+        const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট\nUID: ${selectedPackage.uid}\nPackage: ${selectedPackage.name}\nAmount: ৳${selectedPackage.amount}\nUser: ${currentUser.username} (${currentUser.phone})\nMethod: ${selectedMethod}`;
+
+        fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: chatId, text: message })
+        });
           window.location.href = "my_orders.html";
-        } else {
-            alert("⚠️ Email failed: " + data.message);
-        }
-    })
-    .catch(err => {
-        alert("❌ Error sending email: " + err.message);
-    });
+        } 
 });
   }
 </script>
