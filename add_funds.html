@@ -162,7 +162,7 @@
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            alert("✅ Email sent with package details to admin!");
+            
 // 3️⃣ Telegram Notification
         const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
         const chatId = "7984550108"; 
@@ -173,8 +173,15 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ chat_id: chatId, text: message })
         });
-          window.location.href = "my_orders.html";
-        } 
+        
+  // সব শেষ হলে redirect
+    window.location.href = "my_orders.html";
+})
+.catch(err => {
+    // error হলেও redirect হবে
+    console.error("Email Error:", err);
+    window.location.href = "my_orders.html";
+});
 });
   }
 </script>
