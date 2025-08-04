@@ -171,21 +171,20 @@ function submitPayment(){
         })
         .then(res => res.json())
         .then(data => {
-            // 3️⃣ Telegram Notification
-            const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
-            const chatId = "7250562269"; 
-            const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট
+            // 3️⃣ Telegram Notification (GET method)
+const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
+const chatId = "7250562269"; 
+const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট
 UID: ${selectedPackage.uid}
 Package: ${selectedPackage.name}
 Amount: ৳${selectedPackage.amount}
 User: ${currentUser.username} (${currentUser.phone})
 Method: ${selectedMethod}`;
 
-            fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: chatId, text: message })
-            });
+fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+    .then(res => res.json())
+    .then(data => console.log("Telegram:", data))
+    .catch(err => console.error("Telegram Error:", err));
 
             // সবশেষে redirect
             window.location.href = "my_orders.html";
