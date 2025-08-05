@@ -98,8 +98,14 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let selectedMethod = null;
+let paymentMethods = {}; // Live data from Firebase
 
-// Package info load after DOM ready
+// 🔹 Load Payment Methods Live
+db.ref("paymentMethods").on("value", snap => {
+    paymentMethods = snap.val() || {};
+});
+
+// 🔹 Load Selected Package Info
 window.addEventListener("DOMContentLoaded", () => {
     const packageInfoBox = document.getElementById('packageInfo');
     const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
@@ -111,7 +117,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Payment method select
+// 🔹 Payment Method Select
 function selectMethod(method){
     selectedMethod = method;
     document.querySelectorAll(".method").forEach(m => m.classList.remove("selected"));
@@ -120,19 +126,18 @@ function selectMethod(method){
     const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
     const paymentInfoBox = document.getElementById('paymentInfo');
 
-    let number = method==="Bkash"?"Bkash Personal : 017XXXXXXXX":"Nagad Personal : 01704481919";
-    paymentInfoBox.style.display="block";
+    const methodData = paymentMethods[method] || {};
+    const number = methodData.number || "No number set";
+    const instruction = methodData.description || "Send money to personal number, then enter last 6 digits.";
+
+    paymentInfoBox.style.display = "block";
     paymentInfoBox.innerHTML = `<b>Send ৳${selectedPackage.amount} to:</b>
-      <div class="big-number">${number}</div>
-      <div class="tips">
-      1️⃣ টাকা না পাঠিয়ে Pay Now এ ক্লিক করবেন না<br>
-      2️⃣ সঠিক নাম্বার এবং পরিমাণে টাকা পাঠান<br>
-      3️⃣ ভুলে গেলে রিফান্ড হবে না<br>
-      4️⃣ Pay Now ক্লিক করলে রিকুয়েস্ট এডমিনে যাবে
-      </div>`;
+      <div class="big-number">${method} Personal: ${number}</div>
+      <div class="tips">${instruction}</div>
+      <div class="tips">❗ টাকা না পাঠিয়ে Pay Now ক্লিক করবেন না, ভুল করলে রিফান্ড হবে না</div>`;
 }
 
-// Submit payment
+// 🔹 Submit Payment
 function submitPayment(){
     if(!selectedMethod){ alert("Please select a payment method first!"); return; }
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -141,7 +146,10 @@ function submitPayment(){
     const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
     if(!selectedPackage.name){ alert("⚠ No package selected!"); return; }
 
-    // 1️⃣ Firebase Save
+    // Confirm Payment
+    if(!confirm("আপনি কি টাকা পাঠিয়েছেন এবং Pay Now করতে চান?")) return;
+
+    // 1️⃣ Save to Firebase
     const request = {
         username: currentUser.username,
         phone: currentUser.phone,
@@ -154,45 +162,20 @@ function submitPayment(){
     };
 
     db.ref("topupRequests").push(request).then(()=>{
-
-        // 2️⃣ Email Notification
-        const emailData = {
-            userId: selectedPackage.uid,
-            packageName: selectedPackage.name,
-            diamonds: selectedPackage.name.match(/\d+/)?.[0] || "N/A",
-            amount: selectedPackage.amount,
-            uid: selectedPackage.uid
-        };
-
-        fetch("https://email-backend-vrgq.onrender.com/send-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(emailData)
-        })
-        .then(res => res.json())
-        .then(data => {
-            // 3️⃣ Telegram Notification (GET method)
-const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
-const chatId = "7250562269"; 
-const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট
+        // 2️⃣ Telegram Notify
+        const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
+        const chatId = "7250562269"; 
+        const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট
 UID: ${selectedPackage.uid}
 Package: ${selectedPackage.name}
 Amount: ৳${selectedPackage.amount}
 User: ${currentUser.username} (${currentUser.phone})
 Method: ${selectedMethod}`;
 
-fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
-    .then(res => res.json())
-    .then(data => console.log("Telegram:", data))
-    .catch(err => console.error("Telegram Error:", err));
-
-            // সবশেষে redirect
-            window.location.href = "my_orders.html";
-        })
-        .catch(err => {
-            console.error("Email Error:", err);
-            window.location.href = "my_orders.html";
-        });
+        fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+            .then(res => res.json())
+            .then(() => window.location.href = "my_orders.html")
+            .catch(() => window.location.href = "my_orders.html");
     });
 }
 </script>
