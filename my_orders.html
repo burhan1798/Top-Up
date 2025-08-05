@@ -118,32 +118,41 @@
     return `<span class="status-pending">Pending</span>`;
   }
 
-  // Listen for current user's orders
-  db.ref("topupRequests").orderByChild("phone").equalTo(currentUser.phone)
+  // Listen for current user's orders in realtime
+  db.ref("topupRequests")
+    .orderByChild("phone")
+    .equalTo(currentUser.phone)
     .on("value", snapshot => {
       orderTable.innerHTML="";
-      if(!snapshot.exists()){ emptyMsg.style.display="block"; return; }
+      if(!snapshot.exists()){ 
+        emptyMsg.style.display="block"; 
+        return; 
+      }
       emptyMsg.style.display="none";
 
       const orders = [];
       snapshot.forEach(child => {
-        orders.push(child.val());
+        const order = child.val();
+        order.id = child.key; // store order ID for reference
+        orders.push(order);
       });
 
-      // sort by time (latest first)
+      // Sort by time (latest first)
       orders.sort((a,b) => new Date(b.time) - new Date(a.time));
 
+      // Render orders
       orders.forEach(order => {
         const row = `<tr>
           <td>${order.package || "-"}</td>
           <td>৳${order.amount}</td>
           <td>${order.method}</td>
-          <td>${renderStatus(order.status)}</td>
+          <td>${renderStatus(order.status || "Pending")}</td>
           <td>${order.time}</td>
         </tr>`;
         orderTable.insertAdjacentHTML('beforeend', row);
       });
     });
+</script>
     // Floating Bubble Animation (no money sign)
 const bubbleContainer = document.getElementById('bubbleContainer');
 
