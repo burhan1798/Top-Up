@@ -81,9 +81,13 @@
 
 <button onclick="submitPayment()">Pay Now</button>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
@@ -98,9 +102,9 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let selectedMethod = null;
-let paymentMethods = {}; // Live data from Firebase
+let paymentMethods = {}; // Firebase থেকে লাইভ লোড
 
-// 🔹 Load Payment Methods Live
+// 🔹 Load Payment Methods
 db.ref("paymentMethods").on("value", snap => {
     paymentMethods = snap.val() || {};
 });
@@ -139,17 +143,54 @@ function selectMethod(method){
 
 // 🔹 Submit Payment
 function submitPayment(){
-    if(!selectedMethod){ alert("Please select a payment method first!"); return; }
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if(!currentUser){ alert("Please login first!"); return; }
-
     const selectedPackage = JSON.parse(localStorage.getItem("selectedPackage")) || {};
-    if(!selectedPackage.name){ alert("⚠ No package selected!"); return; }
 
-    // Confirm Payment
-    if(!confirm("আপনি কি টাকা পাঠিয়েছেন এবং Pay Now করতে চান?")) return;
+    // Validation গুলো Professional Popup এ
+    if(!selectedMethod){ 
+        return Swal.fire({
+          icon: "warning",
+          title: "Payment Method Missing",
+          text: "Please select a payment method first!",
+          confirmButtonColor: "#3085d6",
+        });
+    }
+    if(!currentUser){ 
+        return Swal.fire({
+          icon: "error",
+          title: "Login Required",
+          text: "Please login first to continue.",
+          confirmButtonColor: "#d33",
+        });
+    }
+    if(!selectedPackage.name){ 
+        return Swal.fire({
+          icon: "error",
+          title: "No Package Selected",
+          text: "Please select a package before proceeding.",
+          confirmButtonColor: "#d33",
+        });
+    }
 
-    // 1️⃣ Save to Firebase
+    // 🔹 Confirmation Modal
+    Swal.fire({
+        title: "Confirm Payment?",
+        html: `আপনি কি ৳${selectedPackage.amount} টাকা <b>${selectedMethod}</b> এ পাঠিয়েছেন?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "✅ Pay Now",
+        cancelButtonText: "❌ Cancel",
+        confirmButtonColor: "#28a745",
+        cancelButtonColor: "#d33",
+    }).then((result)=>{
+        if(result.isConfirmed){
+            savePayment(selectedPackage, currentUser);
+        }
+    });
+}
+
+// 🔹 Save Payment Function
+function savePayment(selectedPackage, currentUser){
     const request = {
         username: currentUser.username,
         phone: currentUser.phone,
@@ -162,7 +203,17 @@ function submitPayment(){
     };
 
     db.ref("topupRequests").push(request).then(()=>{
-        // 2️⃣ Telegram Notify
+        // ✅ Success Popup
+        Swal.fire({
+          icon: "success",
+          title: "Payment Submitted!",
+          text: "Your order has been placed successfully.",
+          confirmButtonColor: "#28a745",
+        }).then(()=>{
+            window.location.href = "my_orders.html";
+        });
+
+        // 🔹 Telegram Notify
         const telegramToken = "7984550108:AAHpwen-3jM1Ud6qwf9jt3y59UaYLMe2Ssk";
         const chatId = "7250562269"; 
         const message = `🔔 নতুন টপ-আপ রিকুয়েস্ট
@@ -174,8 +225,8 @@ Method: ${selectedMethod}`;
 
         fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
             .then(res => res.json())
-            .then(() => window.location.href = "my_orders.html")
-            .catch(() => window.location.href = "my_orders.html");
+            .then(data => console.log("Telegram:", data))
+            .catch(err => console.error("Telegram Error:", err));
     });
 }
 </script>
