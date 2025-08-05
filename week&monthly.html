@@ -20,57 +20,67 @@
     <!-- Package select -->
     <label class="block mb-2 font-semibold">Select Package:</label>
     <select id="package" class="w-full px-4 py-2 border rounded mb-4">
-      <option value="Weekly - 165৳">Weekly - 165৳</option>
-      <option value="Weekly 2x - 335৳">weekly 2x - 335৳</option>
-      <option value="Weekly 3x - 495৳">Weekly 3x - 495৳</option>
-      <option value="Weekly 4x - 660৳">Weekly 4x - 660৳</option>
-      <option value="Weekly 5x - 825৳">Weekly 5x - 825৳</option>
-      <option value="Monthly - 835৳">Monthly - 835৳</option>
-      <option value="Monthly 2x - 1680৳">Monthly - 1680৳</option>
-      <option value="1 Weekly + 1 Monthly - 1000৳">1 Weekly + 1 Monthly - 1000৳</option>
-      <option value="Weekly Lite - 50৳">Weekly Lite - 50৳</option>
-      <option value="Weekly Lite 2x - 100৳">Weekly Lite 2x - 100৳</option>
-      <option value="7 Days Evo Access - 115৳">7 Days Evo Access - 115৳</option>
-    </select>
+  <option disabled selected>Loading packages...</option>
+</select>
 
-    <!-- Payment select -->
-    <label class="block mb-2 font-semibold">Select Payment Method:</label>
-    <select id="payment" class="w-full px-4 py-2 border rounded mb-4">
-      <option value="Nagad">Nagad</option>
-      <option value="Bkash">Bkash</option>
-      <option value="Rocket">Rocket</option>
-      <option value="Upay">Upay</option>
-    </select>
+<button onclick="goToAddFunds()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+  Buy Now
+</button>
 
-    <!-- Buy Button -->
-    <button onclick="goToAddFunds()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">Buy Now</button>
-  </div>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+    authDomain: "bulla-bazar.firebaseapp.com",
+    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+    projectId: "bulla-bazar",
+    storageBucket: "bulla-bazar.firebasestorage.app",
+    messagingSenderId: "597341196963",
+    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-  <script>
-    function goToAddFunds() {
-      const uid = document.getElementById('uid').value.trim();
-      const selectedPackage = document.getElementById('package').value;
+  const packageSelect = document.getElementById('package');
 
-      if (!uid) {
-        alert("Please enter your UID.");
-        return;
-      }
-
-      // Extract name and amount
-      const [name, amountStr] = selectedPackage.split(" - ");
-      const amount = parseInt(amountStr.replace("৳","").trim());
-
-      // Save to localStorage for add_funds.html
-      localStorage.setItem("selectedPackage", JSON.stringify({
-        uid: uid,
-        name: name,
-        amount: amount
-      }));
-
-      // Redirect to add_funds.html
-      window.location.href = "add_funds.html";
+  // 🔹 Realtime Package Load
+  db.ref("packages").on("value", snapshot => {
+    packageSelect.innerHTML = "";
+    if(!snapshot.exists()){
+      const opt = document.createElement("option");
+      opt.textContent = "No packages available";
+      opt.disabled = true;
+      packageSelect.appendChild(opt);
+      return;
     }
-  </script>
+    snapshot.forEach(child => {
+      const pkg = child.val();
+      if(pkg.status === "Active"){
+        const opt = document.createElement("option");
+        opt.value = `${pkg.name} - ${pkg.price}৳`;
+        opt.textContent = `${pkg.name} - ${pkg.price}৳`;
+        packageSelect.appendChild(opt);
+      }
+    });
+  });
 
-</body>
-</html>
+  function goToAddFunds() {
+    const uid = document.getElementById('uid').value.trim();
+    const selectedPackage = packageSelect.value;
+    if (!uid) {
+      alert("Please enter your UID.");
+      return;
+    }
+    const [name, amountStr] = selectedPackage.split(" - ");
+    const amount = parseInt(amountStr.replace("৳","").trim());
+
+    localStorage.setItem("selectedPackage", JSON.stringify({
+      uid: uid,
+      name: name,
+      amount: amount
+    }));
+
+    window.location.href = "add_funds.html";
+  }
+</script>
