@@ -139,55 +139,68 @@
     <input type="text" id="uid" placeholder="Enter your Free Fire UID">
 
     <label>Select Package:</label>
-    <select id="package">
-      <option value="25 Diamonds - 32৳">25 Diamonds - 32৳</option>
-      <option value="50 Diamonds - 50৳">50 Diamonds - 50৳</option>
-      <option value="115 Diamonds - 85৳">115 Diamonds - 85৳</option>
-      <option value="240 Diamonds - 166৳">240 Diamonds - 166৳</option>
-    </select>
+    <select id="package" class="w-full px-4 py-2 border rounded mb-4">
+  <option disabled selected>Loading packages...</option>
+</select>
 
-    <label>Select Payment Method:</label>
-    <select id="payment">
-      <option value="Nagad">Nagad</option>
-      <option value="Bkash">Bkash</option>
-    </select>
+<button onclick="goToAddFunds()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+  Buy Now
+</button>
 
-    <button onclick="goToAddFunds()">BUY NOW</button>
-  </div>
-<!-- Tawk.to Script -->
-<script type="text/javascript">
-  var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-  (function () {
-    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-    s1.async = true;
-    s1.src = 'https://embed.tawk.to/68886767a71a56192dda53fc/1j1ad7s3d';
-    s1.charset = 'UTF-8';
-    s1.setAttribute('crossorigin', '*');
-    s0.parentNode.insertBefore(s1, s0);
-  })();
-</script>
-  <script>
-    function goToAddFunds() {
-      const uid = document.getElementById('uid').value.trim();
-      const selectedPackage = document.getElementById('package').value;
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDwqM5xxcw-tX3ZoswIdl4HWVYdf7foNEY",
+    authDomain: "bulla-bazar.firebaseapp.com",
+    databaseURL: "https://bulla-bazar-default-rtdb.firebaseio.com",
+    projectId: "bulla-bazar",
+    storageBucket: "bulla-bazar.firebasestorage.app",
+    messagingSenderId: "597341196963",
+    appId: "1:597341196963:web:af1f2cc7808a9f127d6516"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-      if (!uid) {
-        alert("Please enter your UID.");
-        return;
-      }
+  const packageSelect = document.getElementById('package');
 
-      const [name, amountStr] = selectedPackage.split(" - ");
-      const amount = parseInt(amountStr.replace("৳","").trim());
-
-      localStorage.setItem("selectedPackage", JSON.stringify({
-        uid: uid,
-        name: name,
-        amount: amount
-      }));
-
-      window.location.href = "add_funds.html";
+  // 🔹 Realtime Package Load
+  db.ref("packages").on("value", snapshot => {
+    packageSelect.innerHTML = "";
+    if(!snapshot.exists()){
+      const opt = document.createElement("option");
+      opt.textContent = "No packages available";
+      opt.disabled = true;
+      packageSelect.appendChild(opt);
+      return;
     }
-  </script>
+    snapshot.forEach(child => {
+      const pkg = child.val();
+      if(pkg.status === "Active"){
+        const opt = document.createElement("option");
+        opt.value = `${pkg.name} - ${pkg.price}৳`;
+        opt.textContent = `${pkg.name} - ${pkg.price}৳`;
+        packageSelect.appendChild(opt);
+      }
+    });
+  });
 
-</body>
-  </html>
+  function goToAddFunds() {
+    const uid = document.getElementById('uid').value.trim();
+    const selectedPackage = packageSelect.value;
+    if (!uid) {
+      alert("Please enter your UID.");
+      return;
+    }
+    const [name, amountStr] = selectedPackage.split(" - ");
+    const amount = parseInt(amountStr.replace("৳","").trim());
+
+    localStorage.setItem("selectedPackage", JSON.stringify({
+      uid: uid,
+      name: name,
+      amount: amount
+    }));
+
+    window.location.href = "add_funds.html";
+  }
+</script>
