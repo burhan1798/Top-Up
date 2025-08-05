@@ -161,9 +161,10 @@
   const db = firebase.database();
 
   const packageSelect = document.getElementById('package');
+  const category = "const category = "FREE FIRE ( AIRDROP )";";  // 🔹 এই category ফিল্টার করবে
 
-  // 🔹 Realtime Package Load
-  db.ref("packages").on("value", snapshot => {
+  // 🔹 Load packages for this category
+  db.ref("packages/" + category).on("value", snapshot => {
     packageSelect.innerHTML = "";
     if(!snapshot.exists()){
       const opt = document.createElement("option");
@@ -174,12 +175,10 @@
     }
     snapshot.forEach(child => {
       const pkg = child.val();
-      if(pkg.status === "Active"){
-        const opt = document.createElement("option");
-        opt.value = `${pkg.name} - ${pkg.price}৳`;
-        opt.textContent = `${pkg.name} - ${pkg.price}৳`;
-        packageSelect.appendChild(opt);
-      }
+      const opt = document.createElement("option");
+      opt.value = `${pkg.name} - ${pkg.price}৳`;
+      opt.textContent = `${pkg.name} - ${pkg.price}৳`;
+      packageSelect.appendChild(opt);
     });
   });
 
@@ -202,3 +201,5 @@
     window.location.href = "add_funds.html";
   }
 </script>
+</body>
+</html>
