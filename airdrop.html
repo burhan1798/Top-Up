@@ -161,7 +161,7 @@
   const db = firebase.database();
 
   const packageSelect = document.getElementById('package');
-  const category = "const category = "FREE FIRE ( AIRDROP )";";  // 🔹 এই category ফিল্টার করবে
+  const category = "FREE FIRE ( AIRDROP )";  // 🔹 এই category ফিল্টার করবে
 
   // 🔹 Load packages for this category
   db.ref("packages/" + category).on("value", snapshot => {
